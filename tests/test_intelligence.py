@@ -38,12 +38,17 @@ async def fake_extract(claim, s):
                   ExtractedExcerpt(quote="Microsoft fully controls OpenAI and its board", reasoning="made up")])
 
 
+async def _none(n):
+    return [None] * n
+
+
 async def fake_jev(claim, quotes):
     return [("contradicts", 0.97) for _ in quotes]
 
 
 intel.extract = fake_extract
 intel.jev.classify_stances = fake_jev
+intel.jev.rate_credibility = lambda claim, sources: _none(len(sources))  # offline: keep rule-based scores
 stages = []
 r = intel.analyse("Microsoft controls OpenAI", S, on_progress=stages.append)
 

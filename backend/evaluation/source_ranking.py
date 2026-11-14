@@ -1,5 +1,6 @@
-"""Rule-based source credibility (1-5) from source_type and publisher domain."""
+"""Source credibility (1-5): Jev rates each source; rule-based scores from source_type and domain are the fallback."""
 
+from backend.evaluation import jev
 from backend.models.source import Source
 
 BY_TYPE = {"government": 5, "academic": 5, "news": 3, "company": 3, "reference": 3, "web": 2, "social": 1}
@@ -20,3 +21,11 @@ def rank(sources: list[Source]) -> None:
     """Set credibility_score in place."""
     for s in sources:
         s.credibility_score = credibility(s)
+
+
+async def rank_async(claim: str, sources: list[Source]) -> None:
+    """Set credibility_score in place: Jev's rating where available, else the rule-based score."""
+    rank(sources)
+    for s, score in zip(sources, await jev.rate_credibility(claim, sources)):
+        if score is not None:
+            s.credibility_score = score

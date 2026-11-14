@@ -21,7 +21,13 @@ PAGES = {
 fetched, stages = [], []
 
 
-def fake_search(q, depth="standard", max_results=8, timeout=45):
+TRUSTED = [{"title": "AP", "url": "https://apnews.com/x", "content": "y" * 2000, "published_at": None}]
+
+
+def fake_search(q, depth="standard", max_results=8, timeout=45, include_domains=None):
+    if include_domains:
+        assert "sec.gov" in include_domains
+        return [dict(r) for r in TRUSTED]
     if q.endswith("official statement"):
         raise linkup.ResearchError("Linkup search timed out.")  # one failing query must not sink the rest
     return [dict(r) for r in PAGES.get(q, [])]
@@ -52,10 +58,11 @@ inv = client.get(f"/api/investigate/{r.json()['investigation_id']}").json()
 assert inv["status"] == "complete" and inv["stage"] is None, inv
 assert stages == ["searching", "extracting", "classifying", "assessing"], stages
 srcs = inv["sources"]
-assert [s["url"] for s in srcs] == ["https://www.gov.uk/cma/openai", "https://www.reuters.com/a"], srcs  # deduped
-assert srcs[0]["id"] == "source_1" and srcs[0]["source_type"] == "government" and srcs[0]["published_at"] == "2024-03-05"
-assert srcs[1]["source_type"] == "news" and srcs[1]["content"].startswith("Full page text & more"), srcs[1]  # fetched
-assert srcs[1]["title"] == "Reuters 'x'"
+# trusted-domain hit first, then the open web; duplicates removed
+assert [s["url"] for s in srcs] == ["https://apnews.com/x", "https://www.gov.uk/cma/openai", "https://www.reuters.com/a"], srcs
+assert srcs[1]["id"] == "source_2" and srcs[1]["source_type"] == "government" and srcs[1]["published_at"] == "2024-03-05"
+assert srcs[2]["source_type"] == "news" and srcs[2]["content"].startswith("Full page text & more"), srcs[2]  # fetched
+assert srcs[2]["title"] == "Reuters 'x'"
 assert fetched == ["https://www.reuters.com/a"]  # only the thin passage was fetched
 assert all(s["credibility_score"] == 4 for s in srcs)
 assert inv["nodes"] == [{"id": "claim_1", "type": "claim", "label": CLAIM, "description": "", "properties": {},

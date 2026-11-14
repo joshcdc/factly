@@ -37,11 +37,13 @@ def _explain(e: Exception) -> ResearchError:
     return ResearchError(f"Linkup search failed: {name}: {e}")
 
 
-def search(query: str, depth: str = "standard", max_results: int = 8, timeout: float = 45) -> list[dict]:
+def search(query: str, depth: str = "standard", max_results: int = 8, timeout: float = 45,
+           include_domains: list[str] | None = None) -> list[dict]:
     """Raw passages: [{title, url, content, published_at}]. Never uses sourcedAnswer."""
     try:
         resp = _client().search(
-            query=query, depth=depth, output_type="searchResults", max_results=max_results, timeout=timeout
+            query=query, depth=depth, output_type="searchResults", max_results=max_results, timeout=timeout,
+            include_domains=include_domains,
         )
     except ResearchError:
         raise
