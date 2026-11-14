@@ -1,6 +1,6 @@
 """Shared data contract (AGENT.md sections 3 and 4). All three workstreams import from here.
 
-Additive fields beyond AGENT.md, so the frontend can poll: InvestigationResponse.status, .error.
+Additive fields beyond AGENT.md, so the frontend can poll: InvestigationResponse.status, .stage, .error.
 """
 
 from typing import Literal
@@ -71,6 +71,7 @@ class InvestigationResponse(GraphResult):
     investigation_id: str
     query: str
     status: Status = "running"
+    stage: str | None = None  # while running: "searching" | "extracting" | "classifying" | "assessing"
     error: str | None = None
     sources: list[Source] = Field(default_factory=list)
 

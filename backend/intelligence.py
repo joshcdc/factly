@@ -5,7 +5,7 @@ import re
 
 from backend.evaluation import jev
 from backend.evaluation.evaluator import assess
-from backend.evaluation.source_ranking import rank, select_sources
+from backend.evaluation.source_ranking import rank, rank_async, select_sources
 from backend.extraction.extractor import extract
 from backend.extraction.verify import context_for, verify_quote
 from backend.models.schemas import Edge, Evidence, GraphResult, Node
@@ -29,10 +29,11 @@ def analyse(query: str, sources: list[Source], on_progress=None) -> GraphResult:
 
 async def analyse_async(query: str, sources: list[Source], on_progress=None) -> GraphResult:
     say = on_progress or (lambda stage: None)
-    rank(sources)  # credibility on every source, so the response is consistent
+    rank(sources)  # rule-based credibility on every source, so the response is consistent
     sources = select_sources(sources)  # only the best ~10 are analysed
 
     say("extracting")
+    ranking = asyncio.create_task(rank_async(query, sources))  # Jev credibility for those 10, alongside extraction
     sem = asyncio.Semaphore(CONCURRENCY)
 
     async def one(s):
@@ -43,6 +44,7 @@ async def analyse_async(query: str, sources: list[Source], on_progress=None) -> 
                 return None
 
     extractions = await asyncio.gather(*(one(s) for s in sources))
+    await ranking
 
     nodes: dict[str, Node] = {CLAIM_ID: Node(id=CLAIM_ID, type="claim", label=query)}
     edges: dict[tuple, Edge] = {}

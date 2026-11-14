@@ -4,9 +4,10 @@ import asyncio
 import re
 
 from dotenv import load_dotenv
-from typesafe_sdk import AsyncTypeSafeClient, Choice
+from typesafe_sdk import AsyncTypeSafeClient, Choice, Score
 
 from backend.models.schemas import Stance
+from backend.models.source import Source
 
 load_dotenv()
 
@@ -73,6 +74,47 @@ async def classify_stances(claim: str, excerpts: list[tuple[str, str]]) -> list[
 
     async with AsyncTypeSafeClient(model=MODEL) as client:
         return list(await asyncio.gather(*(one(client, e) for e in excerpts)))
+
+
+CREDIBILITY = Score(
+    instructions=(
+        "How credible is this source as evidence about `claim`? Judge the publisher and the page itself: "
+        "is it an original or authoritative source, does it have editorial standards, does it cite where "
+        "its facts come from?"
+    ),
+    criteria=[  # position = score 0..4, mapped to credibility_score 1..5
+        "Unreliable: content farm, SEO or AI-generated aggregator, spam, or unsourced assertions",
+        "Low: personal blog, forum, social media post, or a site that rewrites others' reporting without sources",
+        "Moderate: niche or trade publication, or secondary reporting that names its sources",
+        "High: established news organisation with editorial standards, or a reputable reference work",
+        "Authoritative: the primary source for this claim, e.g. an official filing, regulator, statistics office, "
+        "peer-reviewed study, or the organisation's own official announcement",
+    ],
+)
+PAGE_CHARS = 1500  # enough of the page for Jev to judge its quality
+
+
+async def rate_credibility(claim: str, sources: list[Source]) -> list[int | None]:
+    """Jev credibility 1-5 per source, in order. None where Jev failed (caller keeps the rule-based score)."""
+    sem = asyncio.Semaphore(CONCURRENCY)
+
+    async def one(client, s: Source):
+        async with sem:
+            try:
+                r = await client.system_one(
+                    state={"claim": claim, "url": s.url, "publisher": s.publisher, "title": s.title,
+                           "page_excerpt": s.content[:PAGE_CHARS]},
+                    questions={"credibility": CREDIBILITY},
+                )
+            except Exception:
+                return None
+        return max(1, min(5, 1 + round(r.scores["credibility"].score)))
+
+    try:
+        async with AsyncTypeSafeClient(model=MODEL) as client:
+            return list(await asyncio.gather(*(one(client, s) for s in sources)))
+    except Exception:  # no key / Jev unreachable: keep the rule-based scores
+        return [None] * len(sources)
 
 
 def strength(prob: float) -> int:
