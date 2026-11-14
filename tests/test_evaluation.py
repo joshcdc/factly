@@ -20,7 +20,7 @@ for s in S:
 assert [s.credibility_score for s in S] == [4, 4, 2, 5]
 
 a = assess("claim_1", [ev(1, "source_1", "supports"), ev(2, "source_2", "supports")], S)
-assert a.status == "supported" and a.confidence > 0.5, a
+assert a.status == "supported" and 0.3 < a.confidence <= 0.5, a      # two sources agree: medium at best
 # same publisher twice is one vote, and a lone mid-credibility source cannot decide
 a = assess("claim_1", [ev(1, "source_1", "contradicts"), ev(2, "source_1", "contradicts")], S)
 assert a.status == "insufficient_evidence", a
@@ -111,3 +111,45 @@ try:
 finally:
     jevmod.AsyncTypeSafeClient = real_client
 print("jev failure tests passed")
+
+
+# --- confidence: evidence mass with diminishing returns, agreement, authority, coverage; never 1
+from backend.evaluation.evaluator import MAX_CONFIDENCE, band
+
+
+def scenario(spec, unrelated=0):
+    """spec: (stance, credibility, strength) per distinct publisher; `unrelated` extra analysed sources with no stance."""
+    sources, evidence = [], []
+    for i, (stance, c, st) in enumerate(spec, 1):
+        sources.append(src(i, f"p{i}.com"))
+        sources[-1].credibility_score = c
+        evidence.append(ev(i, f"source_{i}", stance, st))
+    for k in range(unrelated):
+        sources.append(src(100 + k, f"other{k}.com"))
+        sources[-1].credibility_score = 3
+    return assess("claim_1", evidence, sources)
+
+
+SUP, CON, NEU = "supports", "contradicts", "neutral"
+a = scenario([(SUP, 5, 5)], unrelated=9)                      # one official source, nine analysed sources silent
+assert a.status == "supported" and a.confidence == 0.63, a     # no coverage penalty for an official source
+assert scenario([(CON, 5, 5)], unrelated=4).confidence == 0.63
+assert scenario([(SUP, 5, 5)] * 2).confidence == 0.86          # two official sources: much stronger
+assert scenario([(SUP, 5, 3)], unrelated=2).status == "supported" and scenario([(SUP, 5, 3)], unrelated=2).confidence < 0.4  # weak mention: no boost
+assert scenario([(SUP, 4, 5)] * 2).confidence == 0.47          # two news sites, nothing else analysed
+assert scenario([(SUP, 4, 5)] * 2, unrelated=8).confidence == 0.36   # the rest of the analysed sources say nothing: lower
+assert scenario([(SUP, 4, 5)]).status == "insufficient_evidence"
+assert scenario([(SUP, 4, 5)]).confidence <= 0.3               # insufficient is capped
+live_like = scenario([(SUP, 3 + i % 2, 5) for i in range(8)], unrelated=2)
+assert live_like.status == "supported" and 0.7 < live_like.confidence <= MAX_CONFIDENCE, live_like
+assert scenario([(SUP, 5, 5)] * 20).confidence == MAX_CONFIDENCE   # never 1
+counts = [scenario([(SUP, 4, 5)] * n).confidence for n in (2, 3, 5, 8)]
+assert counts == sorted(counts) and len(set(counts)) == 4, counts   # more sources help, with diminishing returns
+assert [counts[i + 1] - counts[i] for i in range(3)][0] > [counts[i + 1] - counts[i] for i in range(3)][2] / 2
+mixed = scenario([(SUP, 4, 5)] * 2 + [(CON, 4, 5)] * 2)
+assert mixed.status == "partially_supported" and 0.5 < mixed.confidence < 0.8, mixed
+lopsided = scenario([(SUP, 4, 5)] * 3 + [(CON, 4, 5)])
+assert lopsided.status == "partially_supported" and lopsided.confidence < mixed.confidence, (lopsided, mixed)
+assert [band(c) for c in (0.1, 0.39, 0.4, 0.7, 0.71, 0.95)] == ["low", "low", "medium", "medium", "high", "high"]
+assert "Confidence: medium." in scenario([(SUP, 5, 5)], unrelated=9).explanation
+print("confidence tests passed")
