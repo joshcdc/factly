@@ -71,11 +71,18 @@ async def analyse_async(query: str, sources: list[Source], on_progress=None) -> 
                 e.source_ids.append(s.id)
         candidates += [(s, x) for x in ex.excerpts if verify_quote(x.quote, s.content)]
         if names or ex.excerpts:
-            nodes[s.id] = Node(id=s.id, type="source", label=s.title, description=s.publisher,
-                               properties={"url": s.url, "credibility": s.credibility_score}, source_ids=[s.id])
-            for nid in set(names.values()):
-                edges.setdefault((s.id, nid, "mentions"), Edge(
-                    id="", source=s.id, target=nid, relationship="mentions", source_ids=[s.id]))
+            # labelled by publisher (a noun), not the headline; title/url go in the details
+            nodes[s.id] = Node(id=s.id, type="source", label=s.publisher, description=s.title,
+                               properties={"url": s.url, "title": s.title, "credibility": s.credibility_score},
+                               source_ids=[s.id])
+
+    # connect the entity cluster to the claim: claim -> each entity the claim names
+    for group in jev.claim_entities(query):
+        for n in list(nodes.values()):
+            if n.type not in ("claim", "source") and group & set(re.findall(r"[a-z0-9][\w&-]*", n.label.lower())):
+                edges.setdefault((CLAIM_ID, n.id, "about"), Edge(
+                    id="", source=CLAIM_ID, target=n.id, relationship="about"))
+                break  # first (earliest-seen) match per name
 
     say("classifying")
     pairs = [(x.quote, context_for(x.quote, s.content)) for s, x in candidates]
@@ -102,4 +109,6 @@ async def analyse_async(query: str, sources: list[Source], on_progress=None) -> 
     out_edges = [e for e in edges.values() if e.source in nodes and e.target in nodes]
     for i, e in enumerate(out_edges, 1):
         e.id = f"edge_{i}"
-    return GraphResult(nodes=list(nodes.values()), edges=out_edges, evidence=evidence, assessments=[assessment])
+    order = {"claim": 0, "person": 1, "company": 2, "location": 3, "event": 4, "concept": 5, "source": 6}
+    out_nodes = sorted(nodes.values(), key=lambda n: order[n.type])  # stable: keeps first-seen order within a type
+    return GraphResult(nodes=out_nodes, edges=out_edges, evidence=evidence, assessments=[assessment])
