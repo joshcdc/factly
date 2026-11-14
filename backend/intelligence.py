@@ -2,6 +2,7 @@
 
 import asyncio
 import re
+from difflib import SequenceMatcher
 
 from backend.evaluation import jev
 from backend.evaluation.evaluator import assess
@@ -14,6 +15,18 @@ from backend.models.source import Source
 CLAIM_ID = "claim_1"
 CONCURRENCY = 6
 _SUFFIX = re.compile(r"\b(inc|incorporated|ltd|limited|llc|plc|corp|corporation|co|company|group|the)\b")
+
+
+_STOP = {"the", "a", "an", "of", "and", "in", "on", "for", "to", "is", "its"}
+
+
+def _tokens(text: str) -> list[str]:
+    return [w for w in re.findall(r"[a-z0-9][\w&-]*", text.lower().replace("'s", "")) if w not in _STOP]
+
+
+def _same(a: str, b: str) -> bool:
+    """Same word, allowing one typo in words of 5+ letters ('jenson' ~ 'jensen')."""
+    return a == b or (min(len(a), len(b)) >= 5 and SequenceMatcher(None, a, b).ratio() >= 0.8)
 
 
 def _key(name: str, type_: str) -> tuple[str, str]:
@@ -80,17 +93,17 @@ async def analyse_async(query: str, sources: list[Source], on_progress=None) -> 
                                source_ids=[s.id])
 
     # connect the entity cluster to the claim: claim -> each entity the claim names
-    def tokens(n):
-        return set(re.findall(r"[a-z0-9][\w&-]*", n.label.lower()))
-
-    entity_nodes = [n for n in nodes.values() if n.type not in ("claim", "source")]
-    for group in jev.claim_entities(query):
-        # prefer the node whose whole name is the claim's name ("OpenAI"), else any node sharing a word
-        match = next((n for n in entity_nodes if tokens(n) == group), None) or \
-            next((n for n in entity_nodes if group & tokens(n)), None)
-        if match:
-            edges.setdefault((CLAIM_ID, match.id, "about"), Edge(
-                id="", source=CLAIM_ID, target=match.id, relationship="about"))
+    claim_tokens = _tokens(query)
+    for n in nodes.values():
+        # an entity is "about" the claim when every word of its name appears in the claim (typos tolerated),
+        # whatever the capitalisation: "Jensen Huang" matches "jenson huang affairs", "OpenAI Foundation" does not
+        # match "Microsoft controls OpenAI"
+        if n.type in ("claim", "source"):
+            continue
+        words = _tokens(n.label)
+        if words and all(any(_same(w, c) for c in claim_tokens) for w in words):
+            edges.setdefault((CLAIM_ID, n.id, "about"), Edge(
+                id="", source=CLAIM_ID, target=n.id, relationship="about"))
 
     say("classifying")
     pairs = [(x.quote, context_for(x.quote, s.content)) for s, x in candidates]

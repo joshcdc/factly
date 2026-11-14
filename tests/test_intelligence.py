@@ -95,3 +95,10 @@ r = intel.analyse("Microsoft controls OpenAI", S)
 assert r.evidence == [] and r.assessments[0].status == "insufficient_evidence"
 assert "could not be classified" in r.assessments[0].explanation
 print("intelligence tests passed")
+
+# --- claim linking works for lowercase claims and typos
+from backend.intelligence import _same, _tokens
+
+assert _same("jenson", "jensen") and not _same("huang", "huge") and _same("openai", "openai")
+assert _tokens("Jensen Huang's affairs") == ["jensen", "huang", "affairs"]
+print("claim linking tests passed")

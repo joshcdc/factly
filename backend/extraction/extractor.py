@@ -15,7 +15,8 @@ load_dotenv()
 MODEL = "claude-haiku-5-5"  # extraction is simple; move to claude-sonnet-5-5 if graphs look sloppy
 EFFORT = "low"  # extraction, not reasoning: keep it fast
 MAX_EXCERPTS = 3
-MAX_ENTITIES = 6
+MAX_ENTITIES = 10
+MAX_RELATIONSHIPS = 12
 
 _client: anthropic.AsyncAnthropic | None = None
 
@@ -44,7 +45,7 @@ async def extract(claim: str, source: Source) -> SourceExtraction:
     out.excerpts = out.excerpts[:MAX_EXCERPTS]
     for r in out.relationships:
         r.relationship = clean_label(r.relationship)
-    out.relationships = [r for r in out.relationships if r.relationship]
+    out.relationships = [r for r in out.relationships if r.relationship][:MAX_RELATIONSHIPS]
     return out
 
 
