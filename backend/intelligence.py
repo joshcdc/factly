@@ -2,6 +2,7 @@
 
 import asyncio
 import re
+from collections import Counter
 from difflib import SequenceMatcher
 
 from backend.evaluation import jev
@@ -140,4 +141,45 @@ async def analyse_async(query: str, sources: list[Source], on_progress=None) -> 
         e.id = f"edge_{i}"
     order = {"claim": 0, "person": 1, "company": 2, "location": 3, "event": 4, "concept": 5, "source": 6}
     out_nodes = sorted(nodes.values(), key=lambda n: order[n.type])  # stable: keeps first-seen order within a type
+    _prioritise(out_nodes, out_edges, sources, evidence)
     return GraphResult(nodes=out_nodes, edges=out_edges, evidence=evidence, assessments=[assessment])
+
+
+def _prioritise(nodes: list[Node], edges: list[Edge], sources: list[Source], evidence: list[Evidence]) -> None:
+    """Display priority from data we already have (no API calls), all in 0-1:
+    entity node  properties["priority"] = credibility of the independent publishers that mention it + 2 x its connections
+    relationship Edge.weight            = credibility of the independent publishers that state it
+    source node  properties["priority"] = its credibility; claim = 1; stance edge weight = evidence strength x credibility
+    """
+    src = {s.id: s for s in sources}
+    strength = {e.id: e.strength for e in evidence}
+
+    def support(ids: list[str]) -> int:  # one vote per publisher (its best credibility): repeats aren't independent
+        best: dict[str, int] = {}
+        for i in ids:
+            if i in src:
+                best[src[i].publisher] = max(best.get(src[i].publisher, 0), src[i].credibility_score or 2)
+        return sum(best.values())
+
+    rel = [e for e in edges if not e.stance and e.relationship != "about"]
+    degree = Counter(x for e in rel for x in (e.source, e.target))
+    ents = [n for n in nodes if n.type not in ("claim", "source")]
+    raw = {n.id: support(n.source_ids) + 2 * degree[n.id] for n in ents}
+    top = max(raw.values(), default=0) or 1
+    for n in ents:
+        n.properties["priority"] = round(raw[n.id] / top, 2)
+    edge_raw = {e.id: support(e.source_ids) for e in rel}
+    edge_top = max(edge_raw.values(), default=0) or 1
+    for e in rel:
+        e.weight = round(edge_raw[e.id] / edge_top, 2)
+    for n in nodes:
+        if n.type == "claim":
+            n.properties["priority"] = 1.0
+        elif n.type == "source":
+            n.properties["priority"] = round((src[n.id].credibility_score or 2) / 5, 2)
+    for e in edges:
+        if e.stance:
+            best = max((strength.get(i, 3) for i in e.evidence_ids), default=3)
+            e.weight = round(max(0.1, best / 5 * (src[e.source].credibility_score or 2) / 5), 2)
+        elif e.relationship == "about":
+            e.weight = 1.0

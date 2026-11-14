@@ -29,6 +29,7 @@ class Edge(BaseModel):
     source: str  # node id
     target: str  # node id
     relationship: str
+    weight: float = Field(0.5, ge=0, le=1)  # display priority 0-1 (thickness, fade, detail slider); set by Agent 2
     stance: Stance | None = None  # set when the edge links evidence to a claim: supports / contradicts / neutral
     description: str = ""
     evidence_ids: list[str] = Field(default_factory=list)

@@ -119,3 +119,47 @@ intel.jev.classify_stances = fake_jev
 labels = {n.label for n in intel.analyse("Microsoft controls OpenAI", S[:1]).nodes}
 assert "Reuters" not in labels and "The Times" in labels and "Microsoft" in labels, labels
 print("reporter filter tests passed")
+
+# --- display priority
+from backend.models.schemas import Edge as _Edge, Node as _Node
+
+
+def build(sources_n, nodes, edges):
+    srcs = [Source(id=f"source_{i}", url="u", title="t", publisher=f"p{i}.com", content="x", source_type="news")
+            for i in range(1, sources_n + 1)]
+    for s, c in zip(srcs, [5, 4, 3, 2, 1][:sources_n]):
+        s.credibility_score = c
+    intel._prioritise(nodes, edges, srcs, [])
+    return nodes, edges
+
+hub = _Node(id="e1", type="company", label="Hub", source_ids=["source_1", "source_2", "source_3"])
+mid = _Node(id="e2", type="person", label="Mid", source_ids=["source_1"])
+orphan = _Node(id="e3", type="person", label="Orphan", source_ids=["source_4"])
+edge_a = _Edge(id="x1", source="e1", target="e2", relationship="leads", source_ids=["source_1", "source_2"])
+edge_b = _Edge(id="x2", source="e1", target="e2", relationship="part of", source_ids=["source_4"])
+build(4, [hub, mid, orphan], [edge_a, edge_b])
+assert hub.properties["priority"] == 1.0
+assert hub.properties["priority"] > mid.properties["priority"] > orphan.properties["priority"] > 0
+assert edge_a.weight == 1.0 and 0 < edge_b.weight < edge_a.weight
+assert all(0 <= n.properties["priority"] <= 1 for n in (hub, mid, orphan))
+
+# an edge repeated by two pages of one publisher is still one vote
+dup = [Source(id=f"source_{i}", url="u", title="t", publisher="same.com", content="x", source_type="news")
+       for i in (1, 2)]
+for s in dup:
+    s.credibility_score = 4
+n1 = _Node(id="e1", type="company", label="A", source_ids=["source_1", "source_2"])
+e1 = _Edge(id="x1", source="e1", target="e2", relationship="owns", source_ids=["source_1", "source_2"])
+intel._prioritise([n1], [e1], dup, [])
+assert n1.properties["priority"] == 1.0 and e1.weight == 1.0
+
+# full pipeline output carries priority and weight on everything
+intel.extract = fake_extract
+intel.jev.classify_stances = fake_jev
+r = intel.analyse("Microsoft controls OpenAI", S)
+assert all("priority" in n.properties and 0 <= n.properties["priority"] <= 1 for n in r.nodes)
+assert all(0 <= e.weight <= 1 for e in r.edges)
+assert next(n for n in r.nodes if n.type == "claim").properties["priority"] == 1.0
+assert all(e.weight == 1.0 for e in r.edges if e.relationship == "about")
+assert all(0.1 <= e.weight <= 1 for e in r.edges if e.stance)
+print("priority tests passed")

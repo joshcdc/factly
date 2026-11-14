@@ -176,6 +176,7 @@ Suggested structure:
 - On hover/click of an entity or relationship, show its sources from `source_ids` (popup, or fade the source nodes in). Source nodes carry `properties.url`, `properties.title` and `properties.credibility`.
 - On hover/click of the claim, show its supporting/contradicting sources (edges with `stance`, green/red) and the evidence excerpts.
 - Colour the claim node by its assessment `status` (match on `claim_id` = node `id`).
+- Use priority to keep the graph readable: node size and opacity from `properties.priority`, edge thickness and opacity from `weight`, and show labels only above a threshold (always show the claim). Add a "detail" slider that hides nodes and edges below a chosen priority; `properties.priority` of unconnected or single-source entities is low, so they disappear first.
 - Sample data to build against: `fixtures/sample_investigation.json` (a full `InvestigationResponse`).
 
 ---
@@ -228,11 +229,14 @@ Supported node types:
       "source": "entity_1",
       "target": "entity_2",
       "relationship": "founded",
+      "weight": 0.8,
       "stance": "supports",
       "description": "Relationship description",
       "evidence_ids": ["evidence_1"],
       "source_ids": ["source_1"]
     }
+
+`weight` (0-1) is the display priority of an edge, set by Agent 2. For a relationship it is the credibility of the independent publishers that state it (1.0 = best supported); for a source-to-claim edge it is evidence strength times source credibility; the claim `about` edge is 1.0. Entity, source and claim nodes carry the same idea as `properties.priority` (0-1): for an entity, the credibility of the independent publishers that mention it plus twice its number of connections.
 
 ### Evidence
 
