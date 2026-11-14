@@ -52,3 +52,16 @@ ctx = context_for("It does not control the company.", page)
 assert "Microsoft is its largest investor." in ctx and "Altman is CEO." in ctx, ctx
 assert context_for("not in the page at all here", page) == ""
 print("jev guard tests passed")
+
+# --- source selection
+from backend.evaluation.source_ranking import rank, select_sources
+
+many = [src(i, f"site{i % 4}.com") for i in range(1, 41)]   # 40 sources from 4 publishers
+for i, s in enumerate(many):
+    s.relevance_score = 5 - (i % 5)
+rank(many)
+picked = select_sources(many)
+assert len(picked) == 8, len(picked)                          # 4 publishers x 2 each
+assert max(sum(p.publisher == q for p in picked) for q in {p.publisher for p in picked}) == 2
+assert len(select_sources([src(i, f"s{i}.com") for i in range(30)])) == 10
+print("source selection tests passed")

@@ -170,6 +170,14 @@ Suggested structure:
 
 **Important:** Do not build a custom graph physics engine if an existing engine is available. Focus on the presentation and interaction layer.
 
+**Suggested display (agreed with Agent 2):**
+
+- Hide `type: "source"` nodes and their edges by default, so the graph shows only the claim and entities.
+- On hover/click of an entity or relationship, show its sources from `source_ids` (popup, or fade the source nodes in). Source nodes carry `properties.url`, `properties.title` and `properties.credibility`.
+- On hover/click of the claim, show its supporting/contradicting sources (edges with `stance`, green/red) and the evidence excerpts.
+- Colour the claim node by its assessment `status` (match on `claim_id` = node `id`).
+- Sample data to build against: `fixtures/sample_investigation.json` (a full `InvestigationResponse`).
+
 ---
 
 ## 3. Shared Data Contract

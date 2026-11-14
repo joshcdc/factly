@@ -8,7 +8,7 @@ EntityType = Literal["person", "company", "location", "event", "concept"]
 
 
 class ExtractedEntity(BaseModel):
-    name: str
+    name: str = Field(description="A noun: the proper name of one specific thing, 1-4 words")
     type: EntityType
     description: str = Field(description="One short sentence, from the source only")
 
@@ -26,6 +26,6 @@ class ExtractedExcerpt(BaseModel):
 
 
 class SourceExtraction(BaseModel):
-    entities: list[ExtractedEntity]
+    entities: list[ExtractedEntity] = Field(description="At most 6, most relevant to the claim")
     relationships: list[ExtractedRelation]
     excerpts: list[ExtractedExcerpt] = Field(description="At most 3 passages most relevant to the claim")

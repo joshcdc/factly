@@ -64,6 +64,21 @@ assert sum(e.stance == "contradicts" for e in r.edges) == 2
 a = r.assessments[0]
 assert a.status == "contradicted" and a.claim_id == "claim_1", a
 assert all(s.credibility_score for s in S)
+assert {n.label for n in by_type["source"]} == {"reuters.com", "bbc.com"}            # nouns, not headlines
+assert not any(e.relationship == "mentions" for e in r.edges)
+about = {e.target for e in r.edges if e.relationship == "about"}
+assert {n.label for n in r.nodes if n.id in about} == {"Microsoft", "OpenAI"}        # claim linked to its entities
+assert [n.type for n in r.nodes][0] == "claim" and [n.type for n in r.nodes][-1] == "source"
+
+# --- extractor clean-up helpers
+from backend.extraction.extractor import clean_label, is_noun_name
+
+assert is_noun_name("Microsoft") and is_noun_name("OpenAI Group PBC") and is_noun_name("U.S. Treasury")
+assert not is_noun_name("Azure growth beats estimates. Shares rise")
+assert not is_noun_name("Opinion: Microsoft is really in charge")
+assert not is_noun_name("Microsoft has effective control over OpenAI's strategy")              # > 5 words
+assert clean_label("Has invested in") == "invested in" and clean_label("controls") == "controls"
+assert clean_label("has exclusive rights to sell OpenAI models through") == ""
 
 
 async def jev_down(claim, quotes):

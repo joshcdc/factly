@@ -5,7 +5,7 @@ import re
 
 from backend.evaluation import jev
 from backend.evaluation.evaluator import assess
-from backend.evaluation.source_ranking import rank
+from backend.evaluation.source_ranking import rank, select_sources
 from backend.extraction.extractor import extract
 from backend.extraction.verify import context_for, verify_quote
 from backend.models.schemas import Edge, Evidence, GraphResult, Node
@@ -29,7 +29,8 @@ def analyse(query: str, sources: list[Source], on_progress=None) -> GraphResult:
 
 async def analyse_async(query: str, sources: list[Source], on_progress=None) -> GraphResult:
     say = on_progress or (lambda stage: None)
-    rank(sources)
+    rank(sources)  # credibility on every source, so the response is consistent
+    sources = select_sources(sources)  # only the best ~10 are analysed
 
     say("extracting")
     sem = asyncio.Semaphore(CONCURRENCY)
@@ -71,11 +72,23 @@ async def analyse_async(query: str, sources: list[Source], on_progress=None) -> 
                 e.source_ids.append(s.id)
         candidates += [(s, x) for x in ex.excerpts if verify_quote(x.quote, s.content)]
         if names or ex.excerpts:
-            nodes[s.id] = Node(id=s.id, type="source", label=s.title, description=s.publisher,
-                               properties={"url": s.url, "credibility": s.credibility_score}, source_ids=[s.id])
-            for nid in set(names.values()):
-                edges.setdefault((s.id, nid, "mentions"), Edge(
-                    id="", source=s.id, target=nid, relationship="mentions", source_ids=[s.id]))
+            # labelled by publisher (a noun), not the headline; title/url go in the details
+            nodes[s.id] = Node(id=s.id, type="source", label=s.publisher, description=s.title,
+                               properties={"url": s.url, "title": s.title, "credibility": s.credibility_score},
+                               source_ids=[s.id])
+
+    # connect the entity cluster to the claim: claim -> each entity the claim names
+    def tokens(n):
+        return set(re.findall(r"[a-z0-9][\w&-]*", n.label.lower()))
+
+    entity_nodes = [n for n in nodes.values() if n.type not in ("claim", "source")]
+    for group in jev.claim_entities(query):
+        # prefer the node whose whole name is the claim's name ("OpenAI"), else any node sharing a word
+        match = next((n for n in entity_nodes if tokens(n) == group), None) or \
+            next((n for n in entity_nodes if group & tokens(n)), None)
+        if match:
+            edges.setdefault((CLAIM_ID, match.id, "about"), Edge(
+                id="", source=CLAIM_ID, target=match.id, relationship="about"))
 
     say("classifying")
     pairs = [(x.quote, context_for(x.quote, s.content)) for s, x in candidates]
@@ -102,4 +115,6 @@ async def analyse_async(query: str, sources: list[Source], on_progress=None) -> 
     out_edges = [e for e in edges.values() if e.source in nodes and e.target in nodes]
     for i, e in enumerate(out_edges, 1):
         e.id = f"edge_{i}"
-    return GraphResult(nodes=list(nodes.values()), edges=out_edges, evidence=evidence, assessments=[assessment])
+    order = {"claim": 0, "person": 1, "company": 2, "location": 3, "event": 4, "concept": 5, "source": 6}
+    out_nodes = sorted(nodes.values(), key=lambda n: order[n.type])  # stable: keeps first-seen order within a type
+    return GraphResult(nodes=out_nodes, edges=out_edges, evidence=evidence, assessments=[assessment])

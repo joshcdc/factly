@@ -20,3 +20,22 @@ def rank(sources: list[Source]) -> None:
     """Set credibility_score in place."""
     for s in sources:
         s.credibility_score = credibility(s)
+
+
+MAX_SOURCES = 10  # analysed per investigation; more mostly adds repeats of the same story
+MAX_PER_PUBLISHER = 2  # a publisher counts as one voice, so extra pages from it add little
+
+
+def select_sources(sources: list[Source], limit: int = MAX_SOURCES) -> list[Source]:
+    """Best `limit` sources: most relevant first, then most credible, at most 2 per publisher."""
+    ranked = sorted(sources, key=lambda s: (-s.relevance_score, -(s.credibility_score or 0)))
+    per_pub: dict[str, int] = {}
+    out = []
+    for s in ranked:
+        if per_pub.get(s.publisher, 0) >= MAX_PER_PUBLISHER:
+            continue
+        per_pub[s.publisher] = per_pub.get(s.publisher, 0) + 1
+        out.append(s)
+        if len(out) == limit:
+            break
+    return out
