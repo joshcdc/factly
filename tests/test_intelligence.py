@@ -46,6 +46,26 @@ async def fake_jev(claim, quotes):
     return [("contradicts", 0.97) for _ in quotes]
 
 
+# keep this suite hermetic: no live Jev or LLM calls for credibility, merging or summaries
+summary_calls = []
+
+
+async def fake_rank(claim, sources):
+    intel.rank(sources)
+
+
+async def fake_pick(items):
+    return [None] * len(items)
+
+
+async def fake_summarise(claim, name, type_, mentions):
+    summary_calls.append((name, list(mentions)))
+    return f"{name}: summary of {len(mentions)} mention(s)"
+
+
+intel.rank_async = fake_rank
+intel.jev.pick_same = fake_pick
+intel.summarise = fake_summarise
 intel.extract = fake_extract
 intel.jev.classify_stances = fake_jev
 intel.jev.rate_credibility = lambda claim, sources: _none(len(sources))  # offline: keep rule-based scores
@@ -230,3 +250,34 @@ ids = {n.id for n in r.nodes}
 assert all(e.source in ids and e.target in ids for e in r.edges)                 # no edge points at a dropped entity
 assert intel.MAX_ENTITIES_OUT >= len([n for n in ents if n.properties["priority"] > 0])
 print("entity cap tests passed")
+
+
+# --- entity summaries and counts
+async def extract_notes(claim, s):
+    d1 = "US software company that has invested heavily in OpenAI"
+    d2 = "Technology giant and OpenAI's largest outside investor, according to filings"
+    return SourceExtraction(
+        entities=[ExtractedEntity(name="Microsoft", type="company", description=d1 if s.id == "source_1" else d2),
+                  ExtractedEntity(name="OpenAI", type="company", description="AI lab")],   # same text in both sources
+        relationships=[ExtractedRelation(subject="Microsoft", relationship="invested in", object="OpenAI")],
+        excerpts=[])
+
+intel.extract = extract_notes
+summary_calls.clear()
+r = intel.analyse("Microsoft controls OpenAI", S)
+by = {n.label: n for n in r.nodes}
+assert by["Microsoft"].properties["summary"] == "Microsoft: summary of 3 mention(s)"       # different notes from 3 sources -> model call
+assert by["OpenAI"].properties["summary"] == "AI lab"                                         # one short note -> used as is
+assert [c[0] for c in summary_calls] == ["Microsoft"], summary_calls                          # so only one model call
+assert by["Microsoft"].properties["sources"] == 3 and by["Microsoft"].properties["publishers"] == 3
+assert all("summary" not in n.properties for n in r.nodes if n.type in ("claim", "source"))
+
+
+async def summaries_fail(claim, name, type_, mentions):
+    return None
+
+intel.summarise = summaries_fail
+r = intel.analyse("Microsoft controls OpenAI", S)                                           # a failed summary never fails the run
+assert "summary" not in {n.label: n for n in r.nodes}["Microsoft"].properties
+assert {n.label: n for n in r.nodes}["Microsoft"].description                                # description remains as the fallback
+print("summary tests passed")

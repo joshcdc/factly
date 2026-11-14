@@ -9,7 +9,7 @@ from backend.evaluation import jev
 from backend.evaluation.evaluator import assess
 from backend.evaluation.source_ranking import rank, rank_async, select_sources
 from backend.extraction import merge
-from backend.extraction.extractor import extract
+from backend.extraction.extractor import extract, summarise
 from backend.extraction.verify import context_for, verify_quote
 from backend.models.schemas import Edge, Evidence, GraphResult, Node
 from backend.models.source import Source
@@ -63,6 +63,7 @@ async def analyse_async(query: str, sources: list[Source], on_progress=None) -> 
     nodes: dict[str, Node] = {CLAIM_ID: Node(id=CLAIM_ID, type="claim", label=query)}
     edges: dict[tuple, Edge] = {}
     ids: dict[int, str] = {}  # merged-entity gid -> node id
+    notes: dict[str, list[tuple[str, str]]] = {}  # node id -> (publisher, what that source said about it)
     candidates = []  # (source, excerpt) pairs whose quote was found in the source text
 
     for s, ex in zip(sources, extractions):
@@ -79,6 +80,7 @@ async def analyse_async(query: str, sources: list[Source], on_progress=None) -> 
             if s.id not in node.source_ids:
                 node.source_ids.append(s.id)
             names[ent.name.lower()] = ids[c.gid]
+            notes.setdefault(ids[c.gid], []).append((s.publisher, ent.description))
         for r in ex.relationships:
             a, b = names.get(r.subject.lower()), names.get(r.object.lower())
             if not a or not b or a == b:
@@ -117,6 +119,7 @@ async def analyse_async(query: str, sources: list[Source], on_progress=None) -> 
     _connect_orphans(nodes, edges, sources)  # no entity is left without an edge
     _cap_entities(nodes, edges, sources)  # keep the most important entities only...
     _connect_orphans(nodes, edges, sources)  # ...and re-attach any the cut left unconnected
+    summaries = asyncio.create_task(_summaries(query, nodes, notes))  # runs alongside Jev classification
 
     say("classifying")
     pairs =[(x.quote, context_for(x.quote, s.content)) for s, x in candidates]
@@ -135,6 +138,10 @@ async def analyse_async(query: str, sources: list[Source], on_progress=None) -> 
                 id="", source=s.id, target=CLAIM_ID, relationship=stance, stance=stance, source_ids=[s.id]))
             e.evidence_ids.append(ev.id)
 
+    for nid, text in await summaries:
+        if text:
+            nodes[nid].properties["summary"] = text
+
     say("assessing")
     assessment = assess(CLAIM_ID, evidence, sources)
     if unclassified:
@@ -147,6 +154,24 @@ async def analyse_async(query: str, sources: list[Source], on_progress=None) -> 
     out_nodes = sorted(nodes.values(), key=lambda n: order[n.type])  # stable: keeps first-seen order within a type
     _prioritise(out_nodes, out_edges, sources, evidence)
     return GraphResult(nodes=out_nodes, edges=out_edges, evidence=evidence, assessments=[assessment])
+
+
+async def _summaries(query: str, nodes: dict[str, Node], notes: dict[str, list[tuple[str, str]]]) -> list[tuple[str, str | None]]:
+    """A short summary per entity from what each source said about it. One mention that is already short is used
+    as is (no model call); failures give None and the frontend falls back to `description`."""
+    sem = asyncio.Semaphore(CONCURRENCY)
+
+    async def one(n: Node):
+        mentions = list(dict.fromkeys(m for m in notes.get(n.id, []) if m[1]))
+        texts = {t for _, t in mentions}
+        if len(texts) <= 1:
+            only = next(iter(texts), "")
+            if len(only.split()) <= 40:
+                return n.id, only or None
+        async with sem:
+            return n.id, await summarise(query, n.label, n.type, mentions)
+
+    return list(await asyncio.gather(*(one(n) for n in nodes.values() if n.type not in ("claim", "source"))))
 
 
 FALLBACK = "mentioned with"  # not a real relationship: lowest weight, so the frontend can fade or hide it
@@ -225,6 +250,8 @@ def _prioritise(nodes: list[Node], edges: list[Edge], sources: list[Source], evi
     top = max(raw.values(), default=0) or 1
     for n in ents:
         n.properties["priority"] = round(raw[n.id] / top, 2)
+        n.properties["sources"] = len([i for i in n.source_ids if i in src])
+        n.properties["publishers"] = len({src[i].publisher for i in n.source_ids if i in src})
     edge_raw = {e.id: support(e.source_ids) for e in rel}
     edge_top = max(edge_raw.values(), default=0) or 1
     for e in rel:

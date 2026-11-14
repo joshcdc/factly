@@ -1,5 +1,6 @@
 """Per-source LLM extraction (entities, relationships, candidate excerpts). No classification here."""
 
+import logging
 import re
 
 import anthropic
@@ -8,9 +9,11 @@ from dotenv import load_dotenv
 from backend.models.source import Source
 
 from . import prompts
-from .schemas import SourceExtraction
+from .schemas import EntitySummary, SourceExtraction
 
 load_dotenv()
+
+log = logging.getLogger("fakta.extract")
 
 MODEL = "claude-haiku-5-5"  # extraction is simple; move to claude-sonnet-5-5 if graphs look sloppy
 EFFORT = "low"  # extraction, not reasoning: keep it fast
@@ -64,3 +67,27 @@ def clean_label(label: str) -> str:
     are dropped ('')."""
     label = _AUX.sub("", label.strip().lower())
     return label if 0 < len(label.split()) <= 4 else ""
+
+
+async def summarise(claim: str, name: str, type_: str, mentions: list[tuple[str, str]]) -> str | None:
+    """One short summary of an entity from what each source said about it. None on any failure: the caller
+    keeps the plain description, so a summary problem never fails an investigation."""
+    notes = "\n".join(f"- {publisher}: {text}" for publisher, text in mentions if text)
+    for attempt in (1, 2):  # one retry: a first call occasionally fails and the same request then succeeds
+        try:
+            resp = await client().messages.parse(
+                model=MODEL,
+                max_tokens=2000,  # the model also thinks; 400 truncated long entities mid-sentence
+                system=prompts.SUMMARY_SYSTEM,
+                messages=[{"role": "user", "content": prompts.SUMMARY_USER.format(
+                    claim=claim, name=name, type=type_, notes=notes)}],
+                output_format=EntitySummary,
+                output_config={"effort": EFFORT},
+            )
+            if resp.stop_reason == "refusal" or resp.parsed_output is None:
+                log.warning("summary for %r: stop_reason=%s, no output (attempt %d)", name, resp.stop_reason, attempt)
+                continue
+            return resp.parsed_output.summary.strip() or None
+        except Exception as e:
+            log.warning("summary for %r failed (attempt %d): %s: %s", name, attempt, type(e).__name__, str(e)[:200])
+    return None

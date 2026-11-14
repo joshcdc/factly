@@ -30,3 +30,7 @@ class SourceExtraction(BaseModel):
     relationships: list[ExtractedRelation] = Field(
         description="At most 12 facts the source states; subject and object must both be listed in `entities`")
     excerpts: list[ExtractedExcerpt] = Field(description="At most 3 passages most relevant to the claim")
+
+
+class EntitySummary(BaseModel):
+    summary: str = Field(description="1-2 sentences, at most 40 words, using only the notes provided")
