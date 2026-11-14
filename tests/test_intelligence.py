@@ -102,3 +102,20 @@ from backend.intelligence import _same, _tokens
 assert _same("jenson", "jensen") and not _same("huang", "huge") and _same("openai", "openai")
 assert _tokens("Jensen Huang's affairs") == ["jensen", "huang", "affairs"]
 print("claim linking tests passed")
+
+# --- reporter-only outlets are dropped, outlets that take part in events are kept
+async def extract_with_outlets(claim, s):
+    return SourceExtraction(
+        entities=[ExtractedEntity(name="Microsoft", type="company", description="d"),
+                  ExtractedEntity(name="OpenAI", type="company", description="d"),
+                  ExtractedEntity(name="Reuters", type="company", description="News agency that reported the deal"),
+                  ExtractedEntity(name="The Times", type="company", description="Newspaper sued by OpenAI")],
+        relationships=[ExtractedRelation(subject="Microsoft", relationship="invested in", object="OpenAI"),
+                       ExtractedRelation(subject="OpenAI", relationship="sued", object="The Times")],
+        excerpts=[])
+
+intel.extract = extract_with_outlets
+intel.jev.classify_stances = fake_jev
+labels = {n.label for n in intel.analyse("Microsoft controls OpenAI", S[:1]).nodes}
+assert "Reuters" not in labels and "The Times" in labels and "Microsoft" in labels, labels
+print("reporter filter tests passed")

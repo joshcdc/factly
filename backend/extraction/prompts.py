@@ -9,6 +9,8 @@ Return:
   a person, a company (any organisation: companies, agencies, NGOs, universities), a location, an event
   or a concept. Use the common proper name ("Microsoft", "Sam Altman", "Azure"), 1-4 words.
   Never a sentence, headline, opinion, claim or description ("Azure growth", "Microsoft's control" are wrong).
+  Do not list a news outlet or publication just because it reported or is cited for the story ("according to
+  Reuters", "the Financial Times reported"); include it only if it is itself part of the events.
 - relationships (at most 12) between those entities that the source STATES AS FACT. Include every such
   connection among your entities, whether or not it bears directly on the claim; both ends must be in your
   entities list. Skip opinions, allegations and speculation ("critics argue", "some say", "could", "reportedly

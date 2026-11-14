@@ -15,6 +15,8 @@ from backend.models.source import Source
 
 CLAIM_ID = "claim_1"
 CONCURRENCY = 6
+_REPORTER = re.compile(r"\b(report(ed|ing|s)?|newspaper|news outlet|outlet|publication|magazine|news agency|"
+                       r"broadcaster|journalists?)\b", re.I)
 SYMMETRIC = {"partners with", "competes with", "married to", "works with", "allied with"}  # direction-free labels
 
 _STOP = {"the", "a", "an", "of", "and", "in", "on", "for", "to", "is", "its"}
@@ -104,6 +106,12 @@ async def analyse_async(query: str, sources: list[Source], on_progress=None) -> 
         if words and all(any(_same(w, c) for c in claim_tokens) for w in words):
             edges.setdefault((CLAIM_ID, n.id, "about"), Edge(
                 id="", source=CLAIM_ID, target=n.id, relationship="about"))
+
+    # drop news outlets that are only the story's reporters: no relationships, described as reporting it
+    linked = {x for e in edges.values() for x in (e.source, e.target)}
+    for nid in [n.id for n in nodes.values()
+                if n.type not in ("claim", "source") and n.id not in linked and _REPORTER.search(n.description)]:
+        del nodes[nid]
 
     say("classifying")
     pairs = [(x.quote, context_for(x.quote, s.content)) for s, x in candidates]
