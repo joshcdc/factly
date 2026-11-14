@@ -7,7 +7,7 @@ from backend.evaluation import jev
 from backend.evaluation.evaluator import assess
 from backend.evaluation.source_ranking import rank
 from backend.extraction.extractor import extract
-from backend.extraction.verify import verify_quote
+from backend.extraction.verify import context_for, verify_quote
 from backend.models.schemas import Edge, Evidence, GraphResult, Node
 from backend.models.source import Source
 
@@ -78,7 +78,8 @@ async def analyse_async(query: str, sources: list[Source], on_progress=None) -> 
                     id="", source=s.id, target=nid, relationship="mentions", source_ids=[s.id]))
 
     say("classifying")
-    labels = await jev.classify_stances(query, [x.quote for _, x in candidates]) if candidates else []
+    pairs = [(x.quote, context_for(x.quote, s.content)) for s, x in candidates]
+    labels = await jev.classify_stances(query, pairs) if candidates else []
     evidence, unclassified = [], 0
     for (s, x), lab in zip(candidates, labels):
         if lab is None:

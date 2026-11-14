@@ -34,3 +34,21 @@ assert assess("claim_1", [ev(1, "source_1", "neutral")], S).status == "insuffici
 assert assess("claim_1", [], S).status == "insufficient_evidence"
 assert [strength(p) for p in (0.6, 0.9, 1.0)] == [3, 4, 5]
 print("evaluation tests passed")
+
+# --- Jev guard: never classify an excerpt that doesn't name the claim's entities
+from backend.evaluation.jev import claim_entities, mentions_claim
+from backend.extraction.verify import context_for
+
+assert claim_entities("Microsoft controls OpenAI") == [{"microsoft"}, {"openai"}]
+assert claim_entities("Elon Musk founded Tesla in 2003") == [{"elon", "musk"}, {"tesla"}]
+assert claim_entities("Tesla's revenue grew 40%") == [{"tesla"}]
+C = "Microsoft controls OpenAI"
+assert not mentions_claim(C, "It does not have a board seat and does not control the company.")
+assert not mentions_claim(C, "Google does not control OpenAI.")
+assert mentions_claim(C, "Microsoft's stake in OpenAI is 27%.")
+assert mentions_claim("Elon Musk founded Tesla", "Musk co-founded Tesla Motors.")
+page = "OpenAI was restructured. Microsoft is its largest investor. It does not control the company. Altman is CEO."
+ctx = context_for("It does not control the company.", page)
+assert "Microsoft is its largest investor." in ctx and "Altman is CEO." in ctx, ctx
+assert context_for("not in the page at all here", page) == ""
+print("jev guard tests passed")

@@ -1,6 +1,7 @@
 """Stance classification with Jev (TypeSafe AI). Jev alone decides stance; no LLM fallback."""
 
 import asyncio
+import re
 
 from dotenv import load_dotenv
 from typesafe_sdk import AsyncTypeSafeClient, Choice
@@ -14,24 +15,55 @@ MIN_PROB = 0.6  # below this the label is not trusted and becomes "neutral"
 CONCURRENCY = 8
 
 QUESTION = Choice(
-    instructions="Does `excerpt` support or contradict `claim`?",
+    instructions=(
+        "Does `excerpt` support or contradict `claim`? Use `context` (the surrounding sentences) only to "
+        "work out who or what the excerpt refers to. Judge the excerpt itself, not the context. If it is not "
+        "clear that the excerpt is about the specific people or organisations named in `claim`, answer neutral."
+    ),
     criteria={
-        "supports": "The excerpt states or clearly implies the claim is true",
-        "contradicts": "The excerpt states or clearly implies the claim is false or incompatible",
-        "neutral": "The excerpt does not address the claim, or only shares keywords with it",
+        "supports": "The excerpt, about the entities in the claim, states or clearly implies the claim is true",
+        "contradicts": "The excerpt, about the entities in the claim, states or clearly implies the claim is false",
+        "neutral": "The excerpt does not address the claim, only shares keywords with it, or it is unclear "
+                   "who or what it refers to",
     },
 )
 
 
-async def classify_stances(claim: str, excerpts: list[str]) -> list[tuple[Stance, float] | None]:
-    """One (stance, probability) per excerpt, in order. None where Jev failed (unclassified)."""
+_STOP = {"the", "a", "an", "in", "on", "of", "and", "or", "is", "was", "its", "their", "this", "that"}
+
+
+def claim_entities(claim: str) -> list[set[str]]:
+    """Named things in the claim: runs of capitalised words ('Elon Musk', 'OpenAI'), as lowercase token sets."""
+    groups, cur = [], set()
+    for w in re.findall(r"[A-Za-z0-9][\w&'-]*", claim):
+        if w[0].isupper() and w.lower() not in _STOP:
+            cur.add(w.lower().removesuffix("'s"))
+        elif cur:
+            groups.append(cur)
+            cur = set()
+    return groups + [cur] if cur else groups
+
+
+def mentions_claim(claim: str, text: str) -> bool:
+    """Every named entity in the claim must appear (any of its words) in the excerpt or its context."""
+    words = set(re.findall(r"[a-z0-9][\w&-]*", text.lower().replace("'s", "")))
+    return all(g & words for g in claim_entities(claim))
+
+
+async def classify_stances(claim: str, excerpts: list[tuple[str, str]]) -> list[tuple[Stance, float] | None]:
+    """excerpts: (excerpt, surrounding context) pairs. One (stance, probability) per excerpt, in order.
+    None where Jev failed (unclassified). Jev never sees the page title, URL or publisher."""
     sem = asyncio.Semaphore(CONCURRENCY)
 
-    async def one(client, excerpt: str):
+    async def one(client, item: tuple[str, str]):
+        excerpt, context = item
+        if not mentions_claim(claim, f"{excerpt} {context}"):
+            return ("neutral", 1.0)  # can't tell who it is about: never let Jev guess
         async with sem:
             try:
                 r = await client.system_one(
-                    state={"claim": claim, "excerpt": excerpt}, questions={"stance": QUESTION}
+                    state={"claim": claim, "excerpt": excerpt, "context": context or "(none)"},
+                    questions={"stance": QUESTION},
                 )
             except Exception:  # SDK already retried 429s; anything left means "unclassified"
                 return None
