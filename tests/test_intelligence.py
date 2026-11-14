@@ -117,7 +117,7 @@ assert "could not be classified" in r.assessments[0].explanation
 print("intelligence tests passed")
 
 # --- claim linking works for lowercase claims and typos
-from backend.intelligence import _same, _tokens
+from backend.extraction.merge import same_word as _same, words as _tokens
 
 assert _same("jenson", "jensen") and not _same("huang", "huge") and _same("openai", "openai")
 assert _tokens("Jensen Huang's affairs") == ["jensen", "huang", "affairs"]
@@ -281,3 +281,44 @@ r = intel.analyse("Microsoft controls OpenAI", S)                               
 assert "summary" not in {n.label: n for n in r.nodes}["Microsoft"].properties
 assert {n.label: n for n in r.nodes}["Microsoft"].description                                # description remains as the fallback
 print("summary tests passed")
+
+
+# --- review fixes: quote boundaries, sentence-spanning context, failures are reported
+from backend.extraction.verify import context_for
+
+assert not verify_quote("The deal was worth about $13", "The deal was worth about $13,000 per seat.")
+assert not verify_quote("6 percent of voters said they agreed", "In total 16 percent of voters said they agreed.")
+assert not verify_quote("6 percent of voters said they agreed", "In total 6.5 percent of voters said they agreed.")
+assert not verify_quote("Azure revenue grew by 40.", "Azure revenue grew by 40.5% in the quarter.")
+assert not verify_quote("ten percent of voters said they agreed", "In total, often percent of voters said they agreed")  # starts inside a word
+assert verify_quote("Azure revenue grew by 40% last year.", "Azure revenue grew by 40% last year. Other segments fell.")
+assert verify_quote("Azure revenue grew by 40", "Azure revenue grew by 40 percent last year")
+assert verify_quote("the stake was worth about $13",                                                          # a later match counts
+                    "an old note said the stake was worth about $13,000 here. Later the stake was worth about $13 billion.")
+
+page = ("OpenAI restructured last year. Microsoft is its largest investor. It denied it. "
+        "Microsoft does not control OpenAI. Altman is CEO.")
+ctx = context_for("It denied it. Microsoft does not control OpenAI.", page)                                 # quote spans 2 sentences
+assert "largest investor" in ctx and "Altman is CEO." in ctx, ctx
+
+
+async def extract_fail(claim, s):
+    raise RuntimeError("401 invalid x-api-key")
+
+intel.extract = extract_fail
+try:
+    intel.analyse("Microsoft controls OpenAI", S)
+    raise SystemExit("expected AnalysisError when no source can be read")
+except intel.AnalysisError as e:
+    assert "Could not read any of the 3 sources (RuntimeError)" in str(e) and "401" not in str(e), str(e)
+
+
+async def extract_one_fails(claim, s):
+    if s.id == "source_3":
+        raise RuntimeError("boom")
+    return await extract_notes(claim, s)
+
+intel.extract = extract_one_fails
+r = intel.analyse("Microsoft controls OpenAI", S)                                                           # partial failure is reported
+assert "1 of 3 sources could not be read." in r.assessments[0].explanation, r.assessments[0].explanation
+print("review fix tests passed")

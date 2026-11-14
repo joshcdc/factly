@@ -9,6 +9,8 @@ from collections import Counter
 from dataclasses import dataclass, field
 from difflib import SequenceMatcher
 
+from backend.textutil import tokens
+
 MAX_JEV_ASKS = 20  # bound the extra Jev calls per investigation
 
 _STOP = {"the", "a", "an", "of", "and", "for", "in", "on", "at", "to"}
@@ -19,8 +21,7 @@ _SPECIFIC = ["person", "company", "location", "event", "concept"]  # tie-break w
 
 
 def words(name: str, drop_suffix: bool = False) -> list[str]:
-    ws = [w.removesuffix("'s") for w in re.findall(r"[a-z0-9][a-z0-9&'-]*", name.lower().replace("’", "'"))]
-    ws = [w for w in ws if w not in _STOP and w not in _HONORIFIC]
+    ws = [w for w in tokens(name) if w not in _STOP and w not in _HONORIFIC]
     if drop_suffix:
         ws = [w for w in ws if w not in _SUFFIX] or ws
     return ws

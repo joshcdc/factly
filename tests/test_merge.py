@@ -74,4 +74,10 @@ async def broken_ask(items):
     raise RuntimeError("Jev down")
 
 assert len(groups(m, broken_ask)[0]) == 5                                          # falls back to rules only
+# accents fold; non-Latin names are kept as words
+assert merged("José Álvarez", "Jose Alvarez", [("José Álvarez", P), ("Jose Alvarez", P)])
+assert merged("Müller", "Muller", [("Müller", C), ("Muller", C)])
+from backend.extraction.merge import words
+assert words("Müller") == ["muller"] and words("东京") == ["东京"]
+assert words("O'Brien") == ["obrien"]
 print("merge tests passed")

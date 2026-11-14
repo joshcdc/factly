@@ -8,6 +8,7 @@ from typesafe_sdk import AsyncTypeSafeClient, Choice, Score
 
 from backend.models.schemas import Stance
 from backend.models.source import Source
+from backend.textutil import fold, tokens
 
 load_dotenv()
 
@@ -31,14 +32,18 @@ QUESTION = Choice(
 
 
 _STOP = {"the", "a", "an", "in", "on", "of", "and", "or", "is", "was", "its", "their", "this", "that"}
+# capitalised only because they start a question ("Did Microsoft buy OpenAI?"), so not part of any name
+_QUESTION = {"did", "does", "do", "is", "are", "was", "were", "has", "have", "had", "can", "could", "will", "would",
+             "should", "may", "might", "why", "how", "what", "who", "whom", "when", "where", "which"}
 
 
 def claim_entities(claim: str) -> list[set[str]]:
-    """Named things in the claim: runs of capitalised words ('Elon Musk', 'OpenAI'), as lowercase token sets."""
+    """Named things in the claim: runs of capitalised words ('Elon Musk', 'OpenAI'), as folded token sets."""
     groups, cur = [], set()
-    for w in re.findall(r"[A-Za-z0-9][\w&'-]*", claim):
-        if w[0].isupper() and w.lower() not in _STOP:
-            cur.add(w.lower().removesuffix("'s"))
+    for w in re.findall(r"[^\W_][\w&'’-]*", claim):
+        t = tokens(w)
+        if w[0].isupper() and t and fold(w) not in _STOP and fold(w) not in _QUESTION:
+            cur.update(t)
         elif cur:
             groups.append(cur)
             cur = set()
@@ -47,7 +52,7 @@ def claim_entities(claim: str) -> list[set[str]]:
 
 def mentions_claim(claim: str, text: str) -> bool:
     """Every named entity in the claim must appear (any of its words) in the excerpt or its context."""
-    words = set(re.findall(r"[a-z0-9][\w&-]*", text.lower().replace("'s", "")))
+    words = set(tokens(text))
     return all(g & words for g in claim_entities(claim))
 
 
@@ -66,14 +71,17 @@ async def classify_stances(claim: str, excerpts: list[tuple[str, str]]) -> list[
                     state={"claim": claim, "excerpt": excerpt, "context": context or "(none)"},
                     questions={"stance": QUESTION},
                 )
-            except Exception:  # SDK already retried 429s; anything left means "unclassified"
+                probs = r.choices["stance"].probabilities
+                label = max(probs, key=probs.get)
+            except Exception:  # SDK already retried 429s; an error or malformed reply means "unclassified"
                 return None
-        probs = r.choices["stance"].probabilities
-        label = max(probs, key=probs.get)
         return (label, probs[label]) if probs[label] >= MIN_PROB else ("neutral", probs[label])
 
-    async with AsyncTypeSafeClient(model=MODEL) as client:
-        return list(await asyncio.gather(*(one(client, e) for e in excerpts)))
+    try:
+        async with AsyncTypeSafeClient(model=MODEL) as client:
+            return list(await asyncio.gather(*(one(client, e) for e in excerpts)))
+    except Exception:  # no key / Jev unreachable: every excerpt stays unclassified, the run carries on
+        return [None] * len(excerpts)
 
 
 CREDIBILITY = Score(
@@ -142,14 +150,17 @@ async def pick_same(items: list[tuple[str, str, list[tuple[str, str]]]]) -> list
             try:
                 r = await client.system_one(state={"entity": name, "entity_description": desc or "none"},
                                             questions={"same": question})
-            except Exception:
+                probs = r.choices["same"].probabilities
+                best = max(probs, key=probs.get)
+                return int(best[1:]) if best != "none" and probs[best] >= SAME_PROB else None
+            except Exception:  # error or malformed reply: no merge
                 return None
-        probs = r.choices["same"].probabilities
-        best = max(probs, key=probs.get)
-        return int(best[1:]) if best != "none" and probs[best] >= SAME_PROB else None
 
-    async with AsyncTypeSafeClient(model=MODEL) as client:
-        return list(await asyncio.gather(*(one(client, it) for it in items)))
+    try:
+        async with AsyncTypeSafeClient(model=MODEL) as client:
+            return list(await asyncio.gather(*(one(client, it) for it in items)))
+    except Exception:  # no key / Jev unreachable: no Jev merges, rules still apply
+        return [None] * len(items)
 
 
 def strength(prob: float) -> int:

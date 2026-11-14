@@ -35,8 +35,9 @@ assert assess("claim_1", [], S).status == "insufficient_evidence"
 assert [strength(p) for p in (0.6, 0.9, 1.0)] == [3, 4, 5]
 print("evaluation tests passed")
 
-# --- Jev guard: never classify an excerpt that doesn't name the claim's entities
 from backend.evaluation.jev import claim_entities, mentions_claim
+
+# --- Jev guard: never classify an excerpt that doesn't name the claim's entities
 from backend.extraction.verify import context_for
 
 assert claim_entities("Microsoft controls OpenAI") == [{"microsoft"}, {"openai"}]
@@ -65,3 +66,48 @@ assert len(picked) == 8, len(picked)                          # 4 publishers x 2
 assert max(sum(p.publisher == q for p in picked) for q in {p.publisher for p in picked}) == 2
 assert len(select_sources([src(i, f"s{i}.com") for i in range(30)])) == 10
 print("source selection tests passed")
+
+
+# --- Jev guard: question claims, apostrophes, accents
+assert claim_entities("Did Microsoft buy OpenAI?") == [{"microsoft"}, {"openai"}]
+assert not mentions_claim("Did Microsoft buy OpenAI?", "She did not know about OpenAI buying anything")
+assert mentions_claim("Did Microsoft buy OpenAI?", "Microsoft completed the purchase of a stake in OpenAI")
+assert claim_entities("O'Brien founded Acme") == [{"obrien"}, {"acme"}]
+assert mentions_claim("O'Brien founded Acme", "Acme was founded by O’Brien in 1999")
+assert mentions_claim("Müller founded Acme", "Acme was founded by Muller")
+
+# --- Jev failures degrade instead of raising
+import asyncio
+
+import backend.evaluation.jev as jevmod
+
+
+class BrokenClient:
+    def __init__(self, *a, **k):
+        raise RuntimeError("no key")
+
+
+class BadReplyClient:
+    def __init__(self, *a, **k):
+        pass
+
+    async def __aenter__(self):
+        return self
+
+    async def __aexit__(self, *a):
+        return False
+
+    async def system_one(self, **k):
+        return object()  # no .choices
+
+
+real_client = jevmod.AsyncTypeSafeClient
+try:
+    for fake in (BrokenClient, BadReplyClient):
+        jevmod.AsyncTypeSafeClient = fake
+        out = asyncio.run(jevmod.classify_stances("Microsoft controls OpenAI", [("Microsoft does not control OpenAI.", "")]))
+        assert out == [None], (fake.__name__, out)
+        assert asyncio.run(jevmod.pick_same([("Meta", "", [("Meta Platforms", "")])])) == [None], fake.__name__
+finally:
+    jevmod.AsyncTypeSafeClient = real_client
+print("jev failure tests passed")

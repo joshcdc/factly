@@ -12,24 +12,47 @@ _PUNCT = str.maketrans({"‘": "'", "’": "'", "“": '"', "”": '"',
                         "–": "-", "—": "-", " ": " "})
 
 
-def normalise(s: str) -> str:
+def _fold(s: str) -> str:
     s = unicodedata.normalize("NFKC", s).translate(_PUNCT).lower()
-    return re.sub(r"\s+", " ", s).strip(" \"'.")
+    return re.sub(r"\s+", " ", s).strip()
+
+
+def normalise(s: str) -> str:
+    return _fold(s).strip(" \"'.")
 
 
 _SENT = re.compile(r"(?<=[.!?])\s+")
 
 
 def context_for(quote: str, source_text: str, around: int = 2, max_chars: int = 1500) -> str:
-    """The sentences just before and after the quote in the original text, so pronouns can be resolved."""
+    """The sentences just before and after the quote in the original text, so pronouns can be resolved.
+    The quote may start in one sentence and end in another; the smallest window that holds all of it is used."""
     sents = [s for s in _SENT.split(source_text) if s.strip()]
-    head = normalise(quote)[:40]
-    for i, s in enumerate(sents):
-        if head and head in normalise(" ".join(sents[i : i + 3])):
-            if head not in normalise(s) and i + 1 < len(sents):
-                continue  # the quote starts in a later sentence of this window
-            return " ".join(sents[max(0, i - around) : i + 1 + around + quote.count(". ")])[:max_chars]
+    norm = [_fold(s) for s in sents]  # keep sentence-final punctuation: a spanning quote contains it
+    q = normalise(quote)
+    if not q:
+        return ""
+    for i in range(len(sents)):
+        for j in range(i, min(i + 4, len(sents))):  # a quote is one or two sentences; allow a little slack
+            if q in " ".join(norm[i : j + 1]):
+                return " ".join(sents[max(0, i - around) : j + 1 + around])[:max_chars]
     return ""
+
+
+def _whole(src: str, i: int, end: int) -> bool:
+    """The match must not start or end inside a longer word or number: "$13" is not "$13,000", "6 percent" is
+    not "16 percent" or "6.5 percent", "ten" is not "often"."""
+    def digit(k):
+        return 0 <= k < len(src) and src[k].isdigit()
+
+    if src[i].isalnum() and i > 0:
+        if src[i - 1].isalnum() or (src[i].isdigit() and src[i - 1] in ".," and digit(i - 2)):
+            return False
+    last = src[end - 1]
+    if last.isalnum() and end < len(src):
+        if src[end].isalnum() or (last.isdigit() and src[end] in ".," and digit(end + 1)):
+            return False
+    return True
 
 
 def verify_quote(quote: str, source_text: str) -> bool:
@@ -37,10 +60,12 @@ def verify_quote(quote: str, source_text: str) -> bool:
     if len(q.split()) < MIN_WORDS or "..." in q or "…" in q:
         return False
     i = src.find(q)
-    if i >= 0:
-        # a number must not be a prefix of a longer number ("97.6" inside "97.69")
-        end = i + len(q)
-        return not (q[-1].isdigit() and end < len(src) and src[end].isdigit())
+    while i >= 0:  # every occurrence, in case only a later one stands on word boundaries
+        if _whole(src, i, i + len(q)):
+            return True
+        i = src.find(q, i + 1)
+    if q in src:
+        return False  # present, but only inside longer words or numbers: do not fall through to fuzzy matching
     # fuzzy: tolerate small punctuation/typo noise, never different numbers or negation
     a, _, size = SequenceMatcher(None, src, q, autojunk=False).find_longest_match(0, len(src), 0, len(q))
     if size < min(20, len(q) // 3):

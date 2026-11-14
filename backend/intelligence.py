@@ -1,9 +1,9 @@
 """Agent 2 entry point: sources in, graph out. See AGENT.md "Agent 1 -> Agent 2 hand-off"."""
 
 import asyncio
+import logging
 import re
 from collections import Counter
-from difflib import SequenceMatcher
 
 from backend.evaluation import jev
 from backend.evaluation.evaluator import assess
@@ -14,22 +14,16 @@ from backend.extraction.verify import context_for, verify_quote
 from backend.models.schemas import Edge, Evidence, GraphResult, Node
 from backend.models.source import Source
 
+log = logging.getLogger("fakta.analyse")
+
 CLAIM_ID = "claim_1"
 CONCURRENCY = 6
 _REPORTER = re.compile(r"\b(report(ed|ing|s)?|newspaper|news outlet|outlet|publication|magazine|news agency|"
                        r"broadcaster|journalists?)\b", re.I)
 SYMMETRIC = {"partners with", "competes with", "married to", "works with", "allied with"}  # direction-free labels
 
-_STOP = {"the", "a", "an", "of", "and", "in", "on", "for", "to", "is", "its"}
-
-
-def _tokens(text: str) -> list[str]:
-    return [w for w in re.findall(r"[a-z0-9][\w&-]*", text.lower().replace("'s", "")) if w not in _STOP]
-
-
-def _same(a: str, b: str) -> bool:
-    """Same word, allowing one typo in words of 5+ letters ('jenson' ~ 'jensen')."""
-    return a == b or (min(len(a), len(b)) >= 5 and SequenceMatcher(None, a, b).ratio() >= 0.8)
+class AnalysisError(RuntimeError):
+    """The analysis could not run at all (for example no source could be read). The message is fit to show a user."""
 
 
 def analyse(query: str, sources: list[Source], on_progress=None) -> GraphResult:
@@ -46,15 +40,23 @@ async def analyse_async(query: str, sources: list[Source], on_progress=None) -> 
     ranking = asyncio.create_task(rank_async(query, sources))  # Jev credibility for those 10, alongside extraction
     sem = asyncio.Semaphore(CONCURRENCY)
 
+    failures: list[tuple[str, str]] = []  # (source id, "ErrorType: message")
+
     async def one(s):
         async with sem:
             try:
                 return await extract(query, s)
-            except Exception:  # one bad source must not sink the investigation
+            except Exception as e:  # one bad source must not sink the investigation, but it must be reported
+                failures.append((s.id, f"{type(e).__name__}: {str(e)[:160]}"))
+                log.warning("extraction failed for %s: %s", s.id, failures[-1][1])
                 return None
 
     extractions = await asyncio.gather(*(one(s) for s in sources))
     await ranking
+    if sources and len(failures) == len(sources):  # an outage or bad key, not "no evidence": say so
+        raise AnalysisError(
+            f"Could not read any of the {len(sources)} sources ({failures[0][1].split(':')[0]}). "
+            "Check ANTHROPIC_API_KEY and model access, then try again.")
 
     # merge entities across all sources once, before any node is made
     canon = await merge.resolve(
@@ -98,7 +100,7 @@ async def analyse_async(query: str, sources: list[Source], on_progress=None) -> 
                                source_ids=[s.id])
 
     # connect the entity cluster to the claim: claim -> each entity the claim names
-    claim_tokens = _tokens(query)
+    claim_tokens = merge.words(query)
     for n in nodes.values():
         # an entity is "about" the claim when every word of its name appears in the claim (typos tolerated),
         # whatever the capitalisation: "Jensen Huang" matches "jenson huang affairs", "OpenAI Foundation" does not
@@ -106,7 +108,7 @@ async def analyse_async(query: str, sources: list[Source], on_progress=None) -> 
         if n.type in ("claim", "source"):
             continue
         words = merge.words(n.label, drop_suffix=True)  # "OpenAI Inc." counts as "OpenAI"
-        if words and all(any(_same(w, c) for c in claim_tokens) for w in words):
+        if words and all(any(merge.same_word(w, c) for c in claim_tokens) for w in words):
             edges.setdefault((CLAIM_ID, n.id, "about"), Edge(
                 id="", source=CLAIM_ID, target=n.id, relationship="about"))
 
@@ -146,6 +148,8 @@ async def analyse_async(query: str, sources: list[Source], on_progress=None) -> 
     assessment = assess(CLAIM_ID, evidence, sources)
     if unclassified:
         assessment.explanation += f" {unclassified} excerpt(s) could not be classified (Jev unavailable)."
+    if failures:
+        assessment.explanation += f" {len(failures)} of {len(sources)} sources could not be read."
 
     out_edges = [e for e in edges.values() if e.source in nodes and e.target in nodes]
     for i, e in enumerate(out_edges, 1):
