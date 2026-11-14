@@ -1,5 +1,6 @@
 import type { Investigation } from '../types/graph'
 import { mockInvestigation } from './mock'
+import { fakeInvestigation } from './fakeGraph'
 
 // Mock data is the default. Set VITE_USE_MOCK=false in frontend/.env to use the backend.
 const USE_MOCK = import.meta.env.VITE_USE_MOCK !== 'false'
@@ -20,6 +21,8 @@ export async function investigate(
 ): Promise<Investigation> {
   if (USE_MOCK) {
     await sleep(600)
+    const fake = Number(new URLSearchParams(location.search).get('fake'))
+    if (fake > 1) return fakeInvestigation(fake)
     return { ...mockInvestigation, query }
   }
   let inv = await json(await fetch('/api/investigate', {

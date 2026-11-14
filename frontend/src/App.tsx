@@ -54,7 +54,7 @@ export default function App() {
   }
 
   const sources = (ids: string[]) => data?.sources.filter((s) => ids.includes(s.id)) ?? []
-  // The claim node is only drawn with "Show sources" (the supports/contradicts links end at it); otherwise its details fill the inspector until something else is picked.
+  // The claim node is drawn (coloured by its status); until something else is picked its details fill the inspector.
   const claimNode = data?.nodes.find((n) => n.type === 'claim')
   const selected: Selected = picked ?? (claimNode ? { kind: 'node', item: claimNode } : null)
 
@@ -64,10 +64,16 @@ export default function App() {
     : undefined
   // Source nodes are hidden by default (AGENT.md); their details appear in the inspector instead.
   const graph = useMemo(() => {
-    const nodes = data?.nodes.filter((n) => n.type !== 'claim' && n.type !== 'source') ?? []
+    const nodes = data?.nodes.filter((n) => n.type !== 'source') ?? []
     const ids = new Set(nodes.map((n) => n.id))
-    return { nodes, edges: data?.edges.filter((e) => ids.has(e.source) && ids.has(e.target)) ?? [] }
+    const edges = data?.edges.filter((e) => ids.has(e.source) && ids.has(e.target)) ?? []
+    return { nodes, edges }
   }, [data])
+  // The legend swatch for the claim uses the same status colour as the claim node itself.
+  const legendColor = (t: string) => {
+    const claim = t === 'claim' ? graph.nodes.find((n) => n.type === 'claim') : undefined
+    return (claim && claimColor(claim)) || NODE_COLORS[t] || '#999'
+  }
   const claimColor = (n: GraphNode) => {
     const a = n.type === 'claim' ? data?.assessments.find((x) => x.claim_id === n.id) : undefined
     return a && STATUS_COLORS[a.status]
@@ -185,7 +191,7 @@ export default function App() {
                   <ul className="legend">
                     {types.map((t) => (
                       <li key={t}>
-                        <svg width="22" height="22" viewBox="-11 -11 22 22"><NodeGlyph fill={NODE_COLORS[t] ?? '#999'} /></svg>{t}
+                        <svg width="22" height="22" viewBox="-11 -11 22 22"><NodeGlyph fill={legendColor(t)} /></svg>{t}
                       </li>
                     ))}
                     <li><svg width="22" height="8"><line x1="0" y1="4" x2="22" y2="4" stroke="#6b7785" strokeWidth="2" /></svg>relation</li>
