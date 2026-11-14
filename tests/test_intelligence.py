@@ -198,3 +198,35 @@ assert len(alleged) == 1
 from backend.extraction.extractor import clean_label as _cl
 assert _cl("Alleged affair with") == "alleged affair with" and _cl("allegedly has a very long label here") == ""
 print("orphan tests passed")
+
+# --- entity cap: the claim's subjects and best-supported entities survive; nothing is left unconnected
+MINOR = [f"{a} {b}" for a, b in zip(
+    ["Ana", "Ben", "Cleo", "Dev", "Eli", "Fay", "Gus", "Hana", "Ivo", "Jun", "Kai", "Lena", "Milo", "Nora", "Omar"],
+    ["Vance", "Stone", "Reed", "Park", "Long", "Hale", "Cruz", "Frost", "Moon", "Wells", "Pike", "Gray", "Dunn",
+     "Shaw", "Lowe"])]
+
+
+async def extract_many(claim, s):
+    ents = [ExtractedEntity(name="Microsoft", type="company", description="d"),
+            ExtractedEntity(name="OpenAI", type="company", description="d")]
+    ents += [ExtractedEntity(name=n, type="person", description="d") for n in MINOR]
+    rels = [ExtractedRelation(subject="Microsoft", relationship="invested in", object="OpenAI")]
+    if s.id == "source_1":   # two minor people are well connected inside source_1, the rest hang on nothing
+        rels += [ExtractedRelation(subject="Ana Vance", relationship="works for", object="Microsoft"),
+                 ExtractedRelation(subject="Ben Stone", relationship="works for", object="Microsoft"),
+                 ExtractedRelation(subject="Ana Vance", relationship="partners with", object="Ben Stone")]
+    return SourceExtraction(entities=ents, relationships=rels, excerpts=[])
+
+intel.extract = extract_many
+r = intel.analyse("Microsoft controls OpenAI", S)
+ents = [n for n in r.nodes if n.type not in ("claim", "source")]
+labels = {n.label for n in ents}
+assert len(ents) == intel.MAX_ENTITIES_OUT == 12, len(ents)
+assert {"Microsoft", "OpenAI"} <= labels                                         # the claim's own subjects always stay
+assert {"Ana Vance", "Ben Stone"} <= labels                              # connected entities beat unconnected ones
+touched = {x for e in r.edges for x in (e.source, e.target)}
+assert all(n.id in touched for n in ents)                                        # still no orphans after the cut
+ids = {n.id for n in r.nodes}
+assert all(e.source in ids and e.target in ids for e in r.edges)                 # no edge points at a dropped entity
+assert intel.MAX_ENTITIES_OUT >= len([n for n in ents if n.properties["priority"] > 0])
+print("entity cap tests passed")
