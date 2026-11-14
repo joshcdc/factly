@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Simulation, seed, type SimNode } from './forceSim'
 import type { GraphEdge, GraphNode } from '../types/graph'
+import NodeGlyph, { nodeRadius } from './shapes'
 
 export const NODE_COLORS: Record<string, string> = {
   person: '#8fc5ff', organisation: '#57c7b6', company: '#57c7b6', location: '#f2bd5b',
@@ -8,17 +9,22 @@ export const NODE_COLORS: Record<string, string> = {
 }
 const STANCE_COLORS: Record<string, string> = { supports: '#4ade80', contradicts: '#f87171', neutral: '#6b7785' }
 
-type SNode = GraphNode & SimNode
+/** supports: solid; contradicts: dashed; claim "about" links: thin dotted; entity relations: solid grey. */
+const edgeDash = (e: GraphEdge) =>
+  e.stance === 'contradicts' ? '7 4' : e.relationship === 'about' ? '2 4' : undefined
+
+type SNode =GraphNode & SimNode
 type Picked = { kind: 'node'; item: GraphNode } | { kind: 'edge'; item: GraphEdge } | null
 
 interface Props {
   nodes: GraphNode[]
   edges: GraphEdge[]
   selectedId?: string
+  nodeColor?: (n: GraphNode) => string | undefined
   onSelect: (p: Picked) => void
 }
 
-export default function GraphView({ nodes, edges, selectedId, onSelect }: Props) {
+export default function GraphView({ nodes, edges, selectedId, nodeColor, onSelect }: Props) {
   const svgRef = useRef<SVGSVGElement>(null)
   const gRef = useRef<SVGGElement>(null)
   const sim = useRef<Simulation<SNode> | null>(null)
@@ -128,6 +134,7 @@ export default function GraphView({ nodes, edges, selectedId, onSelect }: Props)
                onClick={() => onSelect({ kind: 'edge', item: e })}>
               <line x1={a.x} y1={a.y} x2={b.x} y2={b.y} stroke={STANCE_COLORS[stance]}
                     strokeOpacity={selectedId === e.id ? 1 : 0.55} strokeWidth={selectedId === e.id ? 3 : 1.5}
+                    strokeDasharray={edgeDash(e)}
                     markerEnd={`url(#arrow-${stance})`} />
               <line x1={a.x} y1={a.y} x2={b.x} y2={b.y} stroke="transparent" strokeWidth={12} />
               <text x={label.x} y={label.y} className="edge-label">{e.relationship}</text>
@@ -137,9 +144,9 @@ export default function GraphView({ nodes, edges, selectedId, onSelect }: Props)
         {s?.nodes.map((n) => (
           <g key={n.id} transform={`translate(${n.x} ${n.y})`} className="node"
              onPointerDown={(ev) => onNodeDown(ev, n)}>
-            <circle r={n.type === 'claim' ? 11 : 8} fill={NODE_COLORS[n.type] ?? '#999'}
-                    stroke={selectedId === n.id ? '#fff' : 'rgba(242,245,248,.7)'} strokeWidth={selectedId === n.id ? 3 : 1.5} />
-            <text y={-14} className="node-label">{n.label}</text>
+            <NodeGlyph type={n.type} r={nodeRadius(n.type, n.source_ids.length)} fill={nodeColor?.(n) ?? NODE_COLORS[n.type] ?? '#999'}
+                       stroke={selectedId === n.id ? '#fff' : 'rgba(242,245,248,.7)'} strokeWidth={selectedId === n.id ? 3 : 1.5} />
+            <text y={-nodeRadius(n.type, n.source_ids.length) - 6} className="node-label">{n.label}</text>
           </g>
         ))}
       </g>
