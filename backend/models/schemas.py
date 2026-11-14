@@ -9,7 +9,7 @@ from pydantic import BaseModel, Field
 
 from .source import Source, SourceType
 
-NodeType = Literal["person", "organisation", "company", "location", "event", "concept", "claim", "source"]
+NodeType = Literal["person", "company", "location", "event", "concept", "claim", "source"]
 Stance = Literal["supports", "contradicts", "neutral"]
 ClaimStatus = Literal["supported", "partially_supported", "contradicted", "insufficient_evidence"]
 Status = Literal["running", "complete", "failed"]

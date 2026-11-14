@@ -87,8 +87,7 @@ Tasks:
 - Implement the LLM integration.
 - Extract entities:
   - People
-  - Organisations
-  - Companies
+  - Companies (includes all organisations: companies, agencies, NGOs, universities)
   - Locations
   - Events
   - Concepts
@@ -207,8 +206,7 @@ All three agents MUST agree on the following data structures before implementing
 Supported node types:
 
 - person
-- organisation
-- company
+- company (any organisation)
 - location
 - event
 - concept
