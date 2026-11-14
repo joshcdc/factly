@@ -4,15 +4,13 @@
 
 Build an autonomous fact-checking and knowledge graph application.
 
-Users can either:
-- Enter a topic to investigate and automatically construct a knowledge graph.
-- Enter a specific claim to investigate, finding supporting and contradicting evidence.
+Users enter a specific claim to investigate. The app finds supporting and contradicting evidence and builds a knowledge graph around the claim. (There is no separate topic mode.)
 
 The application uses Linkup for web research, LLMs for information extraction, Jev for structured evaluation where appropriate, and an interactive graph visualisation for presenting results.
 
 ### Core functionality
 
-1. Accept a topic or claim.
+1. Accept a claim.
 2. Search the web using Linkup.
 3. Retrieve relevant source content.
 4. Extract entities, claims, relationships, dates and evidence.
@@ -49,7 +47,7 @@ Tasks:
 
 - Set up the FastAPI application.
 - Implement the Linkup Search API integration.
-- Accept topic and claim investigation requests.
+- Accept claim investigation requests.
 - Retrieve search results and source metadata.
 - Retrieve full webpage content where appropriate.
 - Normalise search results into a consistent source format.
@@ -138,7 +136,6 @@ Tasks:
 
 - Set up the React + TypeScript application.
 - Build the landing page and investigation input.
-- Support topic and claim investigation modes.
 - Integrate the existing graph engine.
 - Render entities as nodes and relationships as edges.
 - Distinguish node types visually.
@@ -225,6 +222,7 @@ Supported node types:
       "source": "entity_1",
       "target": "entity_2",
       "relationship": "founded",
+      "stance": "supports",
       "description": "Relationship description",
       "evidence_ids": ["evidence_1"],
       "source_ids": ["source_1"]
@@ -270,6 +268,21 @@ Confidence is a model-assessed indicator, not a calibrated probability of truth.
 
 ---
 
+### Agent 1 → Agent 2 hand-off
+
+Agent 2 exposes one function. Agent 1's endpoint calls it with the normalised sources and merges the result into the response.
+
+    # backend/intelligence.py  (Agent 2)
+    def analyse(query: str, sources: list[Source], on_progress=None) -> GraphResult
+
+- `query` is the user's claim.
+- `sources` are normalised `Source` objects (credibility_score may be None).
+- `on_progress` is optional: `on_progress(stage: str)` for the polling status.
+- Returns a `GraphResult` (nodes, edges, evidence, assessments). Agent 2 sets `credibility_score` on the `Source` objects in place, so Agent 1 returns the same list in the response.
+- The claim node's `id` equals its `claim_id`, so the frontend can match assessments to nodes.
+
+---
+
 ## 4. API Contract
 
 Agent 1 owns the API implementation. Agent 3 integrates with it.
@@ -281,22 +294,14 @@ Agent 1 owns the API implementation. Agent 3 integrates with it.
 Request:
 
     {
-      "query": "Relationship between OpenAI and Microsoft",
-      "mode": "topic"
-    }
-
-Alternatively:
-
-    {
-      "query": "Microsoft controls OpenAI",
-      "mode": "claim"
+      "query": "Microsoft controls OpenAI"
     }
 
 Response:
 
     {
       "investigation_id": "investigation_1",
-      "query": "Relationship between OpenAI and Microsoft",
+      "query": "Microsoft controls OpenAI",
       "nodes": [],
       "edges": [],
       "sources": [],
@@ -378,7 +383,7 @@ Create the shared schemas in `main` first. All three agents should use the same 
 
 **Final 1–2 hours**
 - Prepare demonstration.
-- Test multiple topics and claims.
+- Test multiple claims.
 - Ensure the application works from a clean start.
 - Freeze features and fix remaining bugs.
 
@@ -388,7 +393,7 @@ Create the shared schemas in `main` first. All three agents should use the same 
 
 ### P0 — Must work
 
-- Topic and claim input.
+- Claim input.
 - Linkup research.
 - Entity and relationship extraction.
 - Evidence extraction.
@@ -432,6 +437,6 @@ Optimise for a working demonstration, not production architecture.
 
 **The final product must demonstrate a complete journey:**
 
-User submits a claim or topic → Linkup finds sources → AI extracts information → Evidence is evaluated → Graph is constructed → User explores the graph and inspects the evidence.
+User submits a claim → Linkup finds sources → AI extracts information → Evidence is evaluated → Graph is constructed → User explores the graph and inspects the evidence.
 
 That end-to-end journey takes priority over every optional feature.

@@ -1,6 +1,6 @@
 """Shared data contract (AGENT.md sections 3 and 4). All three workstreams import from here.
 
-Additive fields beyond AGENT.md, so the frontend can poll: InvestigationResponse.mode, .status, .error.
+Additive fields beyond AGENT.md, so the frontend can poll: InvestigationResponse.status, .error.
 """
 
 from typing import Literal
@@ -12,7 +12,6 @@ from .source import Source, SourceType
 NodeType = Literal["person", "organisation", "company", "location", "event", "concept", "claim", "source"]
 Stance = Literal["supports", "contradicts", "neutral"]
 ClaimStatus = Literal["supported", "partially_supported", "contradicted", "insufficient_evidence"]
-Mode = Literal["topic", "claim"]
 Status = Literal["running", "complete", "failed"]
 
 
@@ -30,6 +29,7 @@ class Edge(BaseModel):
     source: str  # node id
     target: str  # node id
     relationship: str
+    stance: Stance | None = None  # set when the edge links evidence to a claim: supports / contradicts / neutral
     description: str = ""
     evidence_ids: list[str] = Field(default_factory=list)
     source_ids: list[str] = Field(default_factory=list)
@@ -65,13 +65,11 @@ class GraphResult(BaseModel):
 
 class InvestigateRequest(BaseModel):
     query: str = Field(min_length=3, max_length=500)
-    mode: Mode = "topic"
 
 
 class InvestigationResponse(GraphResult):
     investigation_id: str
     query: str
-    mode: Mode
     status: Status = "running"
     error: str | None = None
     sources: list[Source] = Field(default_factory=list)
@@ -79,5 +77,5 @@ class InvestigationResponse(GraphResult):
 
 __all__ = [
     "ClaimAssessment", "ClaimStatus", "Edge", "Evidence", "GraphResult", "InvestigateRequest",
-    "InvestigationResponse", "Mode", "Node", "NodeType", "Source", "SourceType", "Stance", "Status",
+    "InvestigationResponse", "Node", "NodeType", "Source", "SourceType", "Stance", "Status",
 ]
