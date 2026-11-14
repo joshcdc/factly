@@ -7,6 +7,7 @@ from difflib import SequenceMatcher
 from backend.evaluation import jev
 from backend.evaluation.evaluator import assess
 from backend.evaluation.source_ranking import rank, rank_async, select_sources
+from backend.extraction import merge
 from backend.extraction.extractor import extract
 from backend.extraction.verify import context_for, verify_quote
 from backend.models.schemas import Edge, Evidence, GraphResult, Node
@@ -14,8 +15,7 @@ from backend.models.source import Source
 
 CLAIM_ID = "claim_1"
 CONCURRENCY = 6
-_SUFFIX = re.compile(r"\b(inc|incorporated|ltd|limited|llc|plc|corp|corporation|co|company|group|the)\b")
-
+SYMMETRIC = {"partners with", "competes with", "married to", "works with", "allied with"}  # direction-free labels
 
 _STOP = {"the", "a", "an", "of", "and", "in", "on", "for", "to", "is", "its"}
 
@@ -27,12 +27,6 @@ def _tokens(text: str) -> list[str]:
 def _same(a: str, b: str) -> bool:
     """Same word, allowing one typo in words of 5+ letters ('jenson' ~ 'jensen')."""
     return a == b or (min(len(a), len(b)) >= 5 and SequenceMatcher(None, a, b).ratio() >= 0.8)
-
-
-def _key(name: str, type_: str) -> tuple[str, str]:
-    """Merge key: 'OpenAI Inc.' and 'Open AI' -> ('openai', 'company')."""
-    k = _SUFFIX.sub(" ", name.lower()) if type_ == "company" else name.lower()
-    return re.sub(r"[^a-z0-9]", "", k) or name.lower(), type_
 
 
 def analyse(query: str, sources: list[Source], on_progress=None) -> GraphResult:
@@ -59,9 +53,13 @@ async def analyse_async(query: str, sources: list[Source], on_progress=None) -> 
     extractions = await asyncio.gather(*(one(s) for s in sources))
     await ranking
 
+    # merge entities across all sources once, before any node is made
+    canon = await merge.resolve(
+        [(e.name, e.type, e.description) for ex in extractions if ex for e in ex.entities], ask=jev.pick_same)
+
     nodes: dict[str, Node] = {CLAIM_ID: Node(id=CLAIM_ID, type="claim", label=query)}
     edges: dict[tuple, Edge] = {}
-    ids: dict[tuple, str] = {}
+    ids: dict[int, str] = {}  # merged-entity gid -> node id
     candidates = []  # (source, excerpt) pairs whose quote was found in the source text
 
     for s, ex in zip(sources, extractions):
@@ -69,20 +67,22 @@ async def analyse_async(query: str, sources: list[Source], on_progress=None) -> 
             continue
         names = {}
         for ent in ex.entities:
-            k = _key(ent.name, ent.type)
-            if k not in ids:
-                ids[k] = f"entity_{len(ids) + 1}"
-                nodes[ids[k]] = Node(id=ids[k], type=ent.type, label=ent.name, description=ent.description)
-            node = nodes[ids[k]]
+            c = canon[(ent.name, ent.type)]
+            if c.gid not in ids:
+                ids[c.gid] = f"entity_{len(ids) + 1}"
+                nodes[ids[c.gid]] = Node(id=ids[c.gid], type=c.type, label=c.name, description=c.description,
+                                         properties={"aliases": c.aliases} if c.aliases else {})
+            node = nodes[ids[c.gid]]
             if s.id not in node.source_ids:
                 node.source_ids.append(s.id)
-            names[ent.name] = ids[k]
+            names[ent.name.lower()] = ids[c.gid]
         for r in ex.relationships:
-            a, b = names.get(r.subject), names.get(r.object)
+            a, b = names.get(r.subject.lower()), names.get(r.object.lower())
             if not a or not b or a == b:
-                continue  # relation names an entity the model didn't list: drop it
-            e = edges.setdefault((a, b, r.relationship.lower()), Edge(
-                id="", source=a, target=b, relationship=r.relationship, description=r.description))
+                continue  # names an entity the model didn't list, or both ends merged into one: drop it
+            label = r.relationship.lower()
+            key = (min(a, b), max(a, b), label) if label in SYMMETRIC else (a, b, label)
+            e = edges.setdefault(key, Edge(id="", source=a, target=b, relationship=label, description=r.description))
             if s.id not in e.source_ids:
                 e.source_ids.append(s.id)
         candidates += [(s, x) for x in ex.excerpts if verify_quote(x.quote, s.content)]
@@ -100,7 +100,7 @@ async def analyse_async(query: str, sources: list[Source], on_progress=None) -> 
         # match "Microsoft controls OpenAI"
         if n.type in ("claim", "source"):
             continue
-        words = _tokens(n.label)
+        words = merge.words(n.label, drop_suffix=True)  # "OpenAI Inc." counts as "OpenAI"
         if words and all(any(_same(w, c) for c in claim_tokens) for w in words):
             edges.setdefault((CLAIM_ID, n.id, "about"), Edge(
                 id="", source=CLAIM_ID, target=n.id, relationship="about"))

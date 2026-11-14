@@ -117,6 +117,41 @@ async def rate_credibility(claim: str, sources: list[Source]) -> list[int | None
         return [None] * len(sources)
 
 
+SAME_PROB = 0.9  # entity merging: a wrong merge is worse than a duplicate
+
+
+async def pick_same(items: list[tuple[str, str, list[tuple[str, str]]]]) -> list[int | None]:
+    """items: (entity name, description, [(candidate name, description), ...]).
+    Per item: the index of the candidate that is the very same real-world thing, or None."""
+    sem = asyncio.Semaphore(CONCURRENCY)
+
+    async def one(client, item):
+        name, desc, cands = item
+        criteria = {f"c{k}": f"{n}: {d or 'no description'}" for k, (n, d) in enumerate(cands)}
+        criteria["none"] = ("None of these is the very same thing (it may be a part, subsidiary, parent, product, "
+                            "event or person related to it, but not the same entity)")
+        question = Choice(
+            instructions=(
+                "Is `entity` just another name for exactly one of the options, the very same real-world person, "
+                "organisation or thing? Answer none if an option is only related to it: a subsidiary, parent, "
+                "foundation, division, product, event or member of it."
+            ),
+            criteria=criteria,
+        )
+        async with sem:
+            try:
+                r = await client.system_one(state={"entity": name, "entity_description": desc or "none"},
+                                            questions={"same": question})
+            except Exception:
+                return None
+        probs = r.choices["same"].probabilities
+        best = max(probs, key=probs.get)
+        return int(best[1:]) if best != "none" and probs[best] >= SAME_PROB else None
+
+    async with AsyncTypeSafeClient(model=MODEL) as client:
+        return list(await asyncio.gather(*(one(client, it) for it in items)))
+
+
 def strength(prob: float) -> int:
     """Jev probability of the winning label -> Evidence.strength 1-5."""
     return max(1, min(5, round(prob * 5)))
