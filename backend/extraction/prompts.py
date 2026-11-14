@@ -8,7 +8,9 @@ Return:
   a person, a company (any organisation: companies, agencies, NGOs, universities), a location, an event
   or a concept. Use the common proper name ("Microsoft", "Sam Altman", "Azure"), 1-4 words.
   Never a sentence, headline, opinion, claim or description ("Azure growth", "Microsoft's control" are wrong).
-- relationships between those entities that the source states and that bear on the claim. The label is a
+- relationships between those entities that the source STATES AS FACT and that bear on the claim.
+  Skip opinions, allegations and speculation ("critics argue", "some say", "could", "reportedly may");
+  those can still be excerpts, but never relationships. The label is a
   1-3 word verb phrase; prefer one of: invested in, owns, controls, part of, leads, founded, partners with,
   supplies, competes with, regulates, located in. Use the exact entity names from your entities list.
 - excerpts: up to 3 passages that bear on the claim, whether they support it, contradict it or add

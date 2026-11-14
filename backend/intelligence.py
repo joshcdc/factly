@@ -5,7 +5,7 @@ import re
 
 from backend.evaluation import jev
 from backend.evaluation.evaluator import assess
-from backend.evaluation.source_ranking import rank
+from backend.evaluation.source_ranking import rank, select_sources
 from backend.extraction.extractor import extract
 from backend.extraction.verify import context_for, verify_quote
 from backend.models.schemas import Edge, Evidence, GraphResult, Node
@@ -29,7 +29,8 @@ def analyse(query: str, sources: list[Source], on_progress=None) -> GraphResult:
 
 async def analyse_async(query: str, sources: list[Source], on_progress=None) -> GraphResult:
     say = on_progress or (lambda stage: None)
-    rank(sources)
+    rank(sources)  # credibility on every source, so the response is consistent
+    sources = select_sources(sources)  # only the best ~10 are analysed
 
     say("extracting")
     sem = asyncio.Semaphore(CONCURRENCY)
@@ -77,12 +78,17 @@ async def analyse_async(query: str, sources: list[Source], on_progress=None) -> 
                                source_ids=[s.id])
 
     # connect the entity cluster to the claim: claim -> each entity the claim names
+    def tokens(n):
+        return set(re.findall(r"[a-z0-9][\w&-]*", n.label.lower()))
+
+    entity_nodes = [n for n in nodes.values() if n.type not in ("claim", "source")]
     for group in jev.claim_entities(query):
-        for n in list(nodes.values()):
-            if n.type not in ("claim", "source") and group & set(re.findall(r"[a-z0-9][\w&-]*", n.label.lower())):
-                edges.setdefault((CLAIM_ID, n.id, "about"), Edge(
-                    id="", source=CLAIM_ID, target=n.id, relationship="about"))
-                break  # first (earliest-seen) match per name
+        # prefer the node whose whole name is the claim's name ("OpenAI"), else any node sharing a word
+        match = next((n for n in entity_nodes if tokens(n) == group), None) or \
+            next((n for n in entity_nodes if group & tokens(n)), None)
+        if match:
+            edges.setdefault((CLAIM_ID, match.id, "about"), Edge(
+                id="", source=CLAIM_ID, target=match.id, relationship="about"))
 
     say("classifying")
     pairs = [(x.quote, context_for(x.quote, s.content)) for s, x in candidates]
