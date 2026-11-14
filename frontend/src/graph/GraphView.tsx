@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Simulation, seed, type SimNode } from './forceSim'
 import type { GraphEdge, GraphNode } from '../types/graph'
-import NodeGlyph, { nodeRadius } from './shapes'
+import NodeGlyph, { NODE_RADIUS } from './shapes'
 
 export const NODE_COLORS: Record<string, string> = {
   person: '#8fc5ff', organisation: '#57c7b6', company: '#57c7b6', location: '#f2bd5b',
@@ -118,7 +118,7 @@ export default function GraphView({ nodes, edges, selectedId, nodeColor, onSelec
          onPointerUp={onUp} onPointerCancel={onUp} onWheel={onWheel}>
       <defs>
         {Object.entries(STANCE_COLORS).map(([k, c]) => (
-          <marker key={k} id={`arrow-${k}`} viewBox="0 0 10 10" refX="18" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <marker key={k} id={`arrow-${k}`} viewBox="0 0 10 10" refX="14" refY="5" markerWidth="6" markerHeight="6" orient="auto">
             <path d="M0 0L10 5L0 10z" fill={c} />
           </marker>
         ))}
@@ -144,9 +144,9 @@ export default function GraphView({ nodes, edges, selectedId, nodeColor, onSelec
         {s?.nodes.map((n) => (
           <g key={n.id} transform={`translate(${n.x} ${n.y})`} className="node"
              onPointerDown={(ev) => onNodeDown(ev, n)}>
-            <NodeGlyph type={n.type} r={nodeRadius(n.type, n.source_ids.length)} fill={nodeColor?.(n) ?? NODE_COLORS[n.type] ?? '#999'}
+            <NodeGlyph fill={nodeColor?.(n) ?? NODE_COLORS[n.type] ?? '#999'}
                        stroke={selectedId === n.id ? '#fff' : 'rgba(242,245,248,.7)'} strokeWidth={selectedId === n.id ? 3 : 1.5} />
-            <text y={-nodeRadius(n.type, n.source_ids.length) - 6} className="node-label">{n.label}</text>
+            <text y={-NODE_RADIUS - 6} className="node-label">{n.label}</text>
           </g>
         ))}
       </g>

@@ -38,7 +38,7 @@ export default function App() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [picked, setPicked] = useState<Selected>(null)
-  const [showSources, setShowSources] = useState(false)
+  const [sourcesOpen, setSourcesOpen] = useState(false)
 
   async function run(e: React.FormEvent) {
     e.preventDefault()
@@ -54,8 +54,7 @@ export default function App() {
   }
 
   const sources = (ids: string[]) => data?.sources.filter((s) => ids.includes(s.id)) ?? []
-  const evidence = (ids: string[]) => data?.evidence.filter((v) => ids.includes(v.id)) ?? []
-  // The claim node is not drawn; its details fill the inspector until something else is picked.
+  // The claim node is only drawn with "Show sources" (the supports/contradicts links end at it); otherwise its details fill the inspector until something else is picked.
   const claimNode = data?.nodes.find((n) => n.type === 'claim')
   const selected: Selected = picked ?? (claimNode ? { kind: 'node', item: claimNode } : null)
 
@@ -65,18 +64,24 @@ export default function App() {
     : undefined
   // Source nodes are hidden by default (AGENT.md); their details appear in the inspector instead.
   const graph = useMemo(() => {
-    const nodes = data?.nodes.filter((n) => n.type !== 'claim' && (showSources || n.type !== 'source')) ?? []
+    const nodes = data?.nodes.filter((n) => n.type !== 'claim' && n.type !== 'source') ?? []
     const ids = new Set(nodes.map((n) => n.id))
     return { nodes, edges: data?.edges.filter((e) => ids.has(e.source) && ids.has(e.target)) ?? [] }
-  }, [data, showSources])
+  }, [data])
   const claimColor = (n: GraphNode) => {
     const a = n.type === 'claim' ? data?.assessments.find((x) => x.claim_id === n.id) : undefined
     return a && STATUS_COLORS[a.status]
   }
-  const claimEvidence = selected?.kind === 'node' && selected.item.type === 'claim'
-    ? data?.evidence.filter((v) => v.claim_id === selected.item.id) ?? []
-    : []
-  const sourceTitle = (id: string) => data?.sources.find((s) => s.id === id)
+  // Sources for whatever is shown: every source for the claim (with its stance), otherwise the item's own source_ids.
+  const isClaim = selected?.kind === 'node' && selected.item.type === 'claim'
+  const listed = (isClaim ? data?.sources ?? [] : sources(selected?.item.source_ids ?? [])).map((s) => ({
+    source: s,
+    stance: isClaim
+      ? data?.edges.find((e) => e.source === s.id && e.target === selected.item.id)?.stance
+        ?? data?.evidence.find((v) => v.source_id === s.id && v.claim_id === selected.item.id)?.stance
+      : undefined,
+    quotes: data?.evidence.filter((v) => v.source_id === s.id && (isClaim ? v.claim_id === selected?.item.id : selected?.kind === 'edge' && selected.item.evidence_ids.includes(v.id))) ?? [],
+  }))
   const node = (id: string) => data?.nodes.find((n) => n.id === id)
   const label = (id: string) => node(id)?.label ?? id
   const types = [...new Set(graph.nodes.map((n) => n.type))]
@@ -166,10 +171,6 @@ export default function App() {
                   <span key={t} className="chip"><i style={{ background: NODE_COLORS[t] }} />{t}</span>
                 ))}
               </div>
-              <label className="toggle">
-                <input type="checkbox" checked={showSources} onChange={(e) => { setShowSources(e.target.checked); setPicked(null) }} />
-                Show sources
-              </label>
               <div className="view-switch">
                 <span className="active">Graph</span>
                 <span>List</span>
@@ -184,12 +185,9 @@ export default function App() {
                   <ul className="legend">
                     {types.map((t) => (
                       <li key={t}>
-                        <svg width="22" height="22" viewBox="-11 -11 22 22"><NodeGlyph type={t} r={t === 'claim' ? 9 : 8} fill={NODE_COLORS[t] ?? '#999'} /></svg>{t}
+                        <svg width="22" height="22" viewBox="-11 -11 22 22"><NodeGlyph fill={NODE_COLORS[t] ?? '#999'} /></svg>{t}
                       </li>
                     ))}
-                    <li><svg width="22" height="8"><line x1="0" y1="4" x2="22" y2="4" stroke="#4ade80" strokeWidth="2" /></svg>supports</li>
-                    <li><svg width="22" height="8"><line x1="0" y1="4" x2="22" y2="4" stroke="#f87171" strokeWidth="2" strokeDasharray="5 3" /></svg>contradicts</li>
-                    <li><svg width="22" height="8"><line x1="0" y1="4" x2="22" y2="4" stroke="#b5c9bd" strokeWidth="1" strokeDasharray="1 3" /></svg>about</li>
                     <li><svg width="22" height="8"><line x1="0" y1="4" x2="22" y2="4" stroke="#6b7785" strokeWidth="2" /></svg>relation</li>
                   </ul>
                   <p className="graph-help">Drag to explore · Select a node or connection</p>
@@ -253,25 +251,30 @@ export default function App() {
                 )}
 
                 <section className="block">
-                  <h4>Evidence</h4>
-                  {claimEvidence.map((v) => (
-                    <blockquote key={v.id} className={v.stance}>“{v.excerpt}” <small>({v.stance} · {sourceTitle(v.source_id)?.publisher ?? v.source_id})</small></blockquote>
-                  ))}
-                  {selected.kind === 'edge' && evidence(selected.item.evidence_ids).map((v) => (
-                    <blockquote key={v.id}>“{v.excerpt}” <small>({v.stance})</small></blockquote>
-                  ))}
-                  {sources(selected.item.source_ids).map((s) => (
-                    <p key={s.id} className="source">
-                      <a href={s.url} target="_blank" rel="noreferrer">{s.title}</a>
-                      <small>{s.publisher} · credibility {s.credibility_score ?? 'not rated'}/5</small>
-                    </p>
-                  ))}
-                  {selected.item.source_ids.length === 0 && claimEvidence.length === 0 && (
+                  <button className="sources-toggle" aria-expanded={sourcesOpen} onClick={() => setSourcesOpen(!sourcesOpen)}>
+                    <img src={docIcon} alt="" />
+                    <span>{sourcesOpen ? 'Hide sources' : 'View sources'}</span>
+                    <small>{listed.length}</small>
+                  </button>
+                  {sourcesOpen && (listed.length === 0 ? (
                     <div className="empty-card">
                       <strong><img src={docIcon} alt="" />No sources attached</strong>
                       <p>Check this claim to start reviewing the evidence behind it.</p>
                     </div>
-                  )}
+                  ) : (
+                    <ul className="source-list">
+                      {listed.map(({ source: s, stance, quotes }) => (
+                        <li key={s.id} className="source">
+                          {stance && <span className={"status " + stance}>{stance}</span>}
+                          <a href={s.url} target="_blank" rel="noreferrer">{s.title}</a>
+                          <small>{s.publisher} · credibility {s.credibility_score ?? 'not rated'}/5</small>
+                          {quotes.map((v) => (
+                            <blockquote key={v.id} className={v.stance}>“{v.excerpt}” <small>({v.stance})</small></blockquote>
+                          ))}
+                        </li>
+                      ))}
+                    </ul>
+                  ))}
                 </section>
               </>
             ) : (
