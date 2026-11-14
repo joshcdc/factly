@@ -4,9 +4,10 @@ import asyncio
 import re
 
 from dotenv import load_dotenv
-from typesafe_sdk import AsyncTypeSafeClient, Choice
+from typesafe_sdk import AsyncTypeSafeClient, Choice, Score
 
 from backend.models.schemas import Stance
+from backend.models.source import Source
 
 load_dotenv()
 
@@ -73,6 +74,82 @@ async def classify_stances(claim: str, excerpts: list[tuple[str, str]]) -> list[
 
     async with AsyncTypeSafeClient(model=MODEL) as client:
         return list(await asyncio.gather(*(one(client, e) for e in excerpts)))
+
+
+CREDIBILITY = Score(
+    instructions=(
+        "How credible is this source as evidence about `claim`? Judge the publisher and the page itself: "
+        "is it an original or authoritative source, does it have editorial standards, does it cite where "
+        "its facts come from?"
+    ),
+    criteria=[  # position = score 0..4, mapped to credibility_score 1..5
+        "Unreliable: content farm, SEO or AI-generated aggregator, spam, or unsourced assertions",
+        "Low: personal blog, forum, social media post, or a site that rewrites others' reporting without sources",
+        "Moderate: niche or trade publication, or secondary reporting that names its sources",
+        "High: established news organisation with editorial standards, or a reputable reference work",
+        "Authoritative: the primary source for this claim, e.g. an official filing, regulator, statistics office, "
+        "peer-reviewed study, or the organisation's own official announcement",
+    ],
+)
+PAGE_CHARS = 1500  # enough of the page for Jev to judge its quality
+
+
+async def rate_credibility(claim: str, sources: list[Source]) -> list[int | None]:
+    """Jev credibility 1-5 per source, in order. None where Jev failed (caller keeps the rule-based score)."""
+    sem = asyncio.Semaphore(CONCURRENCY)
+
+    async def one(client, s: Source):
+        async with sem:
+            try:
+                r = await client.system_one(
+                    state={"claim": claim, "url": s.url, "publisher": s.publisher, "title": s.title,
+                           "page_excerpt": s.content[:PAGE_CHARS]},
+                    questions={"credibility": CREDIBILITY},
+                )
+            except Exception:
+                return None
+        return max(1, min(5, 1 + round(r.scores["credibility"].score)))
+
+    try:
+        async with AsyncTypeSafeClient(model=MODEL) as client:
+            return list(await asyncio.gather(*(one(client, s) for s in sources)))
+    except Exception:  # no key / Jev unreachable: keep the rule-based scores
+        return [None] * len(sources)
+
+
+SAME_PROB = 0.9  # entity merging: a wrong merge is worse than a duplicate
+
+
+async def pick_same(items: list[tuple[str, str, list[tuple[str, str]]]]) -> list[int | None]:
+    """items: (entity name, description, [(candidate name, description), ...]).
+    Per item: the index of the candidate that is the very same real-world thing, or None."""
+    sem = asyncio.Semaphore(CONCURRENCY)
+
+    async def one(client, item):
+        name, desc, cands = item
+        criteria = {f"c{k}": f"{n}: {d or 'no description'}" for k, (n, d) in enumerate(cands)}
+        criteria["none"] = ("None of these is the very same thing (it may be a part, subsidiary, parent, product, "
+                            "event or person related to it, but not the same entity)")
+        question = Choice(
+            instructions=(
+                "Is `entity` just another name for exactly one of the options, the very same real-world person, "
+                "organisation or thing? Answer none if an option is only related to it: a subsidiary, parent, "
+                "foundation, division, product, event or member of it."
+            ),
+            criteria=criteria,
+        )
+        async with sem:
+            try:
+                r = await client.system_one(state={"entity": name, "entity_description": desc or "none"},
+                                            questions={"same": question})
+            except Exception:
+                return None
+        probs = r.choices["same"].probabilities
+        best = max(probs, key=probs.get)
+        return int(best[1:]) if best != "none" and probs[best] >= SAME_PROB else None
+
+    async with AsyncTypeSafeClient(model=MODEL) as client:
+        return list(await asyncio.gather(*(one(client, it) for it in items)))
 
 
 def strength(prob: float) -> int:

@@ -2,10 +2,13 @@
 
 import asyncio
 import re
+from collections import Counter
+from difflib import SequenceMatcher
 
 from backend.evaluation import jev
 from backend.evaluation.evaluator import assess
-from backend.evaluation.source_ranking import rank, select_sources
+from backend.evaluation.source_ranking import rank, rank_async, select_sources
+from backend.extraction import merge
 from backend.extraction.extractor import extract
 from backend.extraction.verify import context_for, verify_quote
 from backend.models.schemas import Edge, Evidence, GraphResult, Node
@@ -13,13 +16,20 @@ from backend.models.source import Source
 
 CLAIM_ID = "claim_1"
 CONCURRENCY = 6
-_SUFFIX = re.compile(r"\b(inc|incorporated|ltd|limited|llc|plc|corp|corporation|co|company|group|the)\b")
+_REPORTER = re.compile(r"\b(report(ed|ing|s)?|newspaper|news outlet|outlet|publication|magazine|news agency|"
+                       r"broadcaster|journalists?)\b", re.I)
+SYMMETRIC = {"partners with", "competes with", "married to", "works with", "allied with"}  # direction-free labels
+
+_STOP = {"the", "a", "an", "of", "and", "in", "on", "for", "to", "is", "its"}
 
 
-def _key(name: str, type_: str) -> tuple[str, str]:
-    """Merge key: 'OpenAI Inc.' and 'Open AI' -> ('openai', 'company')."""
-    k = _SUFFIX.sub(" ", name.lower()) if type_ == "company" else name.lower()
-    return re.sub(r"[^a-z0-9]", "", k) or name.lower(), type_
+def _tokens(text: str) -> list[str]:
+    return [w for w in re.findall(r"[a-z0-9][\w&-]*", text.lower().replace("'s", "")) if w not in _STOP]
+
+
+def _same(a: str, b: str) -> bool:
+    """Same word, allowing one typo in words of 5+ letters ('jenson' ~ 'jensen')."""
+    return a == b or (min(len(a), len(b)) >= 5 and SequenceMatcher(None, a, b).ratio() >= 0.8)
 
 
 def analyse(query: str, sources: list[Source], on_progress=None) -> GraphResult:
@@ -29,10 +39,11 @@ def analyse(query: str, sources: list[Source], on_progress=None) -> GraphResult:
 
 async def analyse_async(query: str, sources: list[Source], on_progress=None) -> GraphResult:
     say = on_progress or (lambda stage: None)
-    rank(sources)  # credibility on every source, so the response is consistent
+    rank(sources)  # rule-based credibility on every source, so the response is consistent
     sources = select_sources(sources)  # only the best ~10 are analysed
 
     say("extracting")
+    ranking = asyncio.create_task(rank_async(query, sources))  # Jev credibility for those 10, alongside extraction
     sem = asyncio.Semaphore(CONCURRENCY)
 
     async def one(s):
@@ -43,10 +54,15 @@ async def analyse_async(query: str, sources: list[Source], on_progress=None) -> 
                 return None
 
     extractions = await asyncio.gather(*(one(s) for s in sources))
+    await ranking
+
+    # merge entities across all sources once, before any node is made
+    canon = await merge.resolve(
+        [(e.name, e.type, e.description) for ex in extractions if ex for e in ex.entities], ask=jev.pick_same)
 
     nodes: dict[str, Node] = {CLAIM_ID: Node(id=CLAIM_ID, type="claim", label=query)}
     edges: dict[tuple, Edge] = {}
-    ids: dict[tuple, str] = {}
+    ids: dict[int, str] = {}  # merged-entity gid -> node id
     candidates = []  # (source, excerpt) pairs whose quote was found in the source text
 
     for s, ex in zip(sources, extractions):
@@ -54,20 +70,22 @@ async def analyse_async(query: str, sources: list[Source], on_progress=None) -> 
             continue
         names = {}
         for ent in ex.entities:
-            k = _key(ent.name, ent.type)
-            if k not in ids:
-                ids[k] = f"entity_{len(ids) + 1}"
-                nodes[ids[k]] = Node(id=ids[k], type=ent.type, label=ent.name, description=ent.description)
-            node = nodes[ids[k]]
+            c = canon[(ent.name, ent.type)]
+            if c.gid not in ids:
+                ids[c.gid] = f"entity_{len(ids) + 1}"
+                nodes[ids[c.gid]] = Node(id=ids[c.gid], type=c.type, label=c.name, description=c.description,
+                                         properties={"aliases": c.aliases} if c.aliases else {})
+            node = nodes[ids[c.gid]]
             if s.id not in node.source_ids:
                 node.source_ids.append(s.id)
-            names[ent.name] = ids[k]
+            names[ent.name.lower()] = ids[c.gid]
         for r in ex.relationships:
-            a, b = names.get(r.subject), names.get(r.object)
+            a, b = names.get(r.subject.lower()), names.get(r.object.lower())
             if not a or not b or a == b:
-                continue  # relation names an entity the model didn't list: drop it
-            e = edges.setdefault((a, b, r.relationship.lower()), Edge(
-                id="", source=a, target=b, relationship=r.relationship, description=r.description))
+                continue  # names an entity the model didn't list, or both ends merged into one: drop it
+            label = r.relationship.lower()
+            key = (min(a, b), max(a, b), label) if label in SYMMETRIC else (a, b, label)
+            e = edges.setdefault(key, Edge(id="", source=a, target=b, relationship=label, description=r.description))
             if s.id not in e.source_ids:
                 e.source_ids.append(s.id)
         candidates += [(s, x) for x in ex.excerpts if verify_quote(x.quote, s.content)]
@@ -78,20 +96,28 @@ async def analyse_async(query: str, sources: list[Source], on_progress=None) -> 
                                source_ids=[s.id])
 
     # connect the entity cluster to the claim: claim -> each entity the claim names
-    def tokens(n):
-        return set(re.findall(r"[a-z0-9][\w&-]*", n.label.lower()))
+    claim_tokens = _tokens(query)
+    for n in nodes.values():
+        # an entity is "about" the claim when every word of its name appears in the claim (typos tolerated),
+        # whatever the capitalisation: "Jensen Huang" matches "jenson huang affairs", "OpenAI Foundation" does not
+        # match "Microsoft controls OpenAI"
+        if n.type in ("claim", "source"):
+            continue
+        words = merge.words(n.label, drop_suffix=True)  # "OpenAI Inc." counts as "OpenAI"
+        if words and all(any(_same(w, c) for c in claim_tokens) for w in words):
+            edges.setdefault((CLAIM_ID, n.id, "about"), Edge(
+                id="", source=CLAIM_ID, target=n.id, relationship="about"))
 
-    entity_nodes = [n for n in nodes.values() if n.type not in ("claim", "source")]
-    for group in jev.claim_entities(query):
-        # prefer the node whose whole name is the claim's name ("OpenAI"), else any node sharing a word
-        match = next((n for n in entity_nodes if tokens(n) == group), None) or \
-            next((n for n in entity_nodes if group & tokens(n)), None)
-        if match:
-            edges.setdefault((CLAIM_ID, match.id, "about"), Edge(
-                id="", source=CLAIM_ID, target=match.id, relationship="about"))
+    # drop news outlets that are only the story's reporters: no relationships, described as reporting it
+    linked = {x for e in edges.values() for x in (e.source, e.target)}
+    for nid in [n.id for n in nodes.values()
+                if n.type not in ("claim", "source") and n.id not in linked and _REPORTER.search(n.description)]:
+        del nodes[nid]
+
+    _connect_orphans(nodes, edges, sources)  # no entity is left without an edge
 
     say("classifying")
-    pairs = [(x.quote, context_for(x.quote, s.content)) for s, x in candidates]
+    pairs =[(x.quote, context_for(x.quote, s.content)) for s, x in candidates]
     labels = await jev.classify_stances(query, pairs) if candidates else []
     evidence, unclassified = [], 0
     for (s, x), lab in zip(candidates, labels):
@@ -117,4 +143,73 @@ async def analyse_async(query: str, sources: list[Source], on_progress=None) -> 
         e.id = f"edge_{i}"
     order = {"claim": 0, "person": 1, "company": 2, "location": 3, "event": 4, "concept": 5, "source": 6}
     out_nodes = sorted(nodes.values(), key=lambda n: order[n.type])  # stable: keeps first-seen order within a type
+    _prioritise(out_nodes, out_edges, sources, evidence)
     return GraphResult(nodes=out_nodes, edges=out_edges, evidence=evidence, assessments=[assessment])
+
+
+FALLBACK = "mentioned with"  # not a real relationship: lowest weight, so the frontend can fade or hide it
+
+
+def _connect_orphans(nodes: dict[str, Node], edges: dict[tuple, Edge], sources: list[Source]) -> None:
+    """Give every entity with no edge one low-priority `mentioned with` edge: to the connected entity it shares
+    the most sources with (ties: the more connected one), else to the claim."""
+    pub = {s.id: s.publisher for s in sources}
+    ents = [n for n in nodes.values() if n.type not in ("claim", "source")]
+    linked = {x for e in edges.values() for x in (e.source, e.target)}
+    degree = Counter(x for e in edges.values() if e.relationship not in ("about", FALLBACK) for x in (e.source, e.target))
+    connected = [n for n in ents if n.id in linked]
+    for n in ents:
+        if n.id in linked:
+            continue
+        shared = {m.id: sorted(set(m.source_ids) & set(n.source_ids)) for m in connected if m.id != n.id}
+        shared = {k: v for k, v in shared.items() if v}
+        if shared:
+            best = max(shared, key=lambda k: (len(shared[k]), degree[k]))
+            where = ", ".join(sorted({pub[s] for s in shared[best] if s in pub}))
+            edges[(n.id, best, FALLBACK)] = Edge(id="", source=n.id, target=best, relationship=FALLBACK,
+                                                 description=f"Both appear in {where}", source_ids=shared[best])
+        else:  # shares no source with a connected entity: hang it off the claim so it still shows
+            edges[(n.id, CLAIM_ID, FALLBACK)] = Edge(id="", source=n.id, target=CLAIM_ID, relationship=FALLBACK,
+                                                     description="Appears in the sources", source_ids=n.source_ids)
+
+
+def _prioritise(nodes: list[Node], edges: list[Edge], sources: list[Source], evidence: list[Evidence]) -> None:
+    """Display priority from data we already have (no API calls), all in 0-1:
+    entity node  properties["priority"] = credibility of the independent publishers that mention it + 2 x its connections
+    relationship Edge.weight            = credibility of the independent publishers that state it
+    source node  properties["priority"] = its credibility; claim = 1; stance edge weight = evidence strength x credibility
+    """
+    src = {s.id: s for s in sources}
+    strength = {e.id: e.strength for e in evidence}
+
+    def support(ids: list[str]) -> int:  # one vote per publisher (its best credibility): repeats aren't independent
+        best: dict[str, int] = {}
+        for i in ids:
+            if i in src:
+                best[src[i].publisher] = max(best.get(src[i].publisher, 0), src[i].credibility_score or 2)
+        return sum(best.values())
+
+    rel = [e for e in edges if not e.stance and e.relationship not in ("about", FALLBACK)]
+    degree = Counter(x for e in rel for x in (e.source, e.target))
+    ents = [n for n in nodes if n.type not in ("claim", "source")]
+    raw = {n.id: support(n.source_ids) + 2 * degree[n.id] for n in ents}
+    top = max(raw.values(), default=0) or 1
+    for n in ents:
+        n.properties["priority"] = round(raw[n.id] / top, 2)
+    edge_raw = {e.id: support(e.source_ids) for e in rel}
+    edge_top = max(edge_raw.values(), default=0) or 1
+    for e in rel:
+        e.weight = round(edge_raw[e.id] / edge_top, 2)
+    for n in nodes:
+        if n.type == "claim":
+            n.properties["priority"] = 1.0
+        elif n.type == "source":
+            n.properties["priority"] = round((src[n.id].credibility_score or 2) / 5, 2)
+    for e in edges:
+        if e.stance:
+            best = max((strength.get(i, 3) for i in e.evidence_ids), default=3)
+            e.weight = round(max(0.1, best / 5 * (src[e.source].credibility_score or 2) / 5), 2)
+        elif e.relationship == "about":
+            e.weight = 1.0
+        elif e.relationship == FALLBACK:
+            e.weight = 0.1

@@ -1,6 +1,6 @@
 """Shared data contract (AGENT.md sections 3 and 4). All three workstreams import from here.
 
-Additive fields beyond AGENT.md, so the frontend can poll: InvestigationResponse.status, .error.
+Additive fields beyond AGENT.md, so the frontend can poll: InvestigationResponse.status, .stage, .error.
 """
 
 from typing import Literal
@@ -29,6 +29,7 @@ class Edge(BaseModel):
     source: str  # node id
     target: str  # node id
     relationship: str
+    weight: float = Field(0.5, ge=0, le=1)  # display priority 0-1 (thickness, fade, detail slider); set by Agent 2
     stance: Stance | None = None  # set when the edge links evidence to a claim: supports / contradicts / neutral
     description: str = ""
     evidence_ids: list[str] = Field(default_factory=list)
@@ -71,6 +72,7 @@ class InvestigationResponse(GraphResult):
     investigation_id: str
     query: str
     status: Status = "running"
+    stage: str | None = None  # while running: "searching" | "extracting" | "classifying" | "assessing"
     error: str | None = None
     sources: list[Source] = Field(default_factory=list)
 

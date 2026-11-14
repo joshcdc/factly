@@ -26,6 +26,7 @@ class ExtractedExcerpt(BaseModel):
 
 
 class SourceExtraction(BaseModel):
-    entities: list[ExtractedEntity] = Field(description="At most 6, most relevant to the claim")
-    relationships: list[ExtractedRelation]
+    entities: list[ExtractedEntity] = Field(description="At most 10, most relevant to the claim and its subject")
+    relationships: list[ExtractedRelation] = Field(
+        description="At most 12 facts the source states; subject and object must both be listed in `entities`")
     excerpts: list[ExtractedExcerpt] = Field(description="At most 3 passages most relevant to the claim")
