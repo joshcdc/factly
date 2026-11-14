@@ -60,6 +60,7 @@ _AUX = re.compile(r"^(?:has|have|had|is|was|are|were|been)\s+")
 
 
 def clean_label(label: str) -> str:
-    """'Has invested in' -> 'invested in'. Labels longer than 4 words are dropped ('')."""
+    """'Has invested in' -> 'invested in'; 'Alleged affair with' keeps its prefix. Labels longer than 4 words
+    are dropped ('')."""
     label = _AUX.sub("", label.strip().lower())
     return label if 0 < len(label.split()) <= 4 else ""

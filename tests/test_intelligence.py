@@ -163,3 +163,38 @@ assert next(n for n in r.nodes if n.type == "claim").properties["priority"] == 1
 assert all(e.weight == 1.0 for e in r.edges if e.relationship == "about")
 assert all(0.1 <= e.weight <= 1 for e in r.edges if e.stance)
 print("priority tests passed")
+
+# --- no entity is left without an edge
+async def extract_with_orphans(claim, s):
+    if s.id == "source_1":
+        return SourceExtraction(
+            entities=[ExtractedEntity(name="Microsoft", type="company", description="d"),
+                      ExtractedEntity(name="OpenAI", type="company", description="d"),
+                      ExtractedEntity(name="Dan Ives", type="person", description="Analyst who commented")],  # no relationship
+            relationships=[ExtractedRelation(subject="Microsoft", relationship="invested in", object="OpenAI"),
+                           ExtractedRelation(subject="Microsoft", relationship="alleged ties to", object="OpenAI")],
+            excerpts=[])
+    if s.id == "source_2":  # an entity that shares no source with anything connected
+        return SourceExtraction(entities=[ExtractedEntity(name="Marco Rubio", type="person", description="d")],
+                                relationships=[], excerpts=[])
+    return None
+
+intel.extract = extract_with_orphans
+r = intel.analyse("Microsoft controls OpenAI", S)
+ents = [n for n in r.nodes if n.type not in ("claim", "source")]
+touched = {x for e in r.edges for x in (e.source, e.target)}
+assert ents and all(n.id in touched for n in ents), [n.label for n in ents if n.id not in touched]
+lab = {n.id: n.label for n in r.nodes}
+fb = {lab[e.source]: (lab[e.target], e) for e in r.edges if e.relationship == "mentioned with"}
+assert set(fb) == {"Dan Ives", "Marco Rubio"}, fb
+assert fb["Dan Ives"][0] in ("Microsoft", "OpenAI") and "reuters.com" in fb["Dan Ives"][1].description
+assert fb["Marco Rubio"][0] == "Microsoft controls OpenAI"                        # shares no source: hangs off the claim
+assert all(e.weight == 0.1 for _, e in fb.values())
+prio = {n.label: n.properties["priority"] for n in ents}
+assert prio["Dan Ives"] < prio["Microsoft"] and prio["Microsoft"] == 1.0           # fallback edges don't inflate priority
+alleged = [e for e in r.edges if e.relationship == "alleged ties to"]
+assert len(alleged) == 1
+
+from backend.extraction.extractor import clean_label as _cl
+assert _cl("Alleged affair with") == "alleged affair with" and _cl("allegedly has a very long label here") == ""
+print("orphan tests passed")

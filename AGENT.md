@@ -177,6 +177,7 @@ Suggested structure:
 - On hover/click of the claim, show its supporting/contradicting sources (edges with `stance`, green/red) and the evidence excerpts.
 - Colour the claim node by its assessment `status` (match on `claim_id` = node `id`).
 - Use priority to keep the graph readable: node size and opacity from `properties.priority`, edge thickness and opacity from `weight`, and show labels only above a threshold (always show the claim). Add a "detail" slider that hides nodes and edges below a chosen priority; `properties.priority` of unconnected or single-source entities is low, so they disappear first.
+- Relationship labels with special meaning: a label starting with `alleged ` (e.g. "alleged affair with") is a reported or disputed connection, not an established fact (draw it dashed; `description` says who reported it). The label `mentioned with` is a weak fallback link (weight 0.1) that only keeps an otherwise unconnected entity attached to the graph; fade it or hide it by default.
 - Sample data to build against: `fixtures/sample_investigation.json` (a full `InvestigationResponse`).
 
 ---

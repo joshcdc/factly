@@ -114,8 +114,10 @@ async def analyse_async(query: str, sources: list[Source], on_progress=None) -> 
                 if n.type not in ("claim", "source") and n.id not in linked and _REPORTER.search(n.description)]:
         del nodes[nid]
 
+    _connect_orphans(nodes, edges, sources)  # no entity is left without an edge
+
     say("classifying")
-    pairs = [(x.quote, context_for(x.quote, s.content)) for s, x in candidates]
+    pairs =[(x.quote, context_for(x.quote, s.content)) for s, x in candidates]
     labels = await jev.classify_stances(query, pairs) if candidates else []
     evidence, unclassified = [], 0
     for (s, x), lab in zip(candidates, labels):
@@ -145,6 +147,32 @@ async def analyse_async(query: str, sources: list[Source], on_progress=None) -> 
     return GraphResult(nodes=out_nodes, edges=out_edges, evidence=evidence, assessments=[assessment])
 
 
+FALLBACK = "mentioned with"  # not a real relationship: lowest weight, so the frontend can fade or hide it
+
+
+def _connect_orphans(nodes: dict[str, Node], edges: dict[tuple, Edge], sources: list[Source]) -> None:
+    """Give every entity with no edge one low-priority `mentioned with` edge: to the connected entity it shares
+    the most sources with (ties: the more connected one), else to the claim."""
+    pub = {s.id: s.publisher for s in sources}
+    ents = [n for n in nodes.values() if n.type not in ("claim", "source")]
+    linked = {x for e in edges.values() for x in (e.source, e.target)}
+    degree = Counter(x for e in edges.values() if e.relationship not in ("about", FALLBACK) for x in (e.source, e.target))
+    connected = [n for n in ents if n.id in linked]
+    for n in ents:
+        if n.id in linked:
+            continue
+        shared = {m.id: sorted(set(m.source_ids) & set(n.source_ids)) for m in connected if m.id != n.id}
+        shared = {k: v for k, v in shared.items() if v}
+        if shared:
+            best = max(shared, key=lambda k: (len(shared[k]), degree[k]))
+            where = ", ".join(sorted({pub[s] for s in shared[best] if s in pub}))
+            edges[(n.id, best, FALLBACK)] = Edge(id="", source=n.id, target=best, relationship=FALLBACK,
+                                                 description=f"Both appear in {where}", source_ids=shared[best])
+        else:  # shares no source with a connected entity: hang it off the claim so it still shows
+            edges[(n.id, CLAIM_ID, FALLBACK)] = Edge(id="", source=n.id, target=CLAIM_ID, relationship=FALLBACK,
+                                                     description="Appears in the sources", source_ids=n.source_ids)
+
+
 def _prioritise(nodes: list[Node], edges: list[Edge], sources: list[Source], evidence: list[Evidence]) -> None:
     """Display priority from data we already have (no API calls), all in 0-1:
     entity node  properties["priority"] = credibility of the independent publishers that mention it + 2 x its connections
@@ -161,7 +189,7 @@ def _prioritise(nodes: list[Node], edges: list[Edge], sources: list[Source], evi
                 best[src[i].publisher] = max(best.get(src[i].publisher, 0), src[i].credibility_score or 2)
         return sum(best.values())
 
-    rel = [e for e in edges if not e.stance and e.relationship != "about"]
+    rel = [e for e in edges if not e.stance and e.relationship not in ("about", FALLBACK)]
     degree = Counter(x for e in rel for x in (e.source, e.target))
     ents = [n for n in nodes if n.type not in ("claim", "source")]
     raw = {n.id: support(n.source_ids) + 2 * degree[n.id] for n in ents}
@@ -183,3 +211,5 @@ def _prioritise(nodes: list[Node], edges: list[Edge], sources: list[Source], evi
             e.weight = round(max(0.1, best / 5 * (src[e.source].credibility_score or 2) / 5), 2)
         elif e.relationship == "about":
             e.weight = 1.0
+        elif e.relationship == FALLBACK:
+            e.weight = 0.1
