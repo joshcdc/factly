@@ -272,6 +272,9 @@ Agent 2 exposes one function. Agent 1's endpoint calls it with the normalised so
 
     # backend/intelligence.py  (Agent 2)
     def analyse(query: str, sources: list[Source], on_progress=None) -> GraphResult
+    async def analyse_async(query: str, sources: list[Source], on_progress=None) -> GraphResult
+
+Use `await analyse_async(...)` inside an async FastAPI handler; `analyse(...)` is the sync wrapper (for a thread or background task).
 
 - `query` is the user's claim.
 - `sources` are normalised `Source` objects (credibility_score may be None).
