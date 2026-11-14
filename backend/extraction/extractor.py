@@ -10,7 +10,7 @@ from .schemas import SourceExtraction
 
 load_dotenv()
 
-MODEL = "claude-opus-5-5"
+MODEL = "claude-haiku-5-5"  # extraction is simple; move to claude-sonnet-5-5 if graphs look sloppy
 EFFORT = "low"  # extraction, not reasoning: keep it fast
 MAX_EXCERPTS = 3
 
@@ -25,7 +25,7 @@ def client() -> anthropic.AsyncAnthropic:
 
 
 async def extract(claim: str, source: Source) -> SourceExtraction:
-    resp = await client().beta.messages.parse(
+    resp = await client().messages.parse(
         model=MODEL,
         max_tokens=16000,
         system=prompts.EXTRACT_SYSTEM,
@@ -33,8 +33,6 @@ async def extract(claim: str, source: Source) -> SourceExtraction:
             claim=claim, title=source.title, publisher=source.publisher, content=source.content)}],
         output_format=SourceExtraction,
         output_config={"effort": EFFORT},
-        betas=["server-side-fallback-2026-07-01"],
-        fallbacks="default",  # on a safety refusal, the API retries on a fallback model in the same call
     )
     if resp.stop_reason == "refusal" or resp.parsed_output is None:
         raise RuntimeError(f"extraction failed for {source.id}: stop_reason={resp.stop_reason}")
