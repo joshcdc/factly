@@ -1,0 +1,32 @@
+/* Dark theme taken from graph-engine/graph_engine.py */
+:root { color-scheme: dark; --bg: #0e1116; --panel: #171b22; --text: #f2f5f8; --muted: #9aa7b3; --line: #303844; --accent: #57c7b6; }
+body { background: var(--bg); color: var(--text); }
+
+.app { display: flex; flex-direction: column; height: 100vh; text-align: left; }
+.bar { display: flex; gap: 8px; padding: 12px 24px; border-bottom: 1px solid var(--line); }
+.bar input { flex: 1; padding: 10px; background: var(--panel); color: var(--text); border: 1px solid var(--line); border-radius: 6px; }
+.bar button { padding: 10px 18px; background: var(--accent); color: #0e1116; border: 0; border-radius: 6px; font-weight: 700; cursor: pointer; }
+.bar button:disabled { opacity: 0.6; cursor: wait; }
+.error { color: #f87171; padding: 0 24px; }
+
+.main { flex: 1; display: flex; min-height: 0; }
+.graph {
+  flex: 1; position: relative; overflow: hidden;
+  background:
+    linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px),
+    var(--bg);
+  background-size: 28px 28px;
+}
+.empty { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: var(--muted); }
+.graph-svg { display: block; width: 100%; height: 100%; touch-action: none; cursor: grab; }
+.node { cursor: pointer; }
+.node-label { fill: var(--text); font-size: 12px; text-anchor: middle; pointer-events: none; }
+.edge { cursor: pointer; }
+.edge-label { fill: var(--muted); font-size: 10px; text-anchor: middle; pointer-events: none; }
+.legend { position: absolute; left: 16px; bottom: 16px; display: flex; gap: 12px; flex-wrap: wrap; font-size: 12px; color: var(--muted); }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 5px; }
+
+.panel { width: 320px; padding: 16px; overflow-y: auto; background: var(--panel); border-left: 1px solid var(--line); }
+.panel blockquote { margin: 8px 0; padding-left: 8px; border-left: 3px solid var(--line); }
+.panel a { color: var(--accent); }
