@@ -12,16 +12,14 @@ FETCH_IF_SHORTER_THAN = 1500  # chars: search passage too thin, fetch the full p
 MAX_FETCHES = 6
 
 
-def queries_for(query: str, mode: str) -> list[str]:
-    q = query.strip()
-    if mode == "claim":
-        # one neutral search plus angles that surface both supporting and contradicting sources
-        return [q, f"fact check: {q}", f"{q} official statement"]
-    return [q, f"{q} official announcement", f"{q} latest news"]
+def queries_for(claim: str) -> list[str]:
+    q = claim.strip()
+    # one neutral search plus angles that surface both supporting and contradicting sources
+    return [q, f"fact check: {q}", f"{q} official statement"]
 
 
-def gather(query: str, mode: str) -> list[Source]:
-    qs = queries_for(query, mode)
+def gather(claim: str) -> list[Source]:
+    qs = queries_for(claim)
     with ThreadPoolExecutor(max_workers=len(qs)) as pool:
         futures = [pool.submit(linkup.search, q, "standard", RESULTS_PER_QUERY) for q in qs]
         batches, errors = [], []
@@ -58,7 +56,6 @@ def gather(query: str, mode: str) -> list[Source]:
 if __name__ == "__main__":
     import sys
 
-    mode = "claim" if "--claim" in sys.argv else "topic"
-    q = " ".join(a for a in sys.argv[1:] if a != "--claim") or "Relationship between OpenAI and Microsoft"
-    for s in gather(q, mode):
+    q = " ".join(sys.argv[1:]) or "Microsoft controls OpenAI"
+    for s in gather(q):
         print(f"{s.id:10} {s.relevance_score} {s.source_type:10} {s.publisher:22} {len(s.content):6} chars  {s.title[:60]}")

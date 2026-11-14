@@ -25,7 +25,7 @@ def investigate(req: InvestigateRequest, background: BackgroundTasks, wait: bool
     `?wait=true` blocks until done (handy for curl and tests).
     """
     inv = InvestigationResponse(
-        investigation_id=f"inv_{uuid.uuid4().hex[:10]}", query=req.query.strip(), mode=req.mode
+        investigation_id=f"inv_{uuid.uuid4().hex[:10]}", query=req.query.strip(), stage="searching"
     )
     INVESTIGATIONS[inv.investigation_id] = inv
     if wait:
