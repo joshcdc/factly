@@ -115,6 +115,8 @@ async def analyse_async(query: str, sources: list[Source], on_progress=None) -> 
         del nodes[nid]
 
     _connect_orphans(nodes, edges, sources)  # no entity is left without an edge
+    _cap_entities(nodes, edges, sources)  # keep the most important entities only...
+    _connect_orphans(nodes, edges, sources)  # ...and re-attach any the cut left unconnected
 
     say("classifying")
     pairs =[(x.quote, context_for(x.quote, s.content)) for s, x in candidates]
@@ -148,6 +150,37 @@ async def analyse_async(query: str, sources: list[Source], on_progress=None) -> 
 
 
 FALLBACK = "mentioned with"  # not a real relationship: lowest weight, so the frontend can fade or hide it
+MAX_ENTITIES_OUT = 12  # entity nodes returned per investigation; the rest are cut by priority
+
+
+def _support(ids: list[str], src: dict[str, Source]) -> int:
+    """Credibility of the independent publishers behind `ids`: one vote per publisher (its best credibility),
+    because repeated pages from one publisher are not independent."""
+    best: dict[str, int] = {}
+    for i in ids:
+        if i in src:
+            best[src[i].publisher] = max(best.get(src[i].publisher, 0), src[i].credibility_score or 2)
+    return sum(best.values())
+
+
+def _cap_entities(nodes: dict[str, Node], edges: dict[tuple, Edge], sources: list[Source],
+                  limit: int = MAX_ENTITIES_OUT) -> None:
+    """Keep at most `limit` entities: first the claim's own subjects, then the highest priority. Drops the rest
+    and every edge that touched them."""
+    ents = [n for n in nodes.values() if n.type not in ("claim", "source")]
+    if len(ents) <= limit:
+        return
+    src = {s.id: s for s in sources}
+    degree = Counter(x for e in edges.values() if e.relationship not in ("about", FALLBACK) for x in (e.source, e.target))
+    named = {e.target for e in edges.values() if e.relationship == "about"}  # always kept
+    ranked = sorted((n for n in ents if n.id not in named),
+                    key=lambda n: _support(n.source_ids, src) + 2 * degree[n.id], reverse=True)
+    keep = named | {n.id for n in ranked[:max(0, limit - len(named))]}
+    for n in ents:
+        if n.id not in keep:
+            del nodes[n.id]
+    for k in [k for k, e in edges.items() if e.source not in nodes or e.target not in nodes]:
+        del edges[k]
 
 
 def _connect_orphans(nodes: dict[str, Node], edges: dict[tuple, Edge], sources: list[Source]) -> None:
@@ -182,12 +215,8 @@ def _prioritise(nodes: list[Node], edges: list[Edge], sources: list[Source], evi
     src = {s.id: s for s in sources}
     strength = {e.id: e.strength for e in evidence}
 
-    def support(ids: list[str]) -> int:  # one vote per publisher (its best credibility): repeats aren't independent
-        best: dict[str, int] = {}
-        for i in ids:
-            if i in src:
-                best[src[i].publisher] = max(best.get(src[i].publisher, 0), src[i].credibility_score or 2)
-        return sum(best.values())
+    def support(ids: list[str]) -> int:
+        return _support(ids, src)
 
     rel = [e for e in edges if not e.stance and e.relationship not in ("about", FALLBACK)]
     degree = Counter(x for e in rel for x in (e.source, e.target))

@@ -16,7 +16,7 @@
       "label": "Sam Altman",
       "description": "Chief executive of OpenAI.",
       "properties": {
-        "priority": 0.29
+        "priority": 0.26
       },
       "source_ids": [
         "source_2"
@@ -26,9 +26,9 @@
       "id": "entity_6",
       "type": "person",
       "label": "Satya Nadella",
-      "description": "Chief executive of Microsoft who commented on the partnership.",
+      "description": "Chief executive of Microsoft.",
       "properties": {
-        "priority": 0.19
+        "priority": 0.17
       },
       "source_ids": [
         "source_1"
@@ -53,9 +53,9 @@
       "id": "entity_2",
       "type": "company",
       "label": "OpenAI",
-      "description": "Public benefit corporation whose governance is summarized in the source.",
+      "description": "Company whose governance is described in the source.",
       "properties": {
-        "priority": 0.95
+        "priority": 0.78
       },
       "source_ids": [
         "source_2",
@@ -67,9 +67,9 @@
       "id": "entity_3",
       "type": "company",
       "label": "OpenAI Group PBC",
-      "description": "Public benefit corporation named in the governance summary.",
+      "description": "Public benefit corporation described in the governance summary.",
       "properties": {
-        "priority": 0.57
+        "priority": 0.52
       },
       "source_ids": [
         "source_2",
@@ -82,7 +82,7 @@
       "label": "OpenAI Foundation",
       "description": "Entity that holds the power to appoint OpenAI Group PBC's board members.",
       "properties": {
-        "priority": 0.48
+        "priority": 0.35
       },
       "source_ids": [
         "source_2",
@@ -95,7 +95,7 @@
       "label": "Azure",
       "description": "Microsoft's cloud computing platform used by OpenAI.",
       "properties": {
-        "priority": 0.43
+        "priority": 0.48
       },
       "source_ids": [
         "source_3",
@@ -166,12 +166,12 @@
   "edges": [
     {
       "id": "edge_1",
-      "source": "entity_1",
-      "target": "entity_2",
-      "relationship": "invested in",
+      "source": "entity_4",
+      "target": "entity_3",
+      "relationship": "controls",
       "weight": 1.0,
       "stance": null,
-      "description": "Described as OpenAI's largest outside investor.",
+      "description": "Holds the power to appoint all members of the board of OpenAI Group PBC.",
       "evidence_ids": [],
       "source_ids": [
         "source_2",
@@ -180,12 +180,12 @@
     },
     {
       "id": "edge_2",
-      "source": "entity_4",
-      "target": "entity_3",
-      "relationship": "controls",
+      "source": "entity_1",
+      "target": "entity_2",
+      "relationship": "invested in",
       "weight": 1.0,
       "stance": null,
-      "description": "Holds the power to appoint all members of the board of directors.",
+      "description": "Described as OpenAI's largest outside investor.",
       "evidence_ids": [],
       "source_ids": [
         "source_2",
@@ -207,12 +207,12 @@
     },
     {
       "id": "edge_4",
-      "source": "entity_3",
-      "target": "entity_2",
+      "source": "entity_2",
+      "target": "entity_3",
       "relationship": "part of",
       "weight": 0.67,
       "stance": null,
-      "description": "The source names OpenAI Group PBC as the governance subject of the OpenAI summary.",
+      "description": "OpenAI Group PBC is the public benefit corporation under the OpenAI name; the source states it is a public benefit corporation.",
       "evidence_ids": [],
       "source_ids": [
         "source_2"
@@ -225,7 +225,7 @@
       "relationship": "owns",
       "weight": 0.33,
       "stance": null,
-      "description": "Microsoft holds a stake of about 27% in OpenAI Group PBC under the restructured agreement.",
+      "description": "Under the restructured agreement, Microsoft holds a stake of about 27% in OpenAI Group PBC.",
       "evidence_ids": [],
       "source_ids": [
         "source_1"
@@ -233,12 +233,12 @@
     },
     {
       "id": "edge_6",
-      "source": "entity_4",
-      "target": "entity_2",
-      "relationship": "controls",
+      "source": "entity_6",
+      "target": "entity_1",
+      "relationship": "leads",
       "weight": 0.33,
       "stance": null,
-      "description": "The source states the nonprofit retains control of the company and appoints its board.",
+      "description": "Satya Nadella is chief executive of Microsoft.",
       "evidence_ids": [],
       "source_ids": [
         "source_1"
@@ -246,19 +246,6 @@
     },
     {
       "id": "edge_7",
-      "source": "entity_6",
-      "target": "entity_1",
-      "relationship": "leads",
-      "weight": 0.33,
-      "stance": null,
-      "description": "Described as chief executive of Microsoft.",
-      "evidence_ids": [],
-      "source_ids": [
-        "source_1"
-      ]
-    },
-    {
-      "id": "edge_8",
       "source": "entity_2",
       "target": "entity_7",
       "relationship": "depends on",
@@ -271,10 +258,23 @@
       ]
     },
     {
+      "id": "edge_8",
+      "source": "entity_1",
+      "target": "entity_7",
+      "relationship": "owns",
+      "weight": 0.33,
+      "stance": null,
+      "description": "The source refers to Microsoft's Azure cloud.",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_3"
+      ]
+    },
+    {
       "id": "edge_9",
       "source": "entity_1",
       "target": "entity_2",
-      "relationship": "supplies",
+      "relationship": "partners with",
       "weight": 0.33,
       "stance": null,
       "description": "Microsoft has exclusive rights to sell OpenAI models through Azure until 2032.",
@@ -288,12 +288,11 @@
       "source": "entity_7",
       "target": "entity_1",
       "relationship": "part of",
-      "weight": 0.83,
+      "weight": 0.5,
       "stance": null,
-      "description": "Azure is Microsoft's cloud platform.",
+      "description": "Azure is a Microsoft product line, as implied by the source reporting Microsoft's quarter with Azure revenue.",
       "evidence_ids": [],
       "source_ids": [
-        "source_3",
         "source_4"
       ]
     },
@@ -343,7 +342,7 @@
       "stance": "contradicts",
       "description": "",
       "evidence_ids": [
-        "evidence_4"
+        "evidence_3"
       ],
       "source_ids": [
         "source_1"
@@ -372,7 +371,7 @@
       "source_id": "source_2",
       "stance": "contradicts",
       "excerpt": "Microsoft, OpenAI's largest outside investor, does not have a board seat and does not control OpenAI.",
-      "reasoning": "Directly states that Microsoft does not control OpenAI, contradicting the claim.",
+      "reasoning": "Directly addresses the claim by stating Microsoft does not control OpenAI.",
       "strength": 5
     },
     {
@@ -381,26 +380,26 @@
       "source_id": "source_2",
       "stance": "neutral",
       "excerpt": "The OpenAI Foundation holds the power to appoint all members of the board of directors of OpenAI Group PBC.",
-      "reasoning": "Describes who holds governance power over OpenAI Group PBC, relevant to whether Microsoft controls OpenAI.",
-      "strength": 2
+      "reasoning": "Identifies who holds board appointment power, relevant to control.",
+      "strength": 3
     },
     {
       "id": "evidence_3",
       "claim_id": "claim_1",
       "source_id": "source_1",
-      "stance": "neutral",
-      "excerpt": "Microsoft holds a stake of about 27% in OpenAI Group PBC.",
-      "reasoning": "Shows Microsoft's ownership stake, which bears on whether it controls OpenAI.",
-      "strength": 3
+      "stance": "contradicts",
+      "excerpt": "The OpenAI Foundation, a nonprofit, retains control of the company and appoints its board.",
+      "reasoning": "States that a nonprofit, not Microsoft, retains control of OpenAI, bearing directly on whether Microsoft controls OpenAI.",
+      "strength": 5
     },
     {
       "id": "evidence_4",
       "claim_id": "claim_1",
       "source_id": "source_1",
-      "stance": "contradicts",
-      "excerpt": "The OpenAI Foundation, a nonprofit, retains control of the company and appoints its board.",
-      "reasoning": "States that a different entity, the nonprofit foundation, retains control, which bears on the claim that Microsoft controls OpenAI.",
-      "strength": 5
+      "stance": "neutral",
+      "excerpt": "Under the restructured agreement, Microsoft holds a stake of about 27% in OpenAI Group PBC.",
+      "reasoning": "Gives Microsoft's equity stake, relevant to the degree of its influence over OpenAI.",
+      "strength": 3
     },
     {
       "id": "evidence_5",
@@ -408,7 +407,7 @@
       "source_id": "source_3",
       "stance": "neutral",
       "excerpt": "OpenAI depends on Microsoft's Azure cloud for most of its computing power.",
-      "reasoning": "States OpenAI's dependence on Microsoft's Azure, which the claim of control may rest on.",
+      "reasoning": "States OpenAI's dependence on Microsoft's Azure, which bears on the claim of Microsoft's control.",
       "strength": 4
     },
     {
@@ -417,7 +416,7 @@
       "source_id": "source_3",
       "stance": "supports",
       "excerpt": "Critics argue that Microsoft has effective control over OpenAI's strategy because of this dependence.",
-      "reasoning": "Presents an opinion that Microsoft controls OpenAI's strategy, directly relevant to the claim.",
+      "reasoning": "Opinion from critics asserting Microsoft controls OpenAI; relevant to the claim but is an evaluation, not a fact.",
       "strength": 5
     },
     {
@@ -426,7 +425,7 @@
       "source_id": "source_3",
       "stance": "neutral",
       "excerpt": "Microsoft has exclusive rights to sell OpenAI models through Azure until 2032.",
-      "reasoning": "States a contractual right relevant to Microsoft's relationship with OpenAI.",
+      "reasoning": "States a contractual sales right that bears on the degree of Microsoft's influence over OpenAI.",
       "strength": 4
     },
     {
@@ -435,7 +434,7 @@
       "source_id": "source_4",
       "stance": "neutral",
       "excerpt": "Microsoft reported quarterly revenue of $77.7 billion.",
-      "reasoning": "Reports Microsoft's revenue but says nothing about control of OpenAI, so it is context only.",
+      "reasoning": "Reports Microsoft's revenue, but says nothing about OpenAI or control over it.",
       "strength": 5
     }
   ],
@@ -449,7 +448,7 @@
       ],
       "contradicting_evidence": [
         "evidence_1",
-        "evidence_4"
+        "evidence_3"
       ],
       "explanation": "1 independent source(s) support and 2 contradict the claim (weighted 0.40 vs 1.20)."
     }
