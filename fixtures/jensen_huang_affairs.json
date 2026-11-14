@@ -1,0 +1,2714 @@
+{
+  "nodes": [
+    {
+      "id": "claim_1",
+      "type": "claim",
+      "label": "jenson huang affairs",
+      "description": "",
+      "properties": {},
+      "source_ids": []
+    },
+    {
+      "id": "entity_1",
+      "type": "person",
+      "label": "Jensen Huang",
+      "description": "Co-founder and former chief executive of Nvidia who resigned amid reported affairs.",
+      "properties": {},
+      "source_ids": [
+        "source_1",
+        "source_2",
+        "source_3",
+        "source_4",
+        "source_5",
+        "source_6",
+        "source_7",
+        "source_8",
+        "source_9",
+        "source_10",
+        "source_11",
+        "source_12"
+      ]
+    },
+    {
+      "id": "entity_2",
+      "type": "company",
+      "label": "Nvidia",
+      "description": "Chipmaker whose chief executive Jensen Huang resigned.",
+      "properties": {},
+      "source_ids": [
+        "source_1",
+        "source_2",
+        "source_3",
+        "source_4",
+        "source_5",
+        "source_6",
+        "source_7",
+        "source_8",
+        "source_9",
+        "source_10",
+        "source_11",
+        "source_12"
+      ]
+    },
+    {
+      "id": "entity_3",
+      "type": "person",
+      "label": "Alice Huang",
+      "description": "Nvidia customer and Chinese citizen with whom Huang was reportedly involved; head of Megaspeed.",
+      "properties": {},
+      "source_ids": [
+        "source_1",
+        "source_2",
+        "source_3",
+        "source_6",
+        "source_7",
+        "source_9",
+        "source_10",
+        "source_11",
+        "source_12"
+      ]
+    },
+    {
+      "id": "entity_4",
+      "type": "person",
+      "label": "Kimberly Powell",
+      "description": "Nvidia vice-president of healthcare reportedly in an affair with Huang.",
+      "properties": {},
+      "source_ids": [
+        "source_1",
+        "source_4",
+        "source_5",
+        "source_7"
+      ]
+    },
+    {
+      "id": "entity_5",
+      "type": "person",
+      "label": "Colette Kress",
+      "description": "Nvidia chief financial officer appointed interim chief executive.",
+      "properties": {},
+      "source_ids": [
+        "source_1",
+        "source_2"
+      ]
+    },
+    {
+      "id": "entity_6",
+      "type": "company",
+      "label": "Megaspeed",
+      "description": "Singapore-based datacentre firm headed by Alice Huang.",
+      "properties": {},
+      "source_ids": [
+        "source_1",
+        "source_2",
+        "source_3",
+        "source_7",
+        "source_9",
+        "source_10"
+      ]
+    },
+    {
+      "id": "entity_7",
+      "type": "company",
+      "label": "Wachtell, Lipton, Rosen & Katz",
+      "description": "Law firm appointed by Nvidia's board to investigate the relationship.",
+      "properties": {},
+      "source_ids": [
+        "source_1"
+      ]
+    },
+    {
+      "id": "entity_8",
+      "type": "person",
+      "label": "Donald Trump",
+      "description": "Former US president who defended Huang and suggested Tim Cook as successor.",
+      "properties": {},
+      "source_ids": [
+        "source_1",
+        "source_2",
+        "source_3",
+        "source_11"
+      ]
+    },
+    {
+      "id": "source_1",
+      "type": "source",
+      "label": "Jensen Huang resigns as Nvidia CEO after alleged affairs | Jensen Huang | The Guardian",
+      "description": "theguardian.com",
+      "properties": {
+        "url": "https://www.theguardian.com/technology/2026/nov/12/nvidia-ceo-jensen-huang-resigns",
+        "credibility": 4
+      },
+      "source_ids": [
+        "source_1"
+      ]
+    },
+    {
+      "id": "entity_9",
+      "type": "person",
+      "label": "Kang Wei",
+      "description": "Alice Huang's husband, who introduced her to Jensen Huang.",
+      "properties": {},
+      "source_ids": [
+        "source_2"
+      ]
+    },
+    {
+      "id": "entity_10",
+      "type": "person",
+      "label": "Marco Rubio",
+      "description": "US secretary of state who drafted a memo about Huang and Alice Huang.",
+      "properties": {},
+      "source_ids": [
+        "source_2"
+      ]
+    },
+    {
+      "id": "entity_11",
+      "type": "person",
+      "label": "Mark Kistenmacher",
+      "description": "Retail investor who filed a lawsuit against Nvidia and its CEO over the affair.",
+      "properties": {},
+      "source_ids": [
+        "source_2"
+      ]
+    },
+    {
+      "id": "source_2",
+      "type": "source",
+      "label": "A timeline of the affair scandal that sank Nvidia\u2019s Jensen Huang | Nvidia | The Guardian",
+      "description": "theguardian.com",
+      "properties": {
+        "url": "https://www.theguardian.com/technology/2026/nov/12/jensen-huang-affair-timeline",
+        "credibility": 4
+      },
+      "source_ids": [
+        "source_2"
+      ]
+    },
+    {
+      "id": "source_3",
+      "type": "source",
+      "label": "Nasdaq defies Nvidia impact as Huang faces espionage affair probe",
+      "description": "cnbc.com",
+      "properties": {
+        "url": "https://www.cnbc.com/2026/11/09/nasdaq-defies-nvidia-impact-huang-faces-espionage-affair-probe.html",
+        "credibility": 3
+      },
+      "source_ids": [
+        "source_3"
+      ]
+    },
+    {
+      "id": "entity_12",
+      "type": "company",
+      "label": "New York Times",
+      "description": "Newspaper that reported the alleged second affair, citing five employees.",
+      "properties": {},
+      "source_ids": [
+        "source_4",
+        "source_5",
+        "source_6",
+        "source_7",
+        "source_9"
+      ]
+    },
+    {
+      "id": "entity_13",
+      "type": "company",
+      "label": "Wall Street Journal",
+      "description": "Reported that the Nvidia board was preparing to oust Huang.",
+      "properties": {},
+      "source_ids": [
+        "source_4",
+        "source_5"
+      ]
+    },
+    {
+      "id": "entity_14",
+      "type": "event",
+      "label": "Congress",
+      "description": "Two House Republicans said Congress is gearing up to subpoena Huang over spy allegations.",
+      "properties": {},
+      "source_ids": [
+        "source_4"
+      ]
+    },
+    {
+      "id": "source_4",
+      "type": "source",
+      "label": "Jensen Huang accused of having another affair \u2014 with an Nvidia exec | TechCrunch",
+      "description": "techcrunch.com",
+      "properties": {
+        "url": "https://techcrunch.com/2026/11/11/jensen-huang-accused-of-having-another-affair-with-a-nvidia-exec/",
+        "credibility": 3
+      },
+      "source_ids": [
+        "source_4"
+      ]
+    },
+    {
+      "id": "entity_15",
+      "type": "person",
+      "label": "Brian Mast",
+      "description": "House Foreign Affairs Committee Chairman who commented on Huang and Nvidia.",
+      "properties": {},
+      "source_ids": [
+        "source_5"
+      ]
+    },
+    {
+      "id": "entity_16",
+      "type": "company",
+      "label": "House Foreign Affairs Committee",
+      "description": "Congressional committee where Huang was expected to testify.",
+      "properties": {},
+      "source_ids": [
+        "source_5"
+      ]
+    },
+    {
+      "id": "entity_17",
+      "type": "company",
+      "label": "Reuters",
+      "description": "Outlet reporting another alleged extramarital affair by Huang.",
+      "properties": {},
+      "source_ids": [
+        "source_5"
+      ]
+    },
+    {
+      "id": "source_5",
+      "type": "source",
+      "label": "The unfolding Jensen Huang scandal: a timeline | TechCrunch",
+      "description": "techcrunch.com",
+      "properties": {
+        "url": "https://techcrunch.com/2026/11/13/nvidia-ceo-jensen-huangs-affair-with-alleged-chinese-spy-a-timeline/",
+        "credibility": 3
+      },
+      "source_ids": [
+        "source_5"
+      ]
+    },
+    {
+      "id": "entity_18",
+      "type": "person",
+      "label": "Lori Huang",
+      "description": "Wife of Jensen Huang.",
+      "properties": {},
+      "source_ids": [
+        "source_6",
+        "source_9",
+        "source_11"
+      ]
+    },
+    {
+      "id": "entity_19",
+      "type": "company",
+      "label": "FBI",
+      "description": "U.S. agency reportedly looking into Huang's affair with Alice Huang.",
+      "properties": {},
+      "source_ids": [
+        "source_6"
+      ]
+    },
+    {
+      "id": "source_6",
+      "type": "source",
+      "label": "What we know after Jensen Huang resigns as Nvidia CEO | AP News",
+      "description": "apnews.com",
+      "properties": {
+        "url": "https://apnews.com/article/nvidia-jensen-huang-resigns-ceo-affairs-314714d463cf578cbb0dbd49de903107",
+        "credibility": 4
+      },
+      "source_ids": [
+        "source_6"
+      ]
+    },
+    {
+      "id": "source_7",
+      "type": "source",
+      "label": "Nvidia boss Jensen Huang caught in ANOTHER cheating scandal after Chinese spy affair",
+      "description": "gbnews.com",
+      "properties": {
+        "url": "https://www.gbnews.com/news/world/nvidia-boss-jensen-huang-caught-cheating-scandal-chinese-spy-affair",
+        "credibility": 3
+      },
+      "source_ids": [
+        "source_7"
+      ]
+    },
+    {
+      "id": "source_8",
+      "type": "source",
+      "label": "Nvidia CEO Jensen Huang admits to affair; board orders investigation | South China Morning Post",
+      "description": "scmp.com",
+      "properties": {
+        "url": "https://www.scmp.com/tech/article/3373724/nvidia-ceo-jensen-huang-admits-affair-board-orders-investigation?pgtype=topic",
+        "credibility": 4
+      },
+      "source_ids": [
+        "source_8"
+      ]
+    },
+    {
+      "id": "entity_20",
+      "type": "company",
+      "label": "Financial Times",
+      "description": "Outlet that obtained Jensen Huang's internal message and reported the claims.",
+      "properties": {},
+      "source_ids": [
+        "source_9"
+      ]
+    },
+    {
+      "id": "entity_21",
+      "type": "company",
+      "label": "Bloomberg News",
+      "description": "Outlet to which Jensen Huang spoke in October about his interactions with Alice Huang.",
+      "properties": {},
+      "source_ids": [
+        "source_9"
+      ]
+    },
+    {
+      "id": "entity_22",
+      "type": "company",
+      "label": "Chinese Ministry of State Security",
+      "description": "Chinese intelligence agency that a classified memo said may have tried to recruit Alice Huang.",
+      "properties": {},
+      "source_ids": [
+        "source_9"
+      ]
+    },
+    {
+      "id": "source_9",
+      "type": "source",
+      "label": "Nvidia CEO Jensen Huang Admits Affair, Company Probing Alleged Chinese Recruitment Plot, Report - Jingletree",
+      "description": "jingletree.com",
+      "properties": {
+        "url": "https://jingletree.com/nvidia-ceo-jensen-huang-admits-affair-company-probing-alleged-chinese-recruitment-plot-report-304034.html",
+        "credibility": 2
+      },
+      "source_ids": [
+        "source_9"
+      ]
+    },
+    {
+      "id": "entity_23",
+      "type": "company",
+      "label": "House Select Committee on China",
+      "description": "US congressional committee that described Alice Huang as a publicly reported Chinese intelligence asset.",
+      "properties": {},
+      "source_ids": [
+        "source_10"
+      ]
+    },
+    {
+      "id": "entity_24",
+      "type": "company",
+      "label": "Chinese Foreign Ministry",
+      "description": "Chinese government ministry that called the spy allegation unsubstantiated.",
+      "properties": {},
+      "source_ids": [
+        "source_10"
+      ]
+    },
+    {
+      "id": "source_10",
+      "type": "source",
+      "label": "Who Is Alice Huang? Nvidia CEO Jensen Huang\u2019s Alleged Affair and...",
+      "description": "newsfinale.com",
+      "properties": {
+        "url": "https://newsfinale.com/crime/who-is-alice-huang-nvidia-ceo-jensen-huangs-alleged-affair-and-chinese-spy-claims-explained/",
+        "credibility": 2
+      },
+      "source_ids": [
+        "source_10"
+      ]
+    },
+    {
+      "id": "entity_25",
+      "type": "company",
+      "label": "Megaspeed International",
+      "description": "Computing and data center operator that employs Alice Huang.",
+      "properties": {},
+      "source_ids": [
+        "source_11"
+      ]
+    },
+    {
+      "id": "entity_26",
+      "type": "person",
+      "label": "Tim Cook",
+      "description": "Former Apple CEO suggested by Trump as a replacement for Huang.",
+      "properties": {},
+      "source_ids": [
+        "source_11"
+      ]
+    },
+    {
+      "id": "entity_27",
+      "type": "person",
+      "label": "Elon Musk",
+      "description": "Tesla and SpaceX creator who said it would be an honor to hire Huang.",
+      "properties": {},
+      "source_ids": [
+        "source_11"
+      ]
+    },
+    {
+      "id": "source_11",
+      "type": "source",
+      "label": "Jensen Huang Out At Nvidia After Affair Scandals\u2014Here's Who Could Replace Him",
+      "description": "forbes.com",
+      "properties": {
+        "url": "https://www.forbes.com/sites/maryroeloffs/2026/11/12/jensen-huang-out-at-nvidia-after-affair-scandals/",
+        "credibility": 3
+      },
+      "source_ids": [
+        "source_11"
+      ]
+    },
+    {
+      "id": "entity_28",
+      "type": "company",
+      "label": "China's Ministry of State Security",
+      "description": "Chinese intelligence agency that the woman has been pointed out as working for.",
+      "properties": {},
+      "source_ids": [
+        "source_12"
+      ]
+    },
+    {
+      "id": "source_12",
+      "type": "source",
+      "label": "Jensen Huang Admits to Affair, Saying \"No Excuse\"\u2026 NVIDIA Board Launches Investigation",
+      "description": "sbs.co.kr",
+      "properties": {
+        "url": "https://news.sbs.co.kr/english/article.do?news_id=N1008836451",
+        "credibility": 3
+      },
+      "source_ids": [
+        "source_12"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge_1",
+      "source": "entity_1",
+      "target": "entity_2",
+      "relationship": "resigned as chief executive of",
+      "stance": null,
+      "description": "Resigned effective immediately after reports of affairs.",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_1"
+      ]
+    },
+    {
+      "id": "edge_2",
+      "source": "entity_3",
+      "target": "entity_6",
+      "relationship": "head of",
+      "stance": null,
+      "description": "Businesswoman and head of the Singapore-based datacentre firm.",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_1"
+      ]
+    },
+    {
+      "id": "edge_3",
+      "source": "entity_4",
+      "target": "entity_2",
+      "relationship": "employed by",
+      "stance": null,
+      "description": "Vice-president of healthcare at Nvidia.",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_1"
+      ]
+    },
+    {
+      "id": "edge_4",
+      "source": "entity_5",
+      "target": "entity_2",
+      "relationship": "interim successor at",
+      "stance": null,
+      "description": "Replaces Huang on an interim basis.",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_1"
+      ]
+    },
+    {
+      "id": "edge_5",
+      "source": "entity_7",
+      "target": "entity_1",
+      "relationship": "investigating",
+      "stance": null,
+      "description": "Hired by Nvidia's board to investigate the relationship with Alice Huang.",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_1"
+      ]
+    },
+    {
+      "id": "edge_6",
+      "source": "source_1",
+      "target": "entity_4",
+      "relationship": "mentions",
+      "stance": null,
+      "description": "",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_1"
+      ]
+    },
+    {
+      "id": "edge_7",
+      "source": "source_1",
+      "target": "entity_7",
+      "relationship": "mentions",
+      "stance": null,
+      "description": "",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_1"
+      ]
+    },
+    {
+      "id": "edge_8",
+      "source": "source_1",
+      "target": "entity_5",
+      "relationship": "mentions",
+      "stance": null,
+      "description": "",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_1"
+      ]
+    },
+    {
+      "id": "edge_9",
+      "source": "source_1",
+      "target": "entity_6",
+      "relationship": "mentions",
+      "stance": null,
+      "description": "",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_1"
+      ]
+    },
+    {
+      "id": "edge_10",
+      "source": "source_1",
+      "target": "entity_3",
+      "relationship": "mentions",
+      "stance": null,
+      "description": "",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_1"
+      ]
+    },
+    {
+      "id": "edge_11",
+      "source": "source_1",
+      "target": "entity_8",
+      "relationship": "mentions",
+      "stance": null,
+      "description": "",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_1"
+      ]
+    },
+    {
+      "id": "edge_12",
+      "source": "source_1",
+      "target": "entity_1",
+      "relationship": "mentions",
+      "stance": null,
+      "description": "",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_1"
+      ]
+    },
+    {
+      "id": "edge_13",
+      "source": "source_1",
+      "target": "entity_2",
+      "relationship": "mentions",
+      "stance": null,
+      "description": "",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_1"
+      ]
+    },
+    {
+      "id": "edge_14",
+      "source": "entity_1",
+      "target": "entity_2",
+      "relationship": "led",
+      "stance": null,
+      "description": "Huang was CEO of Nvidia for more than 30 years.",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_2"
+      ]
+    },
+    {
+      "id": "edge_15",
+      "source": "entity_1",
+      "target": "entity_2",
+      "relationship": "stepped down as CEO of",
+      "stance": null,
+      "description": "Huang stepped down on 12 November 2026.",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_2"
+      ]
+    },
+    {
+      "id": "edge_16",
+      "source": "entity_1",
+      "target": "entity_3",
+      "relationship": "had affair with",
+      "stance": null,
+      "description": "Huang admitted to an extramarital affair; the woman was alleged to be a Chinese spy.",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_2"
+      ]
+    },
+    {
+      "id": "edge_17",
+      "source": "entity_3",
+      "target": "entity_6",
+      "relationship": "executive at",
+      "stance": null,
+      "description": "Alice Huang was a top executive at Megaspeed.",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_2",
+        "source_10"
+      ]
+    },
+    {
+      "id": "edge_18",
+      "source": "entity_9",
+      "target": "entity_3",
+      "relationship": "spouse of",
+      "stance": null,
+      "description": "Kang Wei is Alice Huang's husband.",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_2"
+      ]
+    },
+    {
+      "id": "edge_19",
+      "source": "entity_5",
+      "target": "entity_2",
+      "relationship": "interim CEO of",
+      "stance": null,
+      "description": "Kress serves as interim CEO after Huang's departure.",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_2"
+      ]
+    },
+    {
+      "id": "edge_20",
+      "source": "entity_11",
+      "target": "entity_2",
+      "relationship": "filed lawsuit against",
+      "stance": null,
+      "description": "Kistenmacher accused Nvidia of misleading investors over Huang's affair.",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_2"
+      ]
+    },
+    {
+      "id": "edge_21",
+      "source": "source_2",
+      "target": "entity_5",
+      "relationship": "mentions",
+      "stance": null,
+      "description": "",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_2"
+      ]
+    },
+    {
+      "id": "edge_22",
+      "source": "source_2",
+      "target": "entity_6",
+      "relationship": "mentions",
+      "stance": null,
+      "description": "",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_2"
+      ]
+    },
+    {
+      "id": "edge_23",
+      "source": "source_2",
+      "target": "entity_10",
+      "relationship": "mentions",
+      "stance": null,
+      "description": "",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_2"
+      ]
+    },
+    {
+      "id": "edge_24",
+      "source": "source_2",
+      "target": "entity_3",
+      "relationship": "mentions",
+      "stance": null,
+      "description": "",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_2"
+      ]
+    },
+    {
+      "id": "edge_25",
+      "source": "source_2",
+      "target": "entity_8",
+      "relationship": "mentions",
+      "stance": null,
+      "description": "",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_2"
+      ]
+    },
+    {
+      "id": "edge_26",
+      "source": "source_2",
+      "target": "entity_9",
+      "relationship": "mentions",
+      "stance": null,
+      "description": "",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_2"
+      ]
+    },
+    {
+      "id": "edge_27",
+      "source": "source_2",
+      "target": "entity_1",
+      "relationship": "mentions",
+      "stance": null,
+      "description": "",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_2"
+      ]
+    },
+    {
+      "id": "edge_28",
+      "source": "source_2",
+      "target": "entity_11",
+      "relationship": "mentions",
+      "stance": null,
+      "description": "",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_2"
+      ]
+    },
+    {
+      "id": "edge_29",
+      "source": "source_2",
+      "target": "entity_2",
+      "relationship": "mentions",
+      "stance": null,
+      "description": "",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_2"
+      ]
+    },
+    {
+      "id": "edge_30",
+      "source": "entity_1",
+      "target": "entity_2",
+      "relationship": "is CEO of",
+      "stance": null,
+      "description": "",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_3",
+        "source_9"
+      ]
+    },
+    {
+      "id": "edge_31",
+      "source": "entity_1",
+      "target": "entity_3",
+      "relationship": "admitted affair with",
+      "stance": null,
+      "description": "",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_3",
+        "source_11"
+      ]
+    },
+    {
+      "id": "edge_32",
+      "source": "entity_3",
+      "target": "entity_6",
+      "relationship": "works for",
+      "stance": null,
+      "description": "",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_3"
+      ]
+    },
+    {
+      "id": "edge_33",
+      "source": "entity_6",
+      "target": "entity_2",
+      "relationship": "is customer of",
+      "stance": null,
+      "description": "",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_3"
+      ]
+    },
+    {
+      "id": "edge_34",
+      "source": "entity_8",
+      "target": "entity_1",
+      "relationship": "reacted to news of",
+      "stance": null,
+      "description": "",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_3"
+      ]
+    },
+    {
+      "id": "edge_35",
+      "source": "source_3",
+      "target": "entity_6",
+      "relationship": "mentions",
+      "stance": null,
+      "description": "",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_3"
+      ]
+    },
+    {
+      "id": "edge_36",
+      "source": "source_3",
+      "target": "entity_3",
+      "relationship": "mentions",
+      "stance": null,
+      "description": "",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_3"
+      ]
+    },
+    {
+      "id": "edge_37",
+      "source": "source_3",
+      "target": "entity_8",
+      "relationship": "mentions",
+      "stance": null,
+      "description": "",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_3"
+      ]
+    },
+    {
+      "id": "edge_38",
+      "source": "source_3",
+      "target": "entity_1",
+      "relationship": "mentions",
+      "stance": null,
+      "description": "",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_3"
+      ]
+    },
+    {
+      "id": "edge_39",
+      "source": "source_3",
+      "target": "entity_2",
+      "relationship": "mentions",
+      "stance": null,
+      "description": "",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_3"
+      ]
+    },
+    {
+      "id": "edge_40",
+      "source": "entity_1",
+      "target": "entity_2",
+      "relationship": "chief executive of",
+      "stance": null,
+      "description": "Described as Nvidia CEO.",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_4",
+        "source_7",
+        "source_8",
+        "source_11"
+      ]
+    },
+    {
+      "id": "edge_41",
+      "source": "entity_1",
+      "target": "entity_2",
+      "relationship": "co-founded",
+      "stance": null,
+      "description": "Co-founded the company in 1993.",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_4",
+        "source_5",
+        "source_6"
+      ]
+    },
+    {
+      "id": "edge_42",
+      "source": "entity_1",
+      "target": "entity_4",
+      "relationship": "alleged affair with",
+      "stance": null,
+      "description": "New York Times reports Huang is accused of an extramarital affair with Powell.",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_4"
+      ]
+    },
+    {
+      "id": "edge_43",
+      "source": "entity_4",
+      "target": "entity_2",
+      "relationship": "works at",
+      "stance": null,
+      "description": "Nvidia's vice president of health care.",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_4"
+      ]
+    },
+    {
+      "id": "edge_44",
+      "source": "entity_12",
+      "target": "entity_1",
+      "relationship": "reported",
+      "stance": null,
+      "description": "Reported the alleged affair with Powell.",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_4"
+      ]
+    },
+    {
+      "id": "edge_45",
+      "source": "entity_13",
+      "target": "entity_2",
+      "relationship": "reported",
+      "stance": null,
+      "description": "Reported the Nvidia board was preparing to oust Huang.",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_4"
+      ]
+    },
+    {
+      "id": "edge_46",
+      "source": "source_4",
+      "target": "entity_4",
+      "relationship": "mentions",
+      "stance": null,
+      "description": "",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_4"
+      ]
+    },
+    {
+      "id": "edge_47",
+      "source": "source_4",
+      "target": "entity_14",
+      "relationship": "mentions",
+      "stance": null,
+      "description": "",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_4"
+      ]
+    },
+    {
+      "id": "edge_48",
+      "source": "source_4",
+      "target": "entity_13",
+      "relationship": "mentions",
+      "stance": null,
+      "description": "",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_4"
+      ]
+    },
+    {
+      "id": "edge_49",
+      "source": "source_4",
+      "target": "entity_12",
+      "relationship": "mentions",
+      "stance": null,
+      "description": "",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_4"
+      ]
+    },
+    {
+      "id": "edge_50",
+      "source": "source_4",
+      "target": "entity_1",
+      "relationship": "mentions",
+      "stance": null,
+      "description": "",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_4"
+      ]
+    },
+    {
+      "id": "edge_51",
+      "source": "source_4",
+      "target": "entity_2",
+      "relationship": "mentions",
+      "stance": null,
+      "description": "",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_4"
+      ]
+    },
+    {
+      "id": "edge_52",
+      "source": "entity_1",
+      "target": "entity_2",
+      "relationship": "resigned from",
+      "stance": null,
+      "description": "Huang resigned as CEO following an affair.",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_5"
+      ]
+    },
+    {
+      "id": "edge_53",
+      "source": "entity_1",
+      "target": "entity_4",
+      "relationship": "had affair with",
+      "stance": null,
+      "description": "Reported by The New York Times.",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_5"
+      ]
+    },
+    {
+      "id": "edge_54",
+      "source": "entity_15",
+      "target": "entity_16",
+      "relationship": "chairs",
+      "stance": null,
+      "description": "",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_5"
+      ]
+    },
+    {
+      "id": "edge_55",
+      "source": "entity_1",
+      "target": "entity_16",
+      "relationship": "expected to testify before",
+      "stance": null,
+      "description": "Huang confirmed he would testify in Congress before Thanksgiving.",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_5"
+      ]
+    },
+    {
+      "id": "edge_56",
+      "source": "source_5",
+      "target": "entity_4",
+      "relationship": "mentions",
+      "stance": null,
+      "description": "",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_5"
+      ]
+    },
+    {
+      "id": "edge_57",
+      "source": "source_5",
+      "target": "entity_13",
+      "relationship": "mentions",
+      "stance": null,
+      "description": "",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_5"
+      ]
+    },
+    {
+      "id": "edge_58",
+      "source": "source_5",
+      "target": "entity_16",
+      "relationship": "mentions",
+      "stance": null,
+      "description": "",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_5"
+      ]
+    },
+    {
+      "id": "edge_59",
+      "source": "source_5",
+      "target": "entity_12",
+      "relationship": "mentions",
+      "stance": null,
+      "description": "",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_5"
+      ]
+    },
+    {
+      "id": "edge_60",
+      "source": "source_5",
+      "target": "entity_17",
+      "relationship": "mentions",
+      "stance": null,
+      "description": "",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_5"
+      ]
+    },
+    {
+      "id": "edge_61",
+      "source": "source_5",
+      "target": "entity_15",
+      "relationship": "mentions",
+      "stance": null,
+      "description": "",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_5"
+      ]
+    },
+    {
+      "id": "edge_62",
+      "source": "source_5",
+      "target": "entity_1",
+      "relationship": "mentions",
+      "stance": null,
+      "description": "",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_5"
+      ]
+    },
+    {
+      "id": "edge_63",
+      "source": "source_5",
+      "target": "entity_2",
+      "relationship": "mentions",
+      "stance": null,
+      "description": "",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_5"
+      ]
+    },
+    {
+      "id": "edge_64",
+      "source": "entity_1",
+      "target": "entity_2",
+      "relationship": "resigned as CEO of",
+      "stance": null,
+      "description": "Huang resigned from his top post after reports of affairs.",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_6"
+      ]
+    },
+    {
+      "id": "edge_65",
+      "source": "entity_1",
+      "target": "entity_18",
+      "relationship": "married to",
+      "stance": null,
+      "description": "Lori Huang is named as his wife.",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_6",
+        "source_11"
+      ]
+    },
+    {
+      "id": "edge_66",
+      "source": "entity_12",
+      "target": "entity_3",
+      "relationship": "reported affair with",
+      "stance": null,
+      "description": "The outlet reported Huang had an affair with a businesswoman U.S. intelligence suspects to be a Chinese spy.",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_6"
+      ]
+    },
+    {
+      "id": "edge_67",
+      "source": "entity_19",
+      "target": "entity_1",
+      "relationship": "investigating",
+      "stance": null,
+      "description": "Trump said the FBI is looking into Huang's affair with Alice Huang; probe status unclear.",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_6"
+      ]
+    },
+    {
+      "id": "edge_68",
+      "source": "source_6",
+      "target": "entity_19",
+      "relationship": "mentions",
+      "stance": null,
+      "description": "",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_6"
+      ]
+    },
+    {
+      "id": "edge_69",
+      "source": "source_6",
+      "target": "entity_12",
+      "relationship": "mentions",
+      "stance": null,
+      "description": "",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_6"
+      ]
+    },
+    {
+      "id": "edge_70",
+      "source": "source_6",
+      "target": "entity_3",
+      "relationship": "mentions",
+      "stance": null,
+      "description": "",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_6"
+      ]
+    },
+    {
+      "id": "edge_71",
+      "source": "source_6",
+      "target": "entity_18",
+      "relationship": "mentions",
+      "stance": null,
+      "description": "",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_6"
+      ]
+    },
+    {
+      "id": "edge_72",
+      "source": "source_6",
+      "target": "entity_1",
+      "relationship": "mentions",
+      "stance": null,
+      "description": "",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_6"
+      ]
+    },
+    {
+      "id": "edge_73",
+      "source": "source_6",
+      "target": "entity_2",
+      "relationship": "mentions",
+      "stance": null,
+      "description": "",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_6"
+      ]
+    },
+    {
+      "id": "edge_74",
+      "source": "entity_4",
+      "target": "entity_2",
+      "relationship": "vice president of healthcare at",
+      "stance": null,
+      "description": "Powell reports to Huang.",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_7"
+      ]
+    },
+    {
+      "id": "edge_75",
+      "source": "entity_3",
+      "target": "entity_6",
+      "relationship": "former executive of",
+      "stance": null,
+      "description": "",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_7"
+      ]
+    },
+    {
+      "id": "edge_76",
+      "source": "entity_12",
+      "target": "entity_1",
+      "relationship": "reported alleged affair of",
+      "stance": null,
+      "description": "Outlet reported that five former or current employees alleged a second affair.",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_7"
+      ]
+    },
+    {
+      "id": "edge_77",
+      "source": "source_7",
+      "target": "entity_4",
+      "relationship": "mentions",
+      "stance": null,
+      "description": "",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_7"
+      ]
+    },
+    {
+      "id": "edge_78",
+      "source": "source_7",
+      "target": "entity_6",
+      "relationship": "mentions",
+      "stance": null,
+      "description": "",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_7"
+      ]
+    },
+    {
+      "id": "edge_79",
+      "source": "source_7",
+      "target": "entity_3",
+      "relationship": "mentions",
+      "stance": null,
+      "description": "",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_7"
+      ]
+    },
+    {
+      "id": "edge_80",
+      "source": "source_7",
+      "target": "entity_12",
+      "relationship": "mentions",
+      "stance": null,
+      "description": "",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_7"
+      ]
+    },
+    {
+      "id": "edge_81",
+      "source": "source_7",
+      "target": "entity_1",
+      "relationship": "mentions",
+      "stance": null,
+      "description": "",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_7"
+      ]
+    },
+    {
+      "id": "edge_82",
+      "source": "source_7",
+      "target": "entity_2",
+      "relationship": "mentions",
+      "stance": null,
+      "description": "",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_7"
+      ]
+    },
+    {
+      "id": "edge_83",
+      "source": "entity_2",
+      "target": "entity_1",
+      "relationship": "announced investigation into",
+      "stance": null,
+      "description": "The board announced an independent investigation after Huang's memo.",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_8"
+      ]
+    },
+    {
+      "id": "edge_84",
+      "source": "source_8",
+      "target": "entity_1",
+      "relationship": "mentions",
+      "stance": null,
+      "description": "",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_8"
+      ]
+    },
+    {
+      "id": "edge_85",
+      "source": "source_8",
+      "target": "entity_2",
+      "relationship": "mentions",
+      "stance": null,
+      "description": "",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_8"
+      ]
+    },
+    {
+      "id": "edge_86",
+      "source": "entity_1",
+      "target": "entity_18",
+      "relationship": "is married to",
+      "stance": null,
+      "description": "Stated in the source.",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_9"
+      ]
+    },
+    {
+      "id": "edge_87",
+      "source": "entity_3",
+      "target": "entity_6",
+      "relationship": "is executive at",
+      "stance": null,
+      "description": "Stated in the source.",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_9"
+      ]
+    },
+    {
+      "id": "edge_88",
+      "source": "entity_6",
+      "target": "entity_2",
+      "relationship": "did business with",
+      "stance": null,
+      "description": "Stated in the source.",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_9"
+      ]
+    },
+    {
+      "id": "edge_89",
+      "source": "entity_1",
+      "target": "entity_3",
+      "relationship": "reportedly had romantic relationship with",
+      "stance": null,
+      "description": "Reported by the Financial Times citing top US officials; Jensen did not name the person.",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_9"
+      ]
+    },
+    {
+      "id": "edge_90",
+      "source": "entity_3",
+      "target": "entity_22",
+      "relationship": "possible recruit of",
+      "stance": null,
+      "description": "Per a classified memo cited by the Financial Times and New York Times.",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_9"
+      ]
+    },
+    {
+      "id": "edge_91",
+      "source": "source_9",
+      "target": "entity_20",
+      "relationship": "mentions",
+      "stance": null,
+      "description": "",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_9"
+      ]
+    },
+    {
+      "id": "edge_92",
+      "source": "source_9",
+      "target": "entity_21",
+      "relationship": "mentions",
+      "stance": null,
+      "description": "",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_9"
+      ]
+    },
+    {
+      "id": "edge_93",
+      "source": "source_9",
+      "target": "entity_6",
+      "relationship": "mentions",
+      "stance": null,
+      "description": "",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_9"
+      ]
+    },
+    {
+      "id": "edge_94",
+      "source": "source_9",
+      "target": "entity_22",
+      "relationship": "mentions",
+      "stance": null,
+      "description": "",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_9"
+      ]
+    },
+    {
+      "id": "edge_95",
+      "source": "source_9",
+      "target": "entity_3",
+      "relationship": "mentions",
+      "stance": null,
+      "description": "",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_9"
+      ]
+    },
+    {
+      "id": "edge_96",
+      "source": "source_9",
+      "target": "entity_12",
+      "relationship": "mentions",
+      "stance": null,
+      "description": "",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_9"
+      ]
+    },
+    {
+      "id": "edge_97",
+      "source": "source_9",
+      "target": "entity_18",
+      "relationship": "mentions",
+      "stance": null,
+      "description": "",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_9"
+      ]
+    },
+    {
+      "id": "edge_98",
+      "source": "source_9",
+      "target": "entity_1",
+      "relationship": "mentions",
+      "stance": null,
+      "description": "",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_9"
+      ]
+    },
+    {
+      "id": "edge_99",
+      "source": "source_9",
+      "target": "entity_2",
+      "relationship": "mentions",
+      "stance": null,
+      "description": "",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_9"
+      ]
+    },
+    {
+      "id": "edge_100",
+      "source": "entity_1",
+      "target": "entity_2",
+      "relationship": "CEO of",
+      "stance": null,
+      "description": "Jensen Huang is described as Nvidia CEO.",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_10"
+      ]
+    },
+    {
+      "id": "edge_101",
+      "source": "entity_1",
+      "target": "entity_3",
+      "relationship": "acknowledged infidelity",
+      "stance": null,
+      "description": "Jensen acknowledged infidelity in an open letter without naming the woman; the source links the alleged affair to Alice.",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_10"
+      ]
+    },
+    {
+      "id": "edge_102",
+      "source": "entity_23",
+      "target": "entity_3",
+      "relationship": "described",
+      "stance": null,
+      "description": "Committee called her a publicly reported Chinese intelligence asset in a Nov. 5 statement.",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_10"
+      ]
+    },
+    {
+      "id": "edge_103",
+      "source": "entity_24",
+      "target": "entity_3",
+      "relationship": "rejected spy claim about",
+      "stance": null,
+      "description": "Spokesperson Guo Jiakun called the spy allegation unsubstantiated.",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_10"
+      ]
+    },
+    {
+      "id": "edge_104",
+      "source": "source_10",
+      "target": "entity_23",
+      "relationship": "mentions",
+      "stance": null,
+      "description": "",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_10"
+      ]
+    },
+    {
+      "id": "edge_105",
+      "source": "source_10",
+      "target": "entity_6",
+      "relationship": "mentions",
+      "stance": null,
+      "description": "",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_10"
+      ]
+    },
+    {
+      "id": "edge_106",
+      "source": "source_10",
+      "target": "entity_24",
+      "relationship": "mentions",
+      "stance": null,
+      "description": "",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_10"
+      ]
+    },
+    {
+      "id": "edge_107",
+      "source": "source_10",
+      "target": "entity_3",
+      "relationship": "mentions",
+      "stance": null,
+      "description": "",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_10"
+      ]
+    },
+    {
+      "id": "edge_108",
+      "source": "source_10",
+      "target": "entity_1",
+      "relationship": "mentions",
+      "stance": null,
+      "description": "",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_10"
+      ]
+    },
+    {
+      "id": "edge_109",
+      "source": "source_10",
+      "target": "entity_2",
+      "relationship": "mentions",
+      "stance": null,
+      "description": "",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_10"
+      ]
+    },
+    {
+      "id": "edge_110",
+      "source": "entity_3",
+      "target": "entity_25",
+      "relationship": "works at",
+      "stance": null,
+      "description": "",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_11"
+      ]
+    },
+    {
+      "id": "edge_111",
+      "source": "entity_8",
+      "target": "entity_1",
+      "relationship": "suggested replacement of",
+      "stance": null,
+      "description": "Trump said Tim Cook should replace Huang.",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_11"
+      ]
+    },
+    {
+      "id": "edge_112",
+      "source": "entity_27",
+      "target": "entity_1",
+      "relationship": "commented on",
+      "stance": null,
+      "description": "Musk said it would be an honor to hire Huang.",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_11"
+      ]
+    },
+    {
+      "id": "edge_113",
+      "source": "source_11",
+      "target": "entity_27",
+      "relationship": "mentions",
+      "stance": null,
+      "description": "",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_11"
+      ]
+    },
+    {
+      "id": "edge_114",
+      "source": "source_11",
+      "target": "entity_3",
+      "relationship": "mentions",
+      "stance": null,
+      "description": "",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_11"
+      ]
+    },
+    {
+      "id": "edge_115",
+      "source": "source_11",
+      "target": "entity_8",
+      "relationship": "mentions",
+      "stance": null,
+      "description": "",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_11"
+      ]
+    },
+    {
+      "id": "edge_116",
+      "source": "source_11",
+      "target": "entity_25",
+      "relationship": "mentions",
+      "stance": null,
+      "description": "",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_11"
+      ]
+    },
+    {
+      "id": "edge_117",
+      "source": "source_11",
+      "target": "entity_26",
+      "relationship": "mentions",
+      "stance": null,
+      "description": "",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_11"
+      ]
+    },
+    {
+      "id": "edge_118",
+      "source": "source_11",
+      "target": "entity_1",
+      "relationship": "mentions",
+      "stance": null,
+      "description": "",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_11"
+      ]
+    },
+    {
+      "id": "edge_119",
+      "source": "source_11",
+      "target": "entity_18",
+      "relationship": "mentions",
+      "stance": null,
+      "description": "",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_11"
+      ]
+    },
+    {
+      "id": "edge_120",
+      "source": "source_11",
+      "target": "entity_2",
+      "relationship": "mentions",
+      "stance": null,
+      "description": "",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_11"
+      ]
+    },
+    {
+      "id": "edge_121",
+      "source": "entity_1",
+      "target": "entity_2",
+      "relationship": "founded",
+      "stance": null,
+      "description": "Described as founder and CEO of NVIDIA.",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_12"
+      ]
+    },
+    {
+      "id": "edge_122",
+      "source": "entity_2",
+      "target": "entity_1",
+      "relationship": "launched investigation into",
+      "stance": null,
+      "description": "Board launched an independent investigation into reports that Huang was targeted by a foreign intelligence agency.",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_12"
+      ]
+    },
+    {
+      "id": "edge_123",
+      "source": "entity_1",
+      "target": "entity_3",
+      "relationship": "allegedly in relationship with",
+      "stance": null,
+      "description": "Faced allegations of a romantic relationship; source says Huang admitted to an affair.",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_12"
+      ]
+    },
+    {
+      "id": "edge_124",
+      "source": "entity_3",
+      "target": "entity_28",
+      "relationship": "pointed out as spy for",
+      "stance": null,
+      "description": "Has been pointed out as a spy for China's MSS.",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_12"
+      ]
+    },
+    {
+      "id": "edge_125",
+      "source": "source_12",
+      "target": "entity_1",
+      "relationship": "mentions",
+      "stance": null,
+      "description": "",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_12"
+      ]
+    },
+    {
+      "id": "edge_126",
+      "source": "source_12",
+      "target": "entity_28",
+      "relationship": "mentions",
+      "stance": null,
+      "description": "",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_12"
+      ]
+    },
+    {
+      "id": "edge_127",
+      "source": "source_12",
+      "target": "entity_3",
+      "relationship": "mentions",
+      "stance": null,
+      "description": "",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_12"
+      ]
+    },
+    {
+      "id": "edge_128",
+      "source": "source_12",
+      "target": "entity_2",
+      "relationship": "mentions",
+      "stance": null,
+      "description": "",
+      "evidence_ids": [],
+      "source_ids": [
+        "source_12"
+      ]
+    },
+    {
+      "id": "edge_129",
+      "source": "source_1",
+      "target": "claim_1",
+      "relationship": "supports",
+      "stance": "supports",
+      "description": "",
+      "evidence_ids": [
+        "evidence_1",
+        "evidence_2"
+      ],
+      "source_ids": [
+        "source_1"
+      ]
+    },
+    {
+      "id": "edge_130",
+      "source": "source_2",
+      "target": "claim_1",
+      "relationship": "supports",
+      "stance": "supports",
+      "description": "",
+      "evidence_ids": [
+        "evidence_5"
+      ],
+      "source_ids": [
+        "source_2"
+      ]
+    },
+    {
+      "id": "edge_131",
+      "source": "source_3",
+      "target": "claim_1",
+      "relationship": "supports",
+      "stance": "supports",
+      "description": "",
+      "evidence_ids": [
+        "evidence_7",
+        "evidence_8"
+      ],
+      "source_ids": [
+        "source_3"
+      ]
+    },
+    {
+      "id": "edge_132",
+      "source": "source_4",
+      "target": "claim_1",
+      "relationship": "supports",
+      "stance": "supports",
+      "description": "",
+      "evidence_ids": [
+        "evidence_10",
+        "evidence_11",
+        "evidence_12"
+      ],
+      "source_ids": [
+        "source_4"
+      ]
+    },
+    {
+      "id": "edge_133",
+      "source": "source_5",
+      "target": "claim_1",
+      "relationship": "supports",
+      "stance": "supports",
+      "description": "",
+      "evidence_ids": [
+        "evidence_13",
+        "evidence_14",
+        "evidence_15"
+      ],
+      "source_ids": [
+        "source_5"
+      ]
+    },
+    {
+      "id": "edge_134",
+      "source": "source_6",
+      "target": "claim_1",
+      "relationship": "supports",
+      "stance": "supports",
+      "description": "",
+      "evidence_ids": [
+        "evidence_16",
+        "evidence_17",
+        "evidence_18"
+      ],
+      "source_ids": [
+        "source_6"
+      ]
+    },
+    {
+      "id": "edge_135",
+      "source": "source_7",
+      "target": "claim_1",
+      "relationship": "supports",
+      "stance": "supports",
+      "description": "",
+      "evidence_ids": [
+        "evidence_19",
+        "evidence_20",
+        "evidence_21"
+      ],
+      "source_ids": [
+        "source_7"
+      ]
+    },
+    {
+      "id": "edge_136",
+      "source": "source_8",
+      "target": "claim_1",
+      "relationship": "supports",
+      "stance": "supports",
+      "description": "",
+      "evidence_ids": [
+        "evidence_22",
+        "evidence_23"
+      ],
+      "source_ids": [
+        "source_8"
+      ]
+    },
+    {
+      "id": "edge_137",
+      "source": "source_9",
+      "target": "claim_1",
+      "relationship": "supports",
+      "stance": "supports",
+      "description": "",
+      "evidence_ids": [
+        "evidence_24",
+        "evidence_25",
+        "evidence_26"
+      ],
+      "source_ids": [
+        "source_9"
+      ]
+    },
+    {
+      "id": "edge_138",
+      "source": "source_10",
+      "target": "claim_1",
+      "relationship": "supports",
+      "stance": "supports",
+      "description": "",
+      "evidence_ids": [
+        "evidence_27",
+        "evidence_29"
+      ],
+      "source_ids": [
+        "source_10"
+      ]
+    },
+    {
+      "id": "edge_139",
+      "source": "source_11",
+      "target": "claim_1",
+      "relationship": "supports",
+      "stance": "supports",
+      "description": "",
+      "evidence_ids": [
+        "evidence_30",
+        "evidence_31"
+      ],
+      "source_ids": [
+        "source_11"
+      ]
+    },
+    {
+      "id": "edge_140",
+      "source": "source_12",
+      "target": "claim_1",
+      "relationship": "supports",
+      "stance": "supports",
+      "description": "",
+      "evidence_ids": [
+        "evidence_32",
+        "evidence_34"
+      ],
+      "source_ids": [
+        "source_12"
+      ]
+    }
+  ],
+  "evidence": [
+    {
+      "id": "evidence_1",
+      "claim_id": "claim_1",
+      "source_id": "source_1",
+      "stance": "supports",
+      "excerpt": "Jensen Huang has resigned as chief executive of Nvidia after reports of extramarital affairs with an alleged Chinese spy and two company employees.",
+      "reasoning": "Directly reports Huang's resignation and the alleged affairs named in the claim.",
+      "strength": 5
+    },
+    {
+      "id": "evidence_2",
+      "claim_id": "claim_1",
+      "source_id": "source_1",
+      "stance": "supports",
+      "excerpt": "However, late on Wednesday, the New York Times reported that Huang had a separate extramarital affair with a company employee named Kimberly Powell.",
+      "reasoning": "Reports a specific alleged affair with an Nvidia employee, which bears on the claim.",
+      "strength": 5
+    },
+    {
+      "id": "evidence_3",
+      "claim_id": "claim_1",
+      "source_id": "source_1",
+      "stance": "neutral",
+      "excerpt": "Huang has denied any knowledge that Alice Huang allegedly worked for the Chinese government.",
+      "reasoning": "Provides Huang's response regarding the alleged spy connection, adding context.",
+      "strength": 3
+    },
+    {
+      "id": "evidence_4",
+      "claim_id": "claim_1",
+      "source_id": "source_2",
+      "stance": "neutral",
+      "excerpt": "Jensen Huang has stepped down as CEO of Nvidia, the company at the center of the AI boom, after leading it for more than 30 years.",
+      "reasoning": "States Huang stepped down as Nvidia CEO after leading it for decades, relevant to the affair scandal claim.",
+      "strength": 4
+    },
+    {
+      "id": "evidence_5",
+      "claim_id": "claim_1",
+      "source_id": "source_2",
+      "stance": "supports",
+      "excerpt": "But in a matter of days, after it was revealed he had an extramarital affair with a woman that US officials believe to be a Chinese spy, Huang managed to wipe more than $600bn from the company\u2019s valuation.",
+      "reasoning": "Directly states Huang had an extramarital affair with a woman US officials believe is a Chinese spy.",
+      "strength": 5
+    },
+    {
+      "id": "evidence_6",
+      "claim_id": "claim_1",
+      "source_id": "source_2",
+      "stance": "neutral",
+      "excerpt": "China has denied the accusations that it had tapped Alice Huang, the woman in question and a top executive at a datacenter company called Megaspeed, to be an intelligence asset, and called them a \u201csmear\u201d.",
+      "reasoning": "Provides context that China denies the spy allegations about Alice Huang.",
+      "strength": 4
+    },
+    {
+      "id": "evidence_7",
+      "claim_id": "claim_1",
+      "source_id": "source_3",
+      "stance": "supports",
+      "excerpt": "Nvidia CEO Jensen Huang has issued an apology to his family, the company and investors after admitting to an affair with a woman who is alleged to be a Chinese spy.",
+      "reasoning": "Directly states that Jensen Huang admitted to an affair with a woman alleged to be a Chinese spy.",
+      "strength": 5
+    },
+    {
+      "id": "evidence_8",
+      "claim_id": "claim_1",
+      "source_id": "source_3",
+      "stance": "supports",
+      "excerpt": "Jensen Huang has admitted to an extramarital affair.",
+      "reasoning": "Direct statement that Jensen Huang admitted to an extramarital affair.",
+      "strength": 5
+    },
+    {
+      "id": "evidence_9",
+      "claim_id": "claim_1",
+      "source_id": "source_3",
+      "stance": "neutral",
+      "excerpt": "U.S. intelligence services have reportedly expressed concern that the woman, Alice Huang, has been passing information to Beijing.",
+      "reasoning": "Identifies the woman as Alice Huang and reports intelligence concerns about her, adding context to the affair allegation.",
+      "strength": 4
+    },
+    {
+      "id": "evidence_10",
+      "claim_id": "claim_1",
+      "source_id": "source_4",
+      "stance": "supports",
+      "excerpt": "Now, the New York Times is reporting that Huang is also suspected of having another affair, with a direct report of his at the company.",
+      "reasoning": "States the New York Times report that Huang is suspected of a second affair with a direct report.",
+      "strength": 5
+    },
+    {
+      "id": "evidence_11",
+      "claim_id": "claim_1",
+      "source_id": "source_4",
+      "stance": "supports",
+      "excerpt": "The newspaper reported Wednesday that Huang is accused of having another extramarital affair with Kimberly Powell, Nvidia\u2019s vice president of health care.",
+      "reasoning": "Names Kimberly Powell as the person in the alleged second affair with Huang.",
+      "strength": 5
+    },
+    {
+      "id": "evidence_12",
+      "claim_id": "claim_1",
+      "source_id": "source_4",
+      "stance": "supports",
+      "excerpt": "The company\u2019s board has initiated an investigation into Huang\u2019s publicly admitted affair.",
+      "reasoning": "Context: the board is investigating the separate affair Huang publicly admitted.",
+      "strength": 5
+    },
+    {
+      "id": "evidence_13",
+      "claim_id": "claim_1",
+      "source_id": "source_5",
+      "stance": "supports",
+      "excerpt": "Jensen Huang has resigned from Nvidia following an affair, which could have ramifications for national security as the U.S. and China race to develop the most advanced AI infrastructure.",
+      "reasoning": "Directly states Huang resigned from Nvidia following an affair, supporting the claim.",
+      "strength": 5
+    },
+    {
+      "id": "evidence_14",
+      "claim_id": "claim_1",
+      "source_id": "source_5",
+      "stance": "supports",
+      "excerpt": "But the 63-year-old industry kingpin recently admitted that he cheated on his wife of 40 years in affairs that could have ramifications beyond Huang's personal life and U.S.",
+      "reasoning": "States Huang admitted to cheating on his wife in affairs, directly bearing on the claim.",
+      "strength": 5
+    },
+    {
+      "id": "evidence_15",
+      "claim_id": "claim_1",
+      "source_id": "source_5",
+      "stance": "supports",
+      "excerpt": "The New York Times reported that Jensen Huang also had an affair with Nvidia vice president of healthcare Kimberly Powell, who reports directly to the CEO.",
+      "reasoning": "Names a specific reported affair partner, adding context to the claim.",
+      "strength": 5
+    },
+    {
+      "id": "evidence_16",
+      "claim_id": "claim_1",
+      "source_id": "source_6",
+      "stance": "supports",
+      "excerpt": "Nvidia CEO Jensen Huang has resigned from his top post at the chipmaker he co-founded, after reports of the tech titan\u2019s extramarital affairs came into the spotlight this week.",
+      "reasoning": "Directly reports Huang's resignation and the affair reports underlying the claim.",
+      "strength": 5
+    },
+    {
+      "id": "evidence_17",
+      "claim_id": "claim_1",
+      "source_id": "source_6",
+      "stance": "supports",
+      "excerpt": "The New York Times reported that Huang had an affair with a businesswoman U.S. intelligence suspects to be a Chinese spy, which Beijing denies.",
+      "reasoning": "Describes the specific affair reported by the New York Times and the national security concern.",
+      "strength": 5
+    },
+    {
+      "id": "evidence_18",
+      "claim_id": "claim_1",
+      "source_id": "source_6",
+      "stance": "supports",
+      "excerpt": "Trump later said the FBI is looking into Huang\u2019s affair with Alice Huang, although where exactly that probe stands is unclear.",
+      "reasoning": "Adds context that the FBI reportedly is looking into the affair, with status unclear.",
+      "strength": 4
+    },
+    {
+      "id": "evidence_19",
+      "claim_id": "claim_1",
+      "source_id": "source_7",
+      "stance": "supports",
+      "excerpt": "Now, five people who have worked at the tech giant have come forward to the New York Times, alleging the billionaire had a second extramarital affair - with Nvidia's vice president of healthcare, Kimberly Powell, who reports to Mr Huang.",
+      "reasoning": "Directly states the allegation of an affair between Huang and Kimberly Powell, the claim's subject.",
+      "strength": 5
+    },
+    {
+      "id": "evidence_20",
+      "claim_id": "claim_1",
+      "source_id": "source_7",
+      "stance": "supports",
+      "excerpt": "In a message to Nvidia employees last week, Mr Huang admitted to being unfaithful to his wife and took \"full responsibility\" for his actions, while the company board revealed it had launched an investigation into the matter.",
+      "reasoning": "Reports Huang's admission of infidelity, bearing on the affairs claim.",
+      "strength": 5
+    },
+    {
+      "id": "evidence_21",
+      "claim_id": "claim_1",
+      "source_id": "source_7",
+      "stance": "supports",
+      "excerpt": "When contacted by the newspaper about a second alleged affair over the phone, Mr Huang reportedly said: \"I don\u2019t think you should be talking to me directly,\" and hung up.",
+      "reasoning": "Describes Huang's reported response to questions about the second alleged affair.",
+      "strength": 4
+    },
+    {
+      "id": "evidence_22",
+      "claim_id": "claim_1",
+      "source_id": "source_8",
+      "stance": "supports",
+      "excerpt": "The board of US AI chip giant Nvidia has announced an independent investigation as chief executive Jensen Huang said in a memo to employees that he had been unfaithful to his wife.",
+      "reasoning": "States that Huang said he had been unfaithful to his wife, supporting the claim about an affair.",
+      "strength": 5
+    },
+    {
+      "id": "evidence_23",
+      "claim_id": "claim_1",
+      "source_id": "source_8",
+      "stance": "supports",
+      "excerpt": "\u201cI was unfaithful to my wife. My actions hurt her and our children. There is no excuse for what I did. I am deeply sorry,\u201d Huang wrote.",
+      "reasoning": "Direct quote from Huang admitting infidelity, directly bearing on the claim.",
+      "strength": 4
+    },
+    {
+      "id": "evidence_24",
+      "claim_id": "claim_1",
+      "source_id": "source_9",
+      "stance": "supports",
+      "excerpt": "I owe my family and all of you an apology. I was unfaithful to my wife.",
+      "reasoning": "Jensen Huang's own internal message admitting an affair, which bears directly on the claim.",
+      "strength": 4
+    },
+    {
+      "id": "evidence_25",
+      "claim_id": "claim_1",
+      "source_id": "source_9",
+      "stance": "supports",
+      "excerpt": "the Financial Times reported that top US officials claimed Jensen had a romantic relationship with a woman named Alice Huang that U.S. intelligence believed was a Chinese spy.",
+      "reasoning": "Reports the claimed affair partner and the intelligence allegation, adding context to the claim.",
+      "strength": 5
+    },
+    {
+      "id": "evidence_26",
+      "claim_id": "claim_1",
+      "source_id": "source_9",
+      "stance": "supports",
+      "excerpt": "Jensen -- who is married to Lori Huang -- made the startling admission to employees in an internal message obtained by the Financial Times.",
+      "reasoning": "Identifies the source of the admission and his marriage, providing context for the claim.",
+      "strength": 4
+    },
+    {
+      "id": "evidence_27",
+      "claim_id": "claim_1",
+      "source_id": "source_10",
+      "stance": "supports",
+      "excerpt": "Jensen acknowledged the infidelity in an open letter to Nvidia, although he did not name the woman involved.",
+      "reasoning": "Shows Jensen Huang acknowledged infidelity but did not name the woman, relevant to the affair claim.",
+      "strength": 5
+    },
+    {
+      "id": "evidence_28",
+      "claim_id": "claim_1",
+      "source_id": "source_10",
+      "stance": "neutral",
+      "excerpt": "The two are not related, despite sharing a surname, but their professional ties led to several public appearances together.",
+      "reasoning": "Clarifies the relationship between the two named individuals and the context of their public appearances.",
+      "strength": 2
+    },
+    {
+      "id": "evidence_29",
+      "claim_id": "claim_1",
+      "source_id": "source_10",
+      "stance": "supports",
+      "excerpt": "They were photographed at a dinner in Taipei in 2025, where footage appeared to show Jensen placing his arm around Alice and kissing her on the cheek, according to The Guardian.",
+      "reasoning": "Reported footage of the two together, bearing on the alleged affair.",
+      "strength": 4
+    },
+    {
+      "id": "evidence_30",
+      "claim_id": "claim_1",
+      "source_id": "source_11",
+      "stance": "supports",
+      "excerpt": "Nvidia CEO Jensen Huang acknowledged in an employee memo on Sunday that he had an extramarital affair with Alice Huang, an executive at computing and data center operator Megaspeed International who is suspected by U.S. intelligence of acting as an operative for Beijing.",
+      "reasoning": "Directly states Huang admitted an extramarital affair, supporting the claim about affairs.",
+      "strength": 5
+    },
+    {
+      "id": "evidence_31",
+      "claim_id": "claim_1",
+      "source_id": "source_11",
+      "stance": "supports",
+      "excerpt": "Jensen Huang, billionaire and CEO of AI chip giant Nvidia, resigned his position on Thursday morning, the company\u2019s board of directors announced, after reports of a second affair with a Nvidia employee days after he admitted to a relationship with another tech executive that intelligence officials believe may have been a Chinese spy.",
+      "reasoning": "States Huang resigned after reports of a second affair, adding context on the affairs.",
+      "strength": 5
+    },
+    {
+      "id": "evidence_32",
+      "claim_id": "claim_1",
+      "source_id": "source_12",
+      "stance": "supports",
+      "excerpt": "NVIDIA CEO Jensen Huang has admitted to an affair with a person suspected of being a spy for Chinese intelligence agencies.",
+      "reasoning": "Directly reports that Huang admitted to an affair, supporting the claim.",
+      "strength": 5
+    },
+    {
+      "id": "evidence_33",
+      "claim_id": "claim_1",
+      "source_id": "source_12",
+      "stance": "neutral",
+      "excerpt": "There is no evidence to suggest that national security or NVIDIA's confidential information has been compromised,\" and \"We trust Jensen and the management team.",
+      "reasoning": "Board statement adding context that no evidence of compromise was found and expressing trust in Huang.",
+      "strength": 3
+    },
+    {
+      "id": "evidence_34",
+      "claim_id": "claim_1",
+      "source_id": "source_12",
+      "stance": "supports",
+      "excerpt": "CEO Huang has faced allegations of being in a romantic relationship with Alice Huang (Chinese name Huang Le), a Chinese businesswoman who has been pointed out as a spy for China's Ministry of State Security (MSS).",
+      "reasoning": "Identifies the woman linked to the alleged affair and her alleged spy status.",
+      "strength": 5
+    }
+  ],
+  "assessments": [
+    {
+      "claim_id": "claim_1",
+      "status": "supported",
+      "confidence": 1.0,
+      "supporting_evidence": [
+        "evidence_1",
+        "evidence_2",
+        "evidence_5",
+        "evidence_7",
+        "evidence_8",
+        "evidence_10",
+        "evidence_11",
+        "evidence_12",
+        "evidence_13",
+        "evidence_14",
+        "evidence_15",
+        "evidence_16",
+        "evidence_17",
+        "evidence_18",
+        "evidence_19",
+        "evidence_20",
+        "evidence_21",
+        "evidence_22",
+        "evidence_23",
+        "evidence_24",
+        "evidence_25",
+        "evidence_26",
+        "evidence_27",
+        "evidence_29",
+        "evidence_30",
+        "evidence_31",
+        "evidence_32",
+        "evidence_34"
+      ],
+      "contradicting_evidence": [],
+      "explanation": "10 independent source(s) support and 0 contradict the claim (weighted 6.20 vs 0.00)."
+    }
+  ],
+  "investigation_id": "inv_jensen_huang_affairs",
+  "query": "jenson huang affairs",
+  "status": "complete",
+  "stage": null,
+  "error": null,
+  "sources": [
+    {
+      "id": "source_1",
+      "url": "https://www.theguardian.com/technology/2026/nov/12/nvidia-ceo-jensen-huang-resigns",
+      "title": "Jensen Huang resigns as Nvidia CEO after alleged affairs | Jensen Huang | The Guardian",
+      "publisher": "theguardian.com",
+      "published_at": "2026-11-12",
+      "content": "Move follows admission of affair with woman alleged to be Chinese spy and reported relationships with two employees\n\nSkip to main contentSkip to navigation\n\nClose dialogue1/1Next imagePrevious imageToggle caption\n\nJensen Huang has resigned as chief executive of Nvidia. Photograph: Bloomberg/Getty Images\n\nView image in fullscreen\n\nJensen Huang has resigned as chief executive of Nvidia. Photograph: Bloomberg/Getty Images\n\nJensen Huang\n\n# Jensen Huang resigns as Nvidia CEO after alleged affairs\n\nMove follows admission of affair with woman alleged to be Chinese spy and reported relationships with two employees\n\n- Nvidia crisis \u2013 live updates\n \n- From washing dishes at Denny\u2019s to rockstar of AI: the rise and fall of Jensen Huang\n \n\nDan Milmo and Dara Kerr\n\nThu 12 Nov 2026 17.05 ESTFirst published on Thu 12 Nov 2026 09.00 EST\n\nShare\n\nPrefer the Guardian on Google\n\nJensen Huang has resigned as chief executive of Nvidia after reports of extramarital affairs with an alleged Chinese spy and two company employees.\n\nHe will be replaced on an interim basis by Nvidia\u2019s chief financial officer, Colette Kress, until a full-time successor is named.\n\nShares in the chipmaker plunged by 13% when Wall Street opened, after Huang\u2019s departure was announced. After a partial rebound, they closed down 4.3% on Thursday, wiping more than $180bn (\u00a3135bn) off Nvidia\u2019s value on the day and around $490bn for the week \u2013 valuing the company at $4tn.\n\nThe statement from Nvidia\u2019s board of directors confirming Huang\u2019s departure did not mention the spying scandal and personal conduct revelations, instead paying tribute to Huang\u2019s \u201cprofound\u201d contributions to the company he co-founded.\n\n\u201cJensen\u2019s contributions to Nvidia are profound. Nvidia is one of the most consequential technology companies in the world. The board and the company thank Jensen for his immeasurable contributions to the company and the industry,\u201d the statement said.\n\nIt added that Huang had resigned as chief executive, president and Nvidia board member \u201ceffective immediately\u201d.\n\nA graphic showing Nvidia\u2019s share price fluctuating over time\n\nDonald Trump, who had defended Huang at first as the scandal threatened to overwhelm the Nvidia co-founder, quickly moved on to potential successors on Thursday, posting on social media that he should be replaced by Tim Cook, Apple\u2019s former chief executive and current executive chair.\n\n\u201cNOW THAT Nvidia CEO JENSEN HUANG, who has done a fantastic job, has resigned, there is only one man to take his place \u2013 TIM COOK of Apple,\u201d Trump wrote, adding: \u201cA Legend replaces a Legend!\u201d\n\nThe chipmaker\u2019s board earlier this week appointed the leading law firm Wachtell, Lipton, Rosen & Katz to conduct a \u201cthorough and independent\u201d investigation into the relationship with Alice Huang, an Nvidia customer and Chinese citizen who is no relation to the Nvidia boss. Nvidia had previously denied anything unusual about the relationship, but that changed on Sunday when Jensen Huang admitted he had been unfaithful to his wife, Lori, without referring to Alice Huang directly.\n\nThe law firm had directed Jensen Huang to continue to lead Nvidia as the investigation continued.\n\nHowever, late on Wednesday, the New York Times reported that Huang had a separate extramarital affair with a company employee named Kimberly Powell. She was Nvidia\u2019s vice-president of healthcare and was reportedly captured on video being affectionate with Huang at a hotel during a company conference in March.\n\nThe report added to the pressure on Huang, as the board called a meeting late on Wednesday to discuss the chief executive\u2019s future.\n\nPowell has been approached for comment.\n\nAfter Huang\u2019s resignation was announced on Thursday, Reuters reported a third alleged affair. The newly uncovered liaison was another Nvidia employee, according to two people familiar with the matter who spoke to the news outlet. Reuters did not reveal her name.\n\nNvidia\u2019s board said it would consider internal and external candidates for the chief executive\u2019s role, with Cook featuring among potential runners and riders before Trump\u2019s intervention. Cook stepped down as chief executive at Apple in September but still has a senior executive role at the company. Rene Haas, the chief executive of Arm Holdings, a UK-based chipmaker, has also been mooted, along with Lisa Su, the chief executive of the chipmaker AMD.\n\nHuang ran Nvidia tightly and managed about 60 direct reports. Internal candidates include Kress and Ian Buck, who manages the company\u2019s AI hardware and software products. Huang\u2019s two children, Madison and Spencer, also work at Nvidia but are in their mid-30s and relatively inexperienced. The chipmaker also announced the appointment of Harvey Jones, a tech investor and entrepreneur, as its first-ever chair.\n\nskip past newsletter promotion\n\n* * *\n\nFree newsletter |Weekly\n\n* * *\n\nSign up to TechScape\n\nA weekly dive in to how technology is shaping our lives\n\nEnter your email\n\nSign up\n\nafter newsletter promotion\n\nDan Ives, a senior US tech analyst, said the board had done what \u201cit needed to do, which is rip off the Band-Aid and take Nvidia into its next chapter without him\u201d and that the company remained ahead of its competitors.\n\nHowever, Neil Wilson, an analyst at the investment platform Saxo UK, said Nvidia would need a \u201cgreat CEO\u201d to replace Huang.\n\n\u201cHis technical knowledge and understanding of every last bit of product is basically unique and impossible to replicate,\u201d Wilson said, adding nonetheless that Nvidia was well placed in terms of upcoming products and orders.\n\nHuang\u2019s exit from the company he co-founded in 1993 removes a senior figure in Silicon Valley at a time when the AI arms race between the US and China is at an apex. He owns more than 870m shares, or about 3.6% of the company, and was worth $145bn on Thursday morning, according to Bloomberg, making him the world\u2019s 13th richest person.\n\nUnlike many of his contemporaries at other leading tech companies, Huang has dozens of direct reports, an unusual management structure that emphasises his control over the company.\n\nThe entire AI ecosphere relies on Nvidia, which engineers advanced chips used to train AI models and power companies such as OpenAI and Anthropic. It is also one of the most valuable companies on Earth, with a market cap that hit $5tn at one point last year.\n\nHuang has denied any knowledge that Alice Huang allegedly worked for the Chinese government. The pair were seen together around the world, dining in restaurants and attending meetings, over the past few years. Alice Huang is a businesswoman and head of the Singapore-based datacentre firm Megaspeed, who US intelligence services suspect of being a Chinese asset according to multiple reports.\n\nOn the same day that Jensen Huang admitted having an affair, Nvidia\u2019s board of directors announced the company was launching an investigation regarding reports that he was the target of a foreign intelligence effort. Huang has agreed to testify before US Congress.\n\nOn Monday 30 November, join Dan Milmo and Prof Dame Wendy Hall and Stuart J Russell as they discuss the warnings surrounding artificial intelligence and how we can separate fact from speculation. Livestreamed only. Book tickets here or at guardian.live\n\nExplore more on these topics\n\n- Jensen Huang\n- Nvidia\n- Technology sector\n- news\n\nShare\n\nReuse this content:\"Reuse this content\"\n\n## More on this story\n\n## More on this story\n\n- <https://www.theguardian.com/technology/2026/nov/13/marlon-brando-cool-jensen-huang-joke-black-leather-jacket-nvidia>\n \n \n \n ### Marlon Brando cool to Jensen Huang joke: how the black leather jacket became a meme\n \n 1d ago\n \n- <https://www.theguardian.com/technology/2026/nov/12/jensen-huang-built-an-ai-kingdom-now-hes-gone-will-nvidias-ramparts-be-breached>\n \n \n \n ### Jensen Huang built an AI kingdom. Now he\u2019s gone, will Nvidia\u2019s ramparts be breached?\n \n 2d ago\n \n- <https://www.theguardian.com/commentisfree/2026/nov/12/billions-lost-markets-roiled-one-man-indiscretion-tech-bro-jensen-huang-affair-nvidia>\n \n \n \n ### Billions lost and markets roiled by one man\u2019s indiscretion. Isn\u2019t it now clear that these tech bros are too powerful?\n \n 2d ago\n \n- <https://www.theguardian.com/technology/live/2026/nov/12/nvidia-ceo-jensen-huang-affairs-share-price-plunges-live-latest>\n \n \n \n ### Nvidia turmoil continues as Jensen Huang resigns over affairs scandal and company appoints interim CEO \u2013 as it happened\n \n 2d ago\n \n- <https://www.theguardian.com/technology/2026/nov/12/rise-and-fall-of-nvidia-ceo-jensen-huang-profile>\n \n \n \n ### From washing dishes at Denny\u2019s to rockstar of AI: the rise and fall of Nvidia\u2019s Jensen Huang\n \n 2d ago\n \n- <https://www.theguardian.com/commentisfree/2026/nov/12/jensen-huang-nvidia-trump-oligarchy>\n \n \n \n ### Thanks to American oligarchy, Jensen Huang\u2019s midlife crisis is a problem for all of us\n \n 2d ago\n \n- <https://www.theguardian.com/technology/2026/nov/11/nvidia-hires-leading-us-law-firm-to-investigate-jensen-huang-relationship>\n \n \n \n ### Nvidia hires leading US law firm to investigate Jensen Huang\u2019s relationship\n \n 3d ago\n \n- <https://www.theguardian.com/global/2026/nov/10/nvidias-silicon-valley-political-power>\n \n \n \n ### Nvidia shaken by scandal amid wider political new order for big tech\n \n 4d ago\n \n\n## Most viewed\n\n## Most viewed\n\n- UK\n- US politics\n- World\n- Climate crisis\n- Middle East\n- Ukraine\n- Football\n- Newsletters\n- Business\n- Environment\n- UK politics\n- Science\n- Tech\n- Global development\n- Obituaries\n\n- News\n- Opinion\n- Sport\n- Culture\n- Lifestyle\n\nOriginal reporting and incisive analysis, direct from the Guardian every morning\n\nSign up for our email\n\n- About us\n- Help\n- Complaints & corrections\n- Contact us\n- Tip us off\n- SecureDrop\n- Privacy policy\n- Cookie policy\n- Tax strategy\n- Terms & conditions\n\n- All topics\n- All writers\n- Newsletters\n- Digital newspaper archive\n- Bluesky\n- Facebook\n- Instagram\n- LinkedIn\n- Threads\n- TikTok\n- YouTube\n\n- Advertise with us\n- Guardian Labs\n- Work with us\n- Accessibility settings\n\nBack to top\n\n\u00a9 2026 Guardian News & Media Limited or its affiliated companies. All rights reserved. (dcr)",
+      "source_type": "news",
+      "credibility_score": 4,
+      "relevance_score": 5
+    },
+    {
+      "id": "source_2",
+      "url": "https://www.theguardian.com/technology/2026/nov/12/jensen-huang-affair-timeline",
+      "title": "A timeline of the affair scandal that sank Nvidia\u2019s Jensen Huang | Nvidia | The Guardian",
+      "publisher": "theguardian.com",
+      "published_at": "2026-11-13",
+      "content": "CEO behind the meteoric rise of Nvidia stepped down after it was revealed he had an affair with an alleged Chinese spy\n\nSkip to main contentSkip to navigation\n\nClose dialogue1/10Next imagePrevious imageToggle caption\n\nJensen Huang shepherded the rise of Nvidia into a company valued at more than $4tn. Illustration: Guardian Design\n\nView image in fullscreen\n\nJensen Huang shepherded the rise of Nvidia into a company valued at more than $4tn. Illustration: Guardian Design\n\nNvidia\n\nTimeline\n\n# A timeline of the affair scandal that sank Nvidia\u2019s Jensen Huang\n\nCEO behind the meteoric rise of Nvidia stepped down after it was revealed he had an affair with an alleged Chinese spy\n\nJohana Bhuiyan\n\nFri 13 Nov 2026 05.00 CETLast modified on Fri 13 Nov 2026 10.26 CET\n\nShare\n\nPrefer the Guardian on Google\n\nJensen Huang has stepped down as CEO of Nvidia, the company at the center of the AI boom, after leading it for more than 30 years.\n\nHuang, an electrical engineer by education, stewarded the company from a $1bn firm when it went public in 1999 to a company valued at more than $4tn in 2026. But in a matter of days, after it was revealed he had an extramarital affair with a woman that US officials believe to be a Chinese spy, Huang managed to wipe more than $600bn from the company\u2019s valuation.\n\nJensen Huang built an AI kingdom. Now he\u2019s gone, will Nvidia\u2019s ramparts be breached?\n\nRead more\n\nChina has denied the accusations that it had tapped Alice Huang, the woman in question and a top executive at a datacenter company called Megaspeed, to be an intelligence asset, and called them a \u201csmear\u201d. US officials had reportedly started to monitor the Megaspeed executive after suspecting the firm was diverting powerful Nvidia AI chips to Chinese firms, in potential violation of export restrictions. The Biden and Trump administrations had prohibited US companies from exporting some of the more powerful AI chips to China over national security concerns.\n\nJust a week ago it seemed that Huang\u2019s ouster was unlikely, but in the days since he first disclosed an affair and affirmed his commitment to the company, the New York Times reported that there was a second affair \u2013 this time with another Nvidia executive.\n\nA lot has happened in the last few days, but how did we get here? Here\u2019s a timeline of what we know about Huang\u2019s entanglements.\n\n## 2023\n\n### March 2023Megaspeed, a datacenter firm, is spun out from a Chinese video game company\n\nMegaspeed is the datacenter firm at the center of the spy allegations. Before it was its own company, it was a part of one of China\u2019s largest video game companies, 7Road Holdings Ltd. At this time, Megaspeed was controlled by a firm called Huang Le Ltd, an entity affiliated with Alice Huang, according to Bloomberg.\n\nView image in fullscreen\n\nThe Megaspeed office in the Ocean Financial Centre in Singapore on 10 November 2026. Photograph: Taryn Ng/AFP/Getty Images\n\n### November 2023Megaspeed is sold to a Singaporean shell company and becomes an Nvidia cloud partner\n\nHuang Le Ltd sells its shares of Megaspeed to a Singaporean shell company called Swiftdata. The sale comes weeks after Joe Biden issued an executive order limiting investment in China\u2019s AI industry.\n\nSoon after, Megaspeed is designated an Nvidia cloud partner, which means the company could get preferential access to Nvidia\u2019s advanced AI chips.\n\nView image in fullscreen\n\nNvidia\u2019s Jensen Huang speaks at the New York Times annual DealBook summit on 29 November 2023 in New York City. Photograph: Michael M Santiago/Getty Images\n\n## 2024\n\n### June 2024Alice Huang and Jensen Huang are seen together in Taipei, Taiwan\n\nJensen Huang is seen with Alice Huang at a bar in Taipei where several AI industry executives had gathered. The person who introduced them to each other was Alice Huang\u2019s husband, Kang Wei, who had worked with her on several business ventures, according to the Wall Street Journal.\n\n### 2024 to 2025Megaspeed receives several hundred shipments of Nvidia AI chips\n\nThe Singapore-based firm fields 200 shipments of AI chips, according to the New York Times. The company then rents out compute power, which is fueled by these AI chips, to major companies including the Chinese firms Tencent and Ali Baba.\n\nView image in fullscreen\n\nWorkers unpack newly acquired Nvidia H100 chips at the Yotta Data Services Pvt datacenter in Navi Mumbai, India, on 14 March 2024. Photograph: Bloomberg/Getty Images\n\n### September 2024The US Department of Commerce begins investigating Megaspeed\n\nThe commerce department begins investigating whether Megaspeed is diverting Nvidia chips to Chinese firms, according to the New York Times. This could violate export restrictions on advanced AI chips.\n\n## 2025\n\n### January 2025Jensen Huang meets Donald Trump for the first time\n\nHuang visits Donald Trump in the weeks after he takes office.\n\nView image in fullscreen\n\nDonald Trump and Jensen Huang at the White House on 30 April 2025. Photograph: Ken Cedeno/UPI/Bloomberg via Getty Images\n\n### April 2025Jensen Huang attends a dinner for donors at Mar-a-Lago\n\nThe dinner costs $1m a person and the president briefly puts a pause on imposing restrictions on Nvidia chip sales to China. The restriction is ultimately implemented shortly after.\n\n### May 2025Jensen Huang is again seen with Alice Huang\n\nThe two attend an industry conference in Taiwan. The New York Times also reportes that Alice Huang visited the Nvidia headquarters in Santa Clara, California, two months earlier.\n\nView image in fullscreen\n\nA screen grab from video footage shows Alice Huang attending a dinner with Jensen Huang at a restaurant in Taipei, Taiwan, on 22 May 2025. Photograph: CTI/Reuters\n\n### October 2025Trump is reportedly briefed on the relationship between Alice Huang and Jensen Huang\n\nThe New York Times reports in October 2025 that intelligence officials told Trump that the two had a relationship and alleged that Alice Huang was a Chinese spy. Trump chose not to take action, according to the Times report. Trump has since said at a White House press conference that he didn\u2019t remember being briefed on this.\n\n### December 2025Trump approves the sale of more advanced Nvidia chips to China\n\nTrump grants Nvidia permission to sell its second most powerful chips to China. A portion of the sales would go to the US government.\n\nView image in fullscreen\n\nJensen Huang speaks to members of the media while arriving for a meeting with members of a Senate committee in Washington DC on 3 December 2025. Photograph: Bloomberg/Getty Images\n\n## 2026\n\n### May 2026Marco Rubio reportedly drafts a memo about Jensen Huang and Alice Huang\n\nThe US secretary of state, Marco Rubio, drafts the memo based on information gleaned from electronic surveillance of Alice Huang, according to the New York Times. The memo warns that Jensen Huang has become close to an alleged Chinese spy. Trump still invites Huang on his trip to China, saying in a social media post that he is honored to have \u201cthe Great Jensen Huang\u201d on the trip.\n\n### October 2026The New York Times reports Jensen Huang may have been targeted by a Chinese spy\n\nAt the time, Nvidia spokesperson John Rizzo says Jensen Huang\u2019s relationship with Alice Huang is nothing out of the ordinary.\n\n### 8 November 2026Jensen Huang admits to having an affair\n\nIn a letter to employees, Huang says that he had an extramarital affair, apologizes to his family and reaffirms his commitment to the company. The Nvidia board says it is investigating the relationship but has no reason to believe national security secrets or company secrets were divulged. \u201cThe board has confidence in Jensen and his leadership team and will provide further updates as appropriate,\u201d members of the Board say in a statement.\n\nSilicon Valley leaders rally behind him, and at the time it appears that Huang might hang on to his job, despite his image being tarnished.\n\nView image in fullscreen\n\nThe Nvidia headquarters in Santa Clara, California, on 12 November 2026. Photograph: Benjamin Fanjoy/Getty Images\n\n### 9 November 2026Trump says he is \u2018amazed\u2019 by the allegations that Alice Huang is a spy\n\nAt a press conference, Trump says the FBI is investigating Jensen Huang but adds that he thinks Huang will be \u201cin good shape\u201d.\n\nView image in fullscreen\n\nDonald Trump at a news conference at the White House on 9 November 2026. Photograph: Bloomberg/Getty Images\n\n\u201cAnd I asked him about that, and he \u2026 said he had absolutely no idea that the person in question was a spy,\u201d the president says at a press conference. \u201cI asked him that question: \u2018Did you have any idea that she was a spy?\u2019 He said, \u2018I had no idea that she was a spy.\u2019\u201d\n\n\u201cI really believe him,\u201d Trump says.\n\n### 10 November 2026A shareholder in California files a lawsuit against Nvidia and its CEO\n\nRetail investor Mark Kistenmacher files a lawsuit accusing the company of misleading investors over Huang\u2019s affair, claiming that Nvidia did not disclose the situation and raised national security concerns that could threaten the company\u2019s business prospects.\n\n### 11 November 2026The New York Times reports there was a second affair, and the Nvidia board reportedly prepares to oust Huang\n\nThe New York Times reports that Huang also allegedly had an affair with the company\u2019s vice-president of healthcare.\n\nView image in fullscreen\n\nJensen Huang at a reception in Tokyo, Japan, on 16 July 2026. Photograph: Bloomberg/Getty Images\n\nAt this point things are looking precarious for Jensen Huang, and then the Wall Street Journal reports that the Nvidia board is preparing to oust the CEO.\n\n### 12 November 2026Jensen Huang steps down as CEO of Nvidia\n\nHuang steps down, ending his 33-year tenure leading the company he co-founded in 1993. The board starts a search for the company\u2019s next CEO while the company\u2019s chief finance officer, Colette Kress, serves as interim CEO.\n\nMeanwhile, shares in the company continue to plummet.\n\nNvidia stock chart with an annotation of the NYT\u2019s first reporting of the CEO\u2019s involvement with an alleged Chinese spy. There is a large dip from 29 Oct and on for their share price.\n\nExplore more on these topics\n\n- Nvidia\n- Jensen Huang\n- Espionage\n- China\n- Donald Trump\n- Asia Pacific\n- timelines\n\nShare\n\nReuse this content:\"Reuse this content\"\n\n## Most viewed\n\n## Most viewed\n\n- World\n- UK\n- Climate crisis\n- Ukraine\n- Environment\n- Science\n- Global development\n- Football\n- Tech\n- Business\n- Obituaries\n\n- News\n- Opinion\n- Sport\n- Culture\n- Lifestyle\n\nOriginal reporting and incisive analysis, direct from the Guardian every morning\n\nSign up for our email\n\n- About us\n- Help\n- Complaints & corrections\n- Contact us\n- Tip us off\n- SecureDrop\n- Privacy policy\n- Cookie policy\n- Tax strategy\n- Terms & conditions\n\n- All topics\n- All writers\n- Newsletters\n- Digital newspaper archive\n- Bluesky\n- Facebook\n- Instagram\n- LinkedIn\n- Threads\n- TikTok\n- YouTube\n\n- Advertise with us\n- Tips\n- Accessibility settings\n- Work with us\n\nBack to top\n\n\u00a9 2026 Guardian News & Media Limited or its affiliated companies. All rights reserved. (dcr)",
+      "source_type": "news",
+      "credibility_score": 4,
+      "relevance_score": 5
+    },
+    {
+      "id": "source_3",
+      "url": "https://www.cnbc.com/2026/11/09/nasdaq-defies-nvidia-impact-huang-faces-espionage-affair-probe.html",
+      "title": "Nasdaq defies Nvidia impact as Huang faces espionage affair probe",
+      "publisher": "cnbc.com",
+      "published_at": "2026-11-09",
+      "content": "*This is CNBC's Morning Squawk newsletter.Subscribe hereto receive future editions in your inbox.* \n*Hello, this is Leonie Kidd with today's edition of Morning Squawk.* \n*Trouble had been brewing, but over the weekend the story broke that Nvidia CEO Jensen Huang - the so-called 'torchbearer of AI' - has been having an affair with a woman that U.S. intelligence believes to be a Chinese spy.* \n*The news has sent shockwaves through the markets, with investors scrambling to assess the potential fallout for the AI industry more broadly.*\n## Happening now: The Nvidia affair \nNvidia CEO Jensen Huang has issued an apology to his family, the company and investors after admitting to an affair with a woman who is alleged to be a Chinese spy. \nThe stock is under heavyselling pressure in premarket trading, currently down over 5% and lower by over 6% in Frankfurt. \nWhat we know so far: \n- *Jensen Huang has admitted to an extramarital affair.*\n- *U.S. intelligence services have reportedly expressed concern that the woman, Alice Huang, has been passing information to Beijing.*\n- *Alice Huang works for Megaspeed, a Singapore-based cloud company that is an Nvidia customer.*\n- *Megaspeed has been accused of helping restricted Chinese companies acquire AI chips.*\n- *The Board of Nvidia has opened an investigation into the allegations.*\n- *China's Foreign Ministry has said the \"so-called Chinese spy narrative is completely unsubstantiated.\"*\n- *President Donald Trump reacted to the news, saying, \"I think he's an honorable guy. I think he probably has an excuse for it.\"*\n- *For the email that Jensen Huang sent to staff, as well as the statement from Nvidia, you can read it allhere.*\nAnalysts are struggling to assess the impact. Yorkville Ives and co Partner, Dan Ives, called this a \"black-eye moment for Jensen,\" that will create an overhang for the stock. Ben Emons from Fed Watch Advisors highlighted the \"key-person\" risk at Nvidia. He added that in the event Jensen Huang did take leave or step down, Nvidia could turn to the following people to step up: \n- Colette Kress, CFO\n- Ian Buck, VP and GM of Hyperscale\n- Bryan Catanzaro, VP Applied Deep Learning\n- Jay Puri, EVP Worldwide Field Operations\n- Debora Shoquist, EVP Operations \nNvidia's move is keeping Nasdaq futures under pressure, with the index dipping in and out of the red this morning. The Dow and S&P futures are holding just above the flatline. \n- Coming up:We get more views throughout the day, from guests including Former Rep. Kevin McCarthy (R-CA), Sen. Marsha Blackburn (R-TN) and Antony Blinken, former Secretary of State, all appearing on \"Squawk Box.\"",
+      "source_type": "news",
+      "credibility_score": 3,
+      "relevance_score": 5
+    },
+    {
+      "id": "source_4",
+      "url": "https://techcrunch.com/2026/11/11/jensen-huang-accused-of-having-another-affair-with-a-nvidia-exec/",
+      "title": "Jensen Huang accused of having another affair \u2014 with an Nvidia exec | TechCrunch",
+      "publisher": "techcrunch.com",
+      "published_at": "2026-11-11",
+      "content": "Nvidia CEO Jensen Huang, is already under investigation after having admitted to having an affair with a woman accused of being a Chinese spy. Now, the New York Times is reporting that Huang is also suspected of having another affair, with a direct report of his at the company. \nThe newspaper reported Wednesday that Huang is accused of having another extramarital affair with Kimberly Powell, Nvidia\u2019s vice president of health care. Powell, like Huang, is married, the outlet says. \nThe Times says it was told of the alleged affair by five employees at the company. The sources said that Huang and Powell were captured on video \u201cbeing affectionate at a San Jose, Calif., hotel\u201d during a conference earlier this year. \nLike many companies, Nvidia has rules discouraging superiors to have relationships with employees in subordinate roles, the Times notes. TechCrunch reached out to Nvidia for comment.\nThe company\u2019s board has initiated an investigation into Huang\u2019s publicly admitted affair. Additionally, two House Republicans said Wednesday that Congress is gearing up to subpoena Huang over the spy allegations if he doesn\u2019t voluntarily respond to their summons to a closed-door briefing. Late Wednesday, after the reports of the second affair were published, the Wall Street Journal reported that the Nvidia board was preparing to oust Huang, who co-founded the company in 1993.",
+      "source_type": "news",
+      "credibility_score": 3,
+      "relevance_score": 4
+    },
+    {
+      "id": "source_5",
+      "url": "https://techcrunch.com/2026/11/13/nvidia-ceo-jensen-huangs-affair-with-alleged-chinese-spy-a-timeline/",
+      "title": "The unfolding Jensen Huang scandal: a timeline | TechCrunch",
+      "publisher": "techcrunch.com",
+      "published_at": "2026-11-13",
+      "content": "Jensen Huang has resigned from Nvidia following an affair, which could have ramifications for national security as the U.S. and China race to develop the most advanced AI infrastructure.\nNvidia co-founder and now former CEO Jensen Huang has never been as prone to controversy as AI leaders like OpenAI\u2019s Sam Altman or SpaceXAI\u2019s Elon Musk. But the 63-year-old industry kingpin recently admitted that he cheated on his wife of 40 years in affairs that could have ramifications beyond Huang\u2019s personal life and U.S.\nLater in the day, Huang confirmed that he would testify in Congress at some point before Thanksgiving, which falls on November 26. \u201cJensen and I have been very at odds as some of you already know on export controls, but Nvidia is a very important company to the United States of America,\u201d House Foreign Affairs Committee Chairman Brian Mast said to reporters.\nAfter reports of a second extramarital affair, Nvidia\u2019s board reportedly plans to meet to discuss Huang\u2019s future at the company, per The Wall Street Journal. Stock fell about 8% in after-hours trading on Wednesday and is down 11% in the past five days. Huang famously delegates very little and has about 60 direct reports, he has said. The company has not had an obvious successor or a succession plan. The New York Times reported that Jensen Huang also had an affair with Nvidia vice president of healthcare Kimberly Powell, who reports directly to the CEO.\nBy early Thursday morning, Huang was no longer CEO of the company he co-founded 33 years ago. Then, Thursday afternoon, Reuters dropped another bombshell, publishing a report alleging that Huang had yet another extramarital affair with another unnamed Nvidia employee.",
+      "source_type": "news",
+      "credibility_score": 3,
+      "relevance_score": 4
+    },
+    {
+      "id": "source_6",
+      "url": "https://apnews.com/article/nvidia-jensen-huang-resigns-ceo-affairs-314714d463cf578cbb0dbd49de903107",
+      "title": "What we know after Jensen Huang resigns as Nvidia CEO | AP News",
+      "publisher": "apnews.com",
+      "published_at": "2026-11-12",
+      "content": "Nvidia CEO Jensen Huang has resigned from his top post at the chipmaker he co-founded, after reports of the tech titan\u2019s extramarital affairs came into the spotlight this week.\nBut scrutiny grew late Wednesday after reports emerged that Huang had a separate affair with an Nvidia executive. Huang\u2019s resignation arrived shortly after. The company didn\u2019t address either relationship in its Thursday announcement. Jensen Huang, President and CEO of NVIDIA, and his wife Lori Huang, walk to the White House to attend a state dinner hosted for China\u2019s President Xi Jinping, Sept.\nOne of those relationships has raised national security concerns. The New York Times reported that Huang had an affair with a businesswoman U.S. intelligence suspects to be a Chinese spy, which Beijing denies.\nSeparately, the outlet and later others reported that Nvidia employees said Huang had another affair with an executive who reported to him directly \u2014 compounding calls for him to step down.\nTrump later said the FBI is looking into Huang\u2019s affair with Alice Huang, although where exactly that probe stands is unclear.",
+      "source_type": "news",
+      "credibility_score": 4,
+      "relevance_score": 4
+    },
+    {
+      "id": "source_7",
+      "url": "https://www.gbnews.com/news/world/nvidia-boss-jensen-huang-caught-cheating-scandal-chinese-spy-affair",
+      "title": "Nvidia boss Jensen Huang caught in ANOTHER cheating scandal after Chinese spy affair",
+      "publisher": "gbnews.com",
+      "published_at": "2026-11-12",
+      "content": "Nvidia boss Jenson Huang has been embroiled in yet another cheating scandal, just days after the revelation that he had an affair with an alleged Chinese spy. \nIn a message to Nvidia employees last week, Mr Huang admitted to being unfaithful to his wife and took \"full responsibility\" for his actions, while the company board revealed it had launched an investigation into the matter. \nNow, five people who have worked at the tech giant have come forward to the New York Times, alleging the billionaire had a second extramarital affair - with Nvidia's vice president of healthcare, Kimberly Powell, who reports to Mr Huang. \nTwo sources claim the pair were spotted on video being affectionate in a San Jose hotel in March, where an Nvidia conference was going on at the time. \nThe outlet claims those who captured the video were asked to sign a non-disclosure agreement. \nWhen contacted by the newspaper about a second alleged affair over the phone, Mr Huang reportedly said: \"I don\u2019t think you should be talking to me directly,\" and hung up. \nThe pair are both married, and the alleged unfaithfulness could violate the company's code of conduct, which states employees must \"avoid situations where our actions create conflict\", including \"personal relationships\". \nGB News has approached Nvidia for further comment.\nGB News has approached Nvidia for further comment. \nUS authorities announced last month they were investigating Alice Huang, a former executive of Singapore-based company Megaspeed, which buys AI chips from Nvidia, according to the newspaper. \nThey alleged that Mr Huang, 63, had a close relationship with the Chinese businesswoman, who they believe passed information to Beijing. \nSince Friday, Nvidia's stock has plummeted $500bn (\u00a3376bn), with shares falling eight per cent in after-hours trading on Wednesday alone following the news of another alleged infidelity. \nValued at $4.2tn (\u00a33.16tn), the company is the second most valuable firm behind fellow tech giant Apple. \nDespite co-founding the company in 1993 and overseeing a market value rise of around 470 per cent in the last five years due to its influence on the AI industry, Mr Huang could now be ousted by the Nvidia board, the Wall Street Journal reports.\n### LATEST WORLD NEWS \nThe firm announced an inquiry this weekend that \"will examine all available information,\" but said it \"has no reason to believe that either national security or Nvidia secrets were compromised\". \nMr Huang has been asked to appear for a closed-door briefing with the House committee on his interactions with the alleged Chinese spy. \nThe AI boss previously admitted his infidelity to Nvidia employees and apologised for hurting his family. \nHe said: \"I was unfaithful to my wife. My actions hurt her and our children. There is no excuse for what I did. I am deeply sorry. \n\"Regarding the national security concerns raised in news reports, Nvidia's Board of Directors has initiated an independent investigation. I support the investigation and will cooperate fully. \n\"I love our country and our company. I am committed to protecting Nvidia and supporting America's national security. I am proud and grateful to be an American.\" \nDonald Trump, when asked about the reports, said he had not spoken with the Nvidia chief about the allegations. \nHe said: \"I hope everything's fine. He's done such an incredible job.\" \nWhen pressed on whether he should have acted on intelligence when he was briefed on it, he added: \"No, I don't think so. I think he's an honourable guy. I think he probably has an excuse for it. You have to hear it.\" \nOur Standards: The GB News Editorial Charter \nFollow related topics:",
+      "source_type": "news",
+      "credibility_score": 3,
+      "relevance_score": 3
+    },
+    {
+      "id": "source_8",
+      "url": "https://www.scmp.com/tech/article/3373724/nvidia-ceo-jensen-huang-admits-affair-board-orders-investigation?pgtype=topic",
+      "title": "Nvidia CEO Jensen Huang admits to affair; board orders investigation | South China Morning Post",
+      "publisher": "scmp.com",
+      "published_at": "2026-11-09",
+      "content": "In memo published on company website, he apologises to his family and colleagues.\n\nAdvertisement\n\nArtificial intelligence\n\nTechBig Tech\n\n# Nvidia CEO Jensen Huang admits to affair; board orders investigation\n\n### \n\nIn memo published on company website, he apologises to his family and colleagues\n\n3\\-MIN READ3\\-MIN\n\n99+\n\nListen\n\nHoward Liuin Beijing\n\nPublished: 8:53am, 9 Nov 2026Updated: 7:43pm, 9 Nov 2026\n\nThe board of US AI chip giant Nvidia has announced an independent investigation as chief executive Jensen Huang said in a memo to employees that he had been unfaithful to his wife.\n\nHuang admitted to an extramarital affair and apologised to his family and colleagues in the memo, which the company published on its website on Sunday.\n\n\u201cI was unfaithful to my wife. My actions hurt her and our children. There is no excuse for what I did. I am deeply sorry,\u201d Huang wrote.",
+      "source_type": "web",
+      "credibility_score": 4,
+      "relevance_score": 3
+    },
+    {
+      "id": "source_9",
+      "url": "https://jingletree.com/nvidia-ceo-jensen-huang-admits-affair-company-probing-alleged-chinese-recruitment-plot-report-304034.html",
+      "title": "Nvidia CEO Jensen Huang Admits Affair, Company Probing Alleged Chinese Recruitment Plot, Report - Jingletree",
+      "publisher": "jingletree.com",
+      "published_at": "2026-11-09",
+      "content": "## Nvidia CEO Jensen Huang Admits Affair, Company Probes Alleged Spy Plot \nPublished November 8, 2026 3:01 PM PST \nNvidia's married CEO Jensen Huang has openly admitted to an affair, leading to a probe by his company into an alleged foreign recruitment plot ... according to a bombshell report. \nJensen -- who is married to Lori Huang -- made the startling admission to employees in an internal message obtained by the Financial Times. \nThe exec apparently wrote ... \"I owe my family and all of you an apology. I was unfaithful to my wife. My actions hurt her and our children. There is no excuse for what I did. I am deeply sorry.\" \nWhile he didn't name the person he had an affair with ... the Financial Times reported that top US officials claimed Jensen had a romantic relationship with a woman named Alice Huang that U.S. intelligence believed was a Chinese spy. \nBoth the Financial Times and New York Times cite Alice as the person listed in a classified memo alleging she was a possible recruit of the Chinese Ministry of State Security. \nAlice is an exec at Megaspeed -- which did business with Nvidia. Before his apology ... Jensen told Bloomberg News in October that his interactions with her were \"related to Megaspeed, and it was all completely normal and not unusual.\"\nFollowing Jensen's internal message about the affair ... Nvidia's board said they would begin an independent probe \"in light of recent reporting that founder and CEO Jensen Huang has been the target of a foreign intelligence effort.\" \nThe board added in their statement ... \"The board prioritizes US national and economic security, which is paramount to the interests of Nvidia and its shareholders. While the board has no reason to believe that either national security or Nvidia secrets were compromised, the board\u2019s inquiry will examine all available information.\" \nWe've reached out to Megaspeed AI for comment on Alice's behalf ... so far, no word back.",
+      "source_type": "web",
+      "credibility_score": 2,
+      "relevance_score": 3
+    },
+    {
+      "id": "source_10",
+      "url": "https://newsfinale.com/crime/who-is-alice-huang-nvidia-ceo-jensen-huangs-alleged-affair-and-chinese-spy-claims-explained/",
+      "title": "Who Is Alice Huang? Nvidia CEO Jensen Huang\u2019s Alleged Affair and...",
+      "publisher": "newsfinale.com",
+      "published_at": "2026-11-10",
+      "content": "Alice Huang is at the center of an international controversy following allegations that she acted as a Chinese spy while having an affair with Nvidia CEO Jensen Huang. \nJensen acknowledged the infidelity in an open letter to Nvidia, although he did not name the woman involved. He also said the company\u2019s board had opened an investigation into the \u201cnational security concerns raised in news reports,\u201d CNBC reported. \nAs the allegations intensified, Nvidia said there was \u201cno reason to believe that either national security or NVIDIA secrets were compromised.\u201d \nChinese officials, meanwhile, have rejected the claim that Alice Huang worked as a spy. \nSpeaking to reporters on Nov. 9, Chinese Foreign Ministry spokesperson Guo Jiakun called the \u201cso-called spy allegation\u201d unsubstantiated and described it as part of a smear campaign against China, according to The Associated Press. \nSo who is the woman at the heart of the controversy? \nHere is what is known about Alice Huang: \nWho is Alice Huang?\nHere is what is known about Alice Huang: \nWho is Alice Huang? \nAlice has been described as a \u201cpublicly reported Chinese intelligence asset\u201d in a Nov. 5 statement from the House Select Committee on China. She is also an executive with Megaspeed, a company that provides services to businesses requiring substantial computing capacity. \nBased in Singapore, Megaspeed generally serves companies across the Asia-Pacific region and has presented itself as a \u201ccore business partner\u201d of Nvidia. \nThe New York Times reported that Alice, who is said to speak English fluently, has established high-level connections within the international AI chip industry. \nU.S. intelligence officials who spoke with the newspaper said they believed Chinese authorities had recruited Alice to obtain information about the American-made AI chips produced by Nvidia. \nDON\u2019T MISS: Blake Lively Tells Women to Find a Husband Who Shares Clothes \nAlice has not publicly responded to the allegations. \nWhen Did the Relationship Between Jensen Huang and Alice Huang Begin?\nWhen Did the Relationship Between Jensen Huang and Alice Huang Begin? \nThe timing and circumstances of Jensen and Alice\u2019s alleged relationship remain unclear. \nThe two are not related, despite sharing a surname, but their professional ties led to several public appearances together. They were photographed at a dinner in Taipei in 2025, where footage appeared to show Jensen placing his arm around Alice and kissing her on the cheek, according to The Guardian. The pair later reportedly left the restaurant in the same car. \nAfter reports of the alleged affair emerged, Jensen released a public statement acknowledging that he had been unfaithful. \n\u201cI was unfaithful to my wife,\u201d he said, according to Newsweek. \u201cMy actions hurt her and our children. There is no excuse for what I did. I am deeply sorry.\u201d \nJensen Huang Said He Will Cooperate With Investigation \nJensen also said he intended to remain at the helm of Nvidia and would cooperate with U.S. authorities. \n\u201cI support the investigation and will cooperate fully,\u201d he said, according to The Associated Press. \u201cI love our country and our company. I am committed to protecting NVIDIA and supporting America\u2019s national security.\u201d",
+      "source_type": "web",
+      "credibility_score": 2,
+      "relevance_score": 2
+    },
+    {
+      "id": "source_11",
+      "url": "https://www.forbes.com/sites/maryroeloffs/2026/11/12/jensen-huang-out-at-nvidia-after-affair-scandals/",
+      "title": "Jensen Huang Out At Nvidia After Affair Scandals\u2014Here's Who Could Replace Him",
+      "publisher": "forbes.com",
+      "published_at": null,
+      "content": "Jensen Huang, billionaire and CEO of AI chip giant Nvidia, resigned his position on Thursday morning, the company\u2019s board of directors announced, after reports of a second affair with a Nvidia employee days after he admitted to a relationship ...\nJensen Huang, billionaire and CEO of AI chip giant Nvidia, resigned his position on Thursday morning, the company\u2019s board of directors announced, after reports of a second affair with a Nvidia employee days after he admitted to a relationship with another tech executive that intelligence officials believe may have been a Chinese spy.\nPresident Donald Trump, who reportedly knew about Huang\u2019s affair with the alleged spy and didn\u2019t step in, on Thursday said he thinks former Apple CEO Tim Cook should replace Huang. \u201cA Legend replaces a Legend!,\u201d Trump posted to Truth Social. Tesla and SpaceX creator Elon Musk said it would be an \u201c \u00b7 honor\u201c to hire Huang. Musk made the comment on Wednesday in response to a post from financial blog Zerohedge that read: \u201cElon please hire Jensen.\u201d He\u2019s made several other comments in support of the embattled CEO since news of the affair broke, including tweeting \u201c\nNvidia CEO Jensen Huang acknowledged in an employee memo on Sunday that he had an extramarital affair with Alice Huang, an executive at computing and data center operator Megaspeed International who is suspected by U.S. intelligence of acting as an operative for Beijing.\nThe affair admission has sparked speculation Huang and his wife, Lori, could be headed for divorce after 41 years of marriage\u2014and Lori could walk away with tens of billions if they do. According to Nvidia\u2019s 2026 proxy, most of the shares attributed to Jensen are held in trusts in which both spouses are co-trustees and as a result \u201cmay be deemed to have shared Beneficial interest.\u201d It\u2019s unclear if the two may have signed a prenuptial and postnuptial agreement, but California is a community property state, which means any assets that were acquired during the marriage\u2014which would include Huang\u2019s stake in Nvidia and any income from the company\u2014must be divided 50/50 during a divorce.",
+      "source_type": "news",
+      "credibility_score": 3,
+      "relevance_score": 2
+    },
+    {
+      "id": "source_12",
+      "url": "https://news.sbs.co.kr/english/article.do?news_id=N1008836451",
+      "title": "Jensen Huang Admits to Affair, Saying \"No Excuse\"\u2026 NVIDIA Board Launches Investigation",
+      "publisher": "sbs.co.kr",
+      "published_at": "2026-11-09",
+      "content": "NVIDIA's Board of Directors released ... announcing, \"We have launched an independent investigation into recent reports that our founder and CEO, Jensen Huang, was targeted by a foreign intelligence agency.\"...\nNVIDIA's Board of Directors released an official statement on November 8 announcing, \"We have launched an independent investigation into recent reports that our founder and CEO, Jensen Huang, was targeted by a foreign intelligence agency.\" The board stated that an independent director committee, advised by outside independent legal counsel, will oversee the investigation, and that CEO Huang has pledged his full cooperation.\n\u25b2 Jensen Huang and the woman suspected of being a Chinese spy NVIDIA CEO Jensen Huang has admitted to an affair with a person suspected of being a spy for Chinese intelligence agencies. NVIDIA's Board of Directors released an official statement on November 8 (local time) announcing, \"We have launched an independent investigation into recent reports that our founder and CEO, Jensen Huang, was targeted by a foreign intelligence agency.\"\nHowever, the board added, \"There is no evidence to suggest that national security or NVIDIA's confidential information has been compromised,\" and \"We trust Jensen and the management team.\" Prior to this, CEO Huang sent an email to employees admitting to his affair and apologizing, according to Bloomberg News and the online media outlet Axios that day.\nHe stated, \"Leading NVIDIA is the privilege of my lifetime,\" and \"I will work to earn back your trust.\" CEO Huang has faced allegations of being in a romantic relationship with Alice Huang (Chinese name Huang Le), a Chinese businesswoman who has been pointed out as a spy for China's Ministry of State Security (MSS).",
+      "source_type": "web",
+      "credibility_score": 3,
+      "relevance_score": 2
+    }
+  ]
+}
