@@ -5,15 +5,10 @@ import { investigate } from './services/api'
 import type { GraphEdge, GraphNode, Investigation } from './types/graph'
 import checkIcon from './assets/icons/check.svg'
 import plusIcon from './assets/icons/plus.svg'
-import searchIcon from './assets/icons/search.svg'
 import graphIcon from './assets/icons/graph.svg'
 import graphSmallIcon from './assets/icons/graph-small.svg'
-import clockIcon from './assets/icons/clock.svg'
-import bookIcon from './assets/icons/book.svg'
-import bookmarkIcon from './assets/icons/bookmark.svg'
 import infoIcon from './assets/icons/info.svg'
 import infoSmallIcon from './assets/icons/info-small.svg'
-import gearIcon from './assets/icons/gear.svg'
 import closePanelIcon from './assets/icons/close-panel.svg'
 import arrowIcon from './assets/icons/arrow.svg'
 import docIcon from './assets/icons/doc.svg'
@@ -112,7 +107,7 @@ export default function App() {
       <aside className="sidebar">
         <div className="brand">
           <span className="brand-mark"><img src={checkIcon} alt="" /></span>
-          <span className="brand-name">fakta</span>
+          <span className="brand-name">factly</span>
           <span className="badge-beta">BETA</span>
         </div>
 
@@ -121,10 +116,7 @@ export default function App() {
         </button>
 
         <nav className="nav">
-          <a className="nav-item"><img src={searchIcon} alt="" />Check a claim</a>
           <a className="nav-item active" aria-current="page"><img src={graphIcon} alt="" />Connections</a>
-          <a className="nav-item"><img src={clockIcon} alt="" />History</a>
-          <a className="nav-item"><img src={bookIcon} alt="" />Saved checks</a>
         </nav>
 
         {data && (
@@ -141,7 +133,6 @@ export default function App() {
             <strong>Example workspace</strong>
             <p>Relationships shown here are illustrative and unverified.</p>
           </div>
-          <a className="nav-item settings"><img src={gearIcon} alt="" />Settings</a>
         </div>
       </aside>
 
@@ -152,9 +143,6 @@ export default function App() {
             <h1>See the bigger picture.</h1>
             <p className="subtitle">Explore who and what sits behind a claim.</p>
           </div>
-          <button className="btn-outline" disabled title="Not available yet">
-            <img src={bookmarkIcon} alt="" /> Save graph
-          </button>
         </header>
 
         <form className="claim-form" onSubmit={run}>
@@ -176,10 +164,6 @@ export default function App() {
                 {types.map((t) => (
                   <span key={t} className="chip"><i style={{ background: NODE_COLORS[t] }} />{t}</span>
                 ))}
-              </div>
-              <div className="view-switch">
-                <span className="active">Graph</span>
-                <span>List</span>
               </div>
             </div>
 
@@ -219,24 +203,43 @@ export default function App() {
                 <div className="selected">
                   <div className="selected-status">
                     <span className="eyebrow">{selected.kind === 'node' ? `SELECTED ${selected.item.type.toUpperCase()}` : 'SELECTED CONNECTION'}</span>
-                    {selected.kind === 'node' && selected.item.type === 'claim' && (
-                      <span className={`status ${assessment?.status ?? 'unchecked'}`}>
-                        {assessment ? STATUS_LABEL[assessment.status] : 'Not checked'}
-                      </span>
-                    )}
                     {selected.kind === 'edge' && selected.item.stance && (
                       <span className={`status ${selected.item.stance}`}>{selected.item.stance}</span>
                     )}
                   </div>
                   <h3 className="selected-title">{heading}</h3>
+                  {isClaim && (
+                    <div className={`verdict ${assessment?.status ?? 'unchecked'}`}>
+                      <span className="verdict-eyebrow">VERDICT</span>
+                      <strong className="verdict-status">{assessment ? STATUS_LABEL[assessment.status] : 'Not checked'}</strong>
+                      {assessment && (
+                        <>
+                          <div className="verdict-confidence">
+                            <span className="verdict-pct">{Math.round(assessment.confidence * 100)}%</span>
+                            <span className="verdict-caption">model-assessed confidence<br />(not a probability of truth)</span>
+                          </div>
+                          <div className="verdict-bar"><i style={{ width: `${Math.round(assessment.confidence * 100)}%` }} /></div>
+                          <div className="verdict-counts">
+                            <span className="against">{assessment.contradicting_evidence.length} contradicting</span>
+                            <span className="for">{assessment.supporting_evidence.length} supporting</span>
+                          </div>
+                          <p className="verdict-why">{assessment.explanation}</p>
+                        </>
+                      )}
+                    </div>
+                  )}
                   <p className="muted">{selected.item.description}</p>
+                  {selected.kind === 'node' && typeof selected.item.properties.summary === 'string' && (
+                    <p className="muted">{selected.item.properties.summary}</p>
+                  )}
+                  {selected.kind === 'node' && typeof selected.item.properties.sources === 'number' && (
+                    <p className="meta">
+                      {selected.item.properties.sources} sources
+                      {typeof selected.item.properties.publishers === 'number' && ` · ${selected.item.properties.publishers} publishers`}
+                    </p>
+                  )}
                   {selected.kind === 'node' && selected.item.type === 'source' && typeof selected.item.properties.url === 'string' && (
                     <a href={selected.item.properties.url} target="_blank" rel="noreferrer">{selected.item.properties.url}</a>
-                  )}
-                  {assessment && (
-                    <p className="muted">
-                      <b>Model-assessed confidence: {Math.round(assessment.confidence * 100)}%</b> (not a probability of truth). {assessment.explanation}
-                    </p>
                   )}
                 </div>
 
