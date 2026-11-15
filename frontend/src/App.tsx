@@ -110,7 +110,6 @@ export default function App() {
           <div>
             <p className="eyebrow">FOLLOW THE CONNECTIONS</p>
             <h1>See the bigger picture.</h1>
-            <p className="subtitle">Explore who and what sits behind a claim.</p>
           </div>
         </header>
 

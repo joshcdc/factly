@@ -38,7 +38,6 @@ h1, h2, h3, h4, p { margin: 0; }
 .workspace-head > .brand { flex-direction: row; align-items: center; gap: 8px; }
 .workspace-head > div { display: flex; flex-direction: column; gap: 8px; }
 h1 { font-size: 40px; font-weight: 600; line-height: 1.15; letter-spacing: -1.1px; color: var(--ink); }
-.subtitle { color: var(--ink-muted); font-size: 16px; }
 .btn-outline { display: flex; align-items: center; gap: 8px; padding: 10px; background: var(--surface); border: 1px solid var(--line); border-radius: 9px; color: var(--ink); font-size: 12px; font-weight: 600; }
 .btn-outline img { width: 17px; height: 17px; }
 .btn-outline:disabled { opacity: .6; cursor: not-allowed; }
