@@ -7,7 +7,6 @@ import factlySymbol from './assets/factly-symbol.svg'
 import plusIcon from './assets/icons/plus.svg'
 import graphIcon from './assets/icons/graph.svg'
 import graphSmallIcon from './assets/icons/graph-small.svg'
-import infoIcon from './assets/icons/info.svg'
 import infoSmallIcon from './assets/icons/info-small.svg'
 import closePanelIcon from './assets/icons/close-panel.svg'
 import arrowIcon from './assets/icons/arrow.svg'
@@ -127,13 +126,6 @@ export default function App() {
           </section>
         )}
 
-        <div className="sidebar-bottom">
-          <div className="notice">
-            <img src={infoIcon} alt="" />
-            <strong>Example workspace</strong>
-            <p>Relationships shown here are illustrative and unverified.</p>
-          </div>
-        </div>
       </aside>
 
       <section className="workspace">
