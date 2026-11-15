@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Simulation, seed, type SimNode } from './forceSim'
 import type { GraphEdge, GraphNode } from '../types/graph'
+import NodeGlyph, { CLAIM_RADIUS, NODE_RADIUS } from './shapes'
 
 export const NODE_COLORS: Record<string, string> = {
   person: '#8fc5ff', organisation: '#57c7b6', company: '#57c7b6', location: '#f2bd5b',
@@ -8,17 +9,21 @@ export const NODE_COLORS: Record<string, string> = {
 }
 const STANCE_COLORS: Record<string, string> = { supports: '#4ade80', contradicts: '#f87171', neutral: '#6b7785' }
 
-type SNode = GraphNode & SimNode
+const MIN_Z = 0.3, MAX_Z = 4
+const clamp = (v: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, v))
+
+type SNode =GraphNode & SimNode
 type Picked = { kind: 'node'; item: GraphNode } | { kind: 'edge'; item: GraphEdge } | null
 
 interface Props {
   nodes: GraphNode[]
   edges: GraphEdge[]
   selectedId?: string
+  nodeColor?: (n: GraphNode) => string | undefined
   onSelect: (p: Picked) => void
 }
 
-export default function GraphView({ nodes, edges, selectedId, onSelect }: Props) {
+export default function GraphView({ nodes, edges, selectedId, nodeColor, onSelect }: Props) {
   const svgRef = useRef<SVGSVGElement>(null)
   const gRef = useRef<SVGGElement>(null)
   const sim = useRef<Simulation<SNode> | null>(null)
@@ -26,6 +31,7 @@ export default function GraphView({ nodes, edges, selectedId, onSelect }: Props)
   const drag = useRef<{ node: SNode | null; panX: number; panY: number; moved: boolean } | null>(null)
   const [, setTick] = useState(0)
   const [view, setView] = useState({ x: 0, y: 0, k: 1 })
+  const [dragId, setDragId] = useState<string | null>(null) // node being dragged right now
 
   const run = () => {
     cancelAnimationFrame(raf.current)
@@ -66,6 +72,7 @@ export default function GraphView({ nodes, edges, selectedId, onSelect }: Props)
     e.stopPropagation()
     svgRef.current!.setPointerCapture(e.pointerId)
     drag.current = { node, panX: 0, panY: 0, moved: false }
+    setDragId(node.id)
     sim.current!.reheat(0.55)
     run()
   }
@@ -91,6 +98,7 @@ export default function GraphView({ nodes, edges, selectedId, onSelect }: Props)
   const onUp = () => {
     const d = drag.current
     drag.current = null
+    setDragId(null)
     if (!d) return
     if (d.node) {
       d.node.fx = d.node.fy = null
@@ -101,48 +109,54 @@ export default function GraphView({ nodes, edges, selectedId, onSelect }: Props)
       onSelect(null)
     }
   }
+  // Zoom around the cursor; the layout is not re-run.
   const onWheel = (e: React.WheelEvent) => {
-    const k = Math.min(4, Math.max(0.3, view.k * (e.deltaY < 0 ? 1.1 : 0.9)))
-    setView((v) => ({ ...v, k }))
+    const box = svgRef.current!.getBoundingClientRect()
+    const mx = e.clientX - box.left, my = e.clientY - box.top
+    setView((v) => {
+      const k = clamp(v.k * (e.deltaY < 0 ? 1.1 : 0.9), MIN_Z, MAX_Z)
+      const r = k / v.k
+      return { k, x: mx - (mx - v.x) * r, y: my - (my - v.y) * r }
+    })
   }
 
+
   const s = sim.current
+  const byId = new Map(s?.nodes.map((n) => [n.id, n]))
+  // The dragged node is drawn last, then the selected one, so they and their labels sit in front of everything else.
+  const rank = (id: string) => (id === dragId ? 2 : id === selectedId ? 1 : 0)
+  const ordered = [...(s?.nodes ?? [])].sort((p, q) => rank(p.id) - rank(q.id))
   return (
-    <svg ref={svgRef} className="graph-svg" onPointerDown={onBgDown} onPointerMove={onMove}
-         onPointerUp={onUp} onPointerCancel={onUp} onWheel={onWheel}>
-      <defs>
-        {Object.entries(STANCE_COLORS).map(([k, c]) => (
-          <marker key={k} id={`arrow-${k}`} viewBox="0 0 10 10" refX="18" refY="5" markerWidth="6" markerHeight="6" orient="auto">
-            <path d="M0 0L10 5L0 10z" fill={c} />
-          </marker>
-        ))}
-      </defs>
-      <g ref={gRef} transform={`translate(${view.x} ${view.y}) scale(${view.k})`}>
-        {s && edges.map((e) => {
-          const a = s.nodes.find((n) => n.id === e.source), b = s.nodes.find((n) => n.id === e.target)
-          if (!a || !b) return null
-          const stance = e.stance ?? 'neutral'
-          const label = { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 }
-          return (
-            <g key={e.id} className="edge" onPointerDown={(ev) => ev.stopPropagation()}
-               onClick={() => onSelect({ kind: 'edge', item: e })}>
-              <line x1={a.x} y1={a.y} x2={b.x} y2={b.y} stroke={STANCE_COLORS[stance]}
-                    strokeOpacity={selectedId === e.id ? 1 : 0.55} strokeWidth={selectedId === e.id ? 3 : 1.5}
-                    markerEnd={`url(#arrow-${stance})`} />
-              <line x1={a.x} y1={a.y} x2={b.x} y2={b.y} stroke="transparent" strokeWidth={12} />
-              <text x={label.x} y={label.y} className="edge-label">{e.relationship}</text>
+      <svg ref={svgRef} className="graph-svg" onPointerDown={onBgDown} onPointerMove={onMove}
+           onPointerUp={onUp} onPointerCancel={onUp} onWheel={onWheel}>
+        <g ref={gRef} transform={`translate(${view.x} ${view.y}) scale(${view.k})`}>
+          {s && edges.map((e) => {
+            const a = byId.get(e.source), b = byId.get(e.target)
+            if (!a || !b) return null
+            const stance = e.stance ?? 'neutral'
+            const sel = selectedId === e.id
+            return (
+              <g key={e.id} className="edge" onPointerDown={(ev) => ev.stopPropagation()}
+                 onClick={() => onSelect({ kind: 'edge', item: e })}>
+                <line x1={a.x} y1={a.y} x2={b.x} y2={b.y} stroke={STANCE_COLORS[stance]}
+                      strokeOpacity={sel ? 1 : 0.3} strokeWidth={1.5} />
+                <line x1={a.x} y1={a.y} x2={b.x} y2={b.y} stroke="transparent" strokeWidth={12} />
+              </g>
+            )
+          })}
+          {ordered.map((n) => (
+            <g key={n.id} transform={`translate(${n.x} ${n.y})`} className="node"
+               onPointerDown={(ev) => onNodeDown(ev, n)}>
+              <NodeGlyph r={(n.type === 'claim' ? CLAIM_RADIUS : NODE_RADIUS)} fill={nodeColor?.(n) ?? NODE_COLORS[n.type] ?? '#999'}
+                         stroke={selectedId === n.id ? '#fff' : 'rgba(242,245,248,.7)'} strokeWidth={selectedId === n.id ? 3 : 1.5} />
             </g>
-          )
-        })}
-        {s?.nodes.map((n) => (
-          <g key={n.id} transform={`translate(${n.x} ${n.y})`} className="node"
-             onPointerDown={(ev) => onNodeDown(ev, n)}>
-            <circle r={n.type === 'claim' ? 11 : 8} fill={NODE_COLORS[n.type] ?? '#999'}
-                    stroke={selectedId === n.id ? '#fff' : 'rgba(242,245,248,.7)'} strokeWidth={selectedId === n.id ? 3 : 1.5} />
-            <text y={-14} className="node-label">{n.label}</text>
-          </g>
-        ))}
-      </g>
-    </svg>
+          ))}
+          {/* Labels sit in their own layer above every node, so a circle can never cover text */}
+          {ordered.map((n) => (
+            <text key={n.id} x={n.x} y={n.y - (n.type === 'claim' ? CLAIM_RADIUS : NODE_RADIUS) - 6}
+                  className={n.type === 'claim' ? 'node-label claim-label' : 'node-label'}>{n.label}</text>
+          ))}
+        </g>
+      </svg>
   )
 }

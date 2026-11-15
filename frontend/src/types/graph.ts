@@ -34,6 +34,7 @@ export interface GraphEdge {
   description: string
   evidence_ids: string[]
   source_ids: string[]
+  weight?: number // display priority 0-1 (thickness, fade, detail slider)
 }
 
 export interface Evidence {
