@@ -159,14 +159,6 @@ export default function App() {
 
         <div className="content">
           <div className="graph-col">
-            <div className="toolbar">
-              <div className="filters">
-                {types.map((t) => (
-                  <span key={t} className="chip"><i style={{ background: NODE_COLORS[t] }} />{t}</span>
-                ))}
-              </div>
-            </div>
-
             <div className="graph">
               {data ? (
                 <>
