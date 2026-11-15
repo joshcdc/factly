@@ -4,7 +4,7 @@ import uuid
 
 from fastapi import APIRouter, BackgroundTasks, HTTPException
 
-from backend import pipeline
+from backend import keys, pipeline
 from backend.models.schemas import InvestigateRequest, InvestigationResponse
 
 router = APIRouter(prefix="/api")
@@ -15,7 +15,7 @@ INVESTIGATIONS: dict[str, InvestigationResponse] = {}
 
 @router.get("/health")
 def health() -> dict:
-    return {"ok": True}
+    return {"ok": True, "missing_keys": keys.missing_keys()}  # names only, never values
 
 
 @router.post("/investigate", response_model=InvestigationResponse)

@@ -54,9 +54,11 @@ async def analyse_async(query: str, sources: list[Source], on_progress=None) -> 
     extractions = await asyncio.gather(*(one(s) for s in sources))
     await ranking
     if sources and len(failures) == len(sources):  # an outage or bad key, not "no evidence": say so
-        raise AnalysisError(
-            f"Could not read any of the {len(sources)} sources ({failures[0][1].split(':')[0]}). "
-            "Check ANTHROPIC_API_KEY and model access, then try again.")
+        kind = failures[0][1].split(":")[0]
+        if all(f[1].split(":")[0] in ("AuthenticationError", "PermissionDeniedError") for f in failures):
+            raise AnalysisError("The Anthropic API key was rejected. Check ANTHROPIC_API_KEY in .env.")
+        raise AnalysisError(f"Could not read any of the {len(sources)} sources ({kind}). "
+                            "Check ANTHROPIC_API_KEY and model access, then try again.")
 
     # merge entities across all sources once, before any node is made
     canon = await merge.resolve(
@@ -125,7 +127,11 @@ async def analyse_async(query: str, sources: list[Source], on_progress=None) -> 
 
     say("classifying")
     pairs =[(x.quote, context_for(x.quote, s.content)) for s, x in candidates]
-    labels = await jev.classify_stances(query, pairs) if candidates else []
+    try:
+        labels = await jev.classify_stances(query, pairs) if candidates else []
+    except jev.JevKeyError as e:
+        summaries.cancel()
+        raise AnalysisError(str(e)) from e
     evidence, unclassified = [], 0
     for (s, x), lab in zip(candidates, labels):
         if lab is None:

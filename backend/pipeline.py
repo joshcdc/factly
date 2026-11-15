@@ -4,7 +4,8 @@ import logging
 
 from pydantic import ValidationError
 
-from backend.intelligence import analyse
+from backend import keys
+from backend.intelligence import AnalysisError, analyse
 from backend.models.schemas import InvestigationResponse
 from backend.research import retrieval
 from backend.research.linkup import ResearchError
@@ -20,6 +21,7 @@ def run(inv: InvestigationResponse) -> InvestigationResponse:
         log.info("%s: %s", inv.investigation_id, name)
 
     try:
+        keys.require_keys()  # before any search: a missing key fails at once, with its name
         stage("searching")
         inv.sources = retrieval.gather(inv.query)
         if not inv.sources:
@@ -29,7 +31,7 @@ def run(inv: InvestigationResponse) -> InvestigationResponse:
             graph.nodes, graph.edges, graph.evidence, graph.assessments,
         )
         inv.status = "complete"
-    except ResearchError as e:
+    except (keys.MissingKeysError, ResearchError, AnalysisError) as e:
         inv.status, inv.error = "failed", str(e)
     except ValidationError as e:
         inv.status, inv.error = "failed", f"Analysis returned malformed data: {e.error_count()} error(s)"

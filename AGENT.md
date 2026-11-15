@@ -332,6 +332,18 @@ This endpoint can be used for polling if research is asynchronous.
 
 The frontend should not assume research completes instantly.
 
+### Errors and API keys
+
+A failed investigation has `status: "failed"` and a readable `error`, which the frontend should show as is. The backend checks its three keys (`LINKUP_API_KEY`, `ANTHROPIC_API_KEY`, `TYPESAFE_API_KEY`) before doing any work, and names the missing ones, for example:
+
+- `Missing API key: TYPESAFE_API_KEY (TypeSafe, Jev rates the evidence). Add to the .env file in the repo root (see .env.example) and restart the backend.`
+- `The Anthropic API key was rejected. Check ANTHROPIC_API_KEY in .env.`
+- `The TypeSafe (Jev) API key was rejected. Check TYPESAFE_API_KEY in .env.`
+- `Linkup API key was rejected.` / `Linkup account is out of credits.`
+- `Could not read any of the 10 sources (...)`
+
+`GET /api/health` returns `{"ok": true, "missing_keys": [...]}` (names only, never values), so the frontend can warn at page load instead of after a claim is submitted.
+
 ---
 
 ## 5. Integration Rules

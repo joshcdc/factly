@@ -1,6 +1,11 @@
 """Offline API tests (Agent 1): Linkup and analyse() stubbed, no keys needed.  Run: python -m tests.test_api"""
 
+import os
+
 from fastapi.testclient import TestClient
+
+for _k in ("LINKUP_API_KEY", "ANTHROPIC_API_KEY", "TYPESAFE_API_KEY"):
+    os.environ.setdefault(_k, "test-key")  # pipeline.run checks that keys exist; nothing here calls a real service
 
 from backend import pipeline
 from backend.main import app

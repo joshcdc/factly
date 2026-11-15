@@ -4,13 +4,17 @@ import asyncio
 import re
 
 from dotenv import load_dotenv
-from typesafe_sdk import AsyncTypeSafeClient, Choice, Score
+from typesafe_sdk import AsyncTypeSafeClient, Choice, Score, TypeSafeAuthenticationError
 
 from backend.models.schemas import Stance
 from backend.models.source import Source
 from backend.textutil import fold, tokens
 
 load_dotenv()
+
+class JevKeyError(RuntimeError):
+    """TypeSafe rejected the API key: a setup problem to report, not a transient failure to skip."""
+
 
 MODEL = "jev-1.13.0"  # pinned: thresholds tuned on one version may not hold on the next
 MIN_PROB = 0.6  # below this the label is not trusted and becomes "neutral"
@@ -73,6 +77,8 @@ async def classify_stances(claim: str, excerpts: list[tuple[str, str]]) -> list[
                 )
                 probs = r.choices["stance"].probabilities
                 label = max(probs, key=probs.get)
+            except TypeSafeAuthenticationError as e:
+                raise JevKeyError("The TypeSafe (Jev) API key was rejected. Check TYPESAFE_API_KEY in .env.") from e
             except Exception:  # SDK already retried 429s; an error or malformed reply means "unclassified"
                 return None
         return (label, probs[label]) if probs[label] >= MIN_PROB else ("neutral", probs[label])
@@ -80,7 +86,9 @@ async def classify_stances(claim: str, excerpts: list[tuple[str, str]]) -> list[
     try:
         async with AsyncTypeSafeClient(model=MODEL) as client:
             return list(await asyncio.gather(*(one(client, e) for e in excerpts)))
-    except Exception:  # no key / Jev unreachable: every excerpt stays unclassified, the run carries on
+    except JevKeyError:
+        raise
+    except Exception:  # Jev unreachable: every excerpt stays unclassified, the run carries on
         return [None] * len(excerpts)
 
 
