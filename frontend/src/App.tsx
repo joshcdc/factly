@@ -3,7 +3,7 @@ import GraphView, { NODE_COLORS } from './graph/GraphView'
 import NodeGlyph from './graph/shapes'
 import { investigate } from './services/api'
 import type { GraphEdge, GraphNode, Investigation } from './types/graph'
-import checkIcon from './assets/icons/check.svg'
+import factlySymbol from './assets/factly-symbol.svg'
 import plusIcon from './assets/icons/plus.svg'
 import graphIcon from './assets/icons/graph.svg'
 import graphSmallIcon from './assets/icons/graph-small.svg'
@@ -106,7 +106,7 @@ export default function App() {
     <div className="app">
       <aside className="sidebar">
         <div className="brand">
-          <span className="brand-mark"><img src={checkIcon} alt="" /></span>
+          <img className="brand-symbol" src={factlySymbol} alt="" />
           <span className="brand-name">factly</span>
           <span className="badge-beta">BETA</span>
         </div>
