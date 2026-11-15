@@ -33,8 +33,9 @@ h1, h2, h3, h4, p { margin: 0; }
 .eyebrow { font-size: 11px; font-weight: 700; color: var(--ink-muted); }
 
 /* Workspace */
-.workspace { flex: 1; min-width: 0; display: flex; flex-direction: row; padding: 28px 32px 32px; gap: 20px; }
-/* left column: header, claim input and graph; the details panel is the full-height column on the right */
+.workspace { flex: 1; min-width: 0; display: flex; flex-direction: column; padding: 28px 32px 32px; gap: 20px; }
+.content { flex: 1; min-height: 0; display: flex; gap: 20px; }
+/* left column: claim input and graph; the details panel sits beside it, from the input's top to the graph's bottom */
 .main-col { flex: 1; min-width: 0; min-height: 0; display: flex; flex-direction: column; gap: 20px; }
 .workspace-head { display: flex; align-items: center; justify-content: flex-start; gap: 28px; }
 .workspace-head > .brand { flex-direction: row; align-items: center; gap: 8px; }
