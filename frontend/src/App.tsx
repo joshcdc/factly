@@ -101,31 +101,31 @@ export default function App() {
   return (
     <div className="app">
       <section className="workspace">
-        <header className="workspace-head">
-          <div className="brand">
-            <img className="brand-symbol" src={factlySymbol} alt="" />
-            <span className="brand-name">factly</span>
-            <span className="badge-beta">BETA</span>
-          </div>
-          <div>
-            <p className="eyebrow">FOLLOW THE CONNECTIONS</p>
-            <h1>See the bigger picture.</h1>
-          </div>
-        </header>
+        <div className="main-col">
+          <header className="workspace-head">
+            <div className="brand">
+              <img className="brand-symbol" src={factlySymbol} alt="" />
+              <span className="brand-name">factly</span>
+              <span className="badge-beta">BETA</span>
+            </div>
+            <div>
+              <p className="eyebrow">FOLLOW THE CONNECTIONS</p>
+              <h1>See the bigger picture.</h1>
+            </div>
+          </header>
 
-        <form className="claim-form" onSubmit={run}>
-          <input
-            id="claim-input"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Enter a claim to fact-check…"
-            maxLength={500}
-          />
-          <button className="btn-primary" disabled={loading}>{loading ? 'Investigating…' : 'Investigate'}</button>
-        </form>
-        {error && <p className="error">{error}</p>}
+          <form className="claim-form" onSubmit={run}>
+            <input
+              id="claim-input"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Enter a claim to fact-check…"
+              maxLength={500}
+            />
+            <button className="btn-primary" disabled={loading}>{loading ? 'Investigating…' : 'Investigate'}</button>
+          </form>
+          {error && <p className="error">{error}</p>}
 
-        <div className="content">
           <div className="graph-col">
             <div className="graph">
               {data ? (
@@ -147,112 +147,112 @@ export default function App() {
               )}
             </div>
           </div>
+        </div>
 
-          <aside className="inspector">
-            <div className="inspector-head">
-              <h2>{selected?.kind === 'edge' ? 'Connection details' : 'Claim details'}</h2>
-              {picked && (
-                <button className="icon-btn" aria-label="Close details" onClick={() => setPicked(null)}>
-                  <img src={closePanelIcon} alt="" />
-                </button>
-              )}
-            </div>
+        <aside className="inspector">
+          <div className="inspector-head">
+            <h2>{selected?.kind === 'edge' ? 'Connection details' : 'Claim details'}</h2>
+            {picked && (
+              <button className="icon-btn" aria-label="Close details" onClick={() => setPicked(null)}>
+                <img src={closePanelIcon} alt="" />
+              </button>
+            )}
+          </div>
 
-            {selected ? (
-              <>
-                <div className="selected">
-                  <div className="selected-status">
-                    <span className="eyebrow">{selected.kind === 'node' ? `SELECTED ${selected.item.type.toUpperCase()}` : 'SELECTED CONNECTION'}</span>
-                    {selected.kind === 'edge' && selected.item.stance && (
-                      <span className={`status ${selected.item.stance}`}>{selected.item.stance}</span>
-                    )}
-                  </div>
-                  <h3 className="selected-title">{heading}</h3>
-                  {isClaim && (
-                    <div className={`verdict ${assessment?.status ?? 'unchecked'}`}>
-                      <span className="verdict-eyebrow">VERDICT</span>
-                      <strong className="verdict-status">{assessment ? STATUS_LABEL[assessment.status] : 'Not checked'}</strong>
-                      {assessment && (
-                        <>
-                          <div className="verdict-confidence">
-                            <span className="verdict-pct">{Math.round(assessment.confidence * 100)}%</span>
-                            <span className="verdict-caption">model-assessed confidence<br />(not a probability of truth)</span>
-                          </div>
-                          <div className="verdict-bar"><i style={{ width: `${Math.round(assessment.confidence * 100)}%` }} /></div>
-                          <div className="verdict-counts">
-                            <span className="against">{assessment.contradicting_evidence.length} contradicting</span>
-                            <span className="for">{assessment.supporting_evidence.length} supporting</span>
-                          </div>
-                          <p className="verdict-why">{assessment.explanation}</p>
-                        </>
-                      )}
-                    </div>
-                  )}
-                  <p className="muted">{selected.item.description}</p>
-                  {selected.kind === 'node' && typeof selected.item.properties.summary === 'string' && (
-                    <p className="muted">{selected.item.properties.summary}</p>
-                  )}
-                  {selected.kind === 'node' && typeof selected.item.properties.sources === 'number' && (
-                    <p className="meta">
-                      {selected.item.properties.sources} sources
-                      {typeof selected.item.properties.publishers === 'number' && ` · ${selected.item.properties.publishers} publishers`}
-                    </p>
-                  )}
-                  {selected.kind === 'node' && selected.item.type === 'source' && typeof selected.item.properties.url === 'string' && (
-                    <a href={selected.item.properties.url} target="_blank" rel="noreferrer">{selected.item.properties.url}</a>
+          {selected ? (
+            <>
+              <div className="selected">
+                <div className="selected-status">
+                  <span className="eyebrow">{selected.kind === 'node' ? `SELECTED ${selected.item.type.toUpperCase()}` : 'SELECTED CONNECTION'}</span>
+                  {selected.kind === 'edge' && selected.item.stance && (
+                    <span className={`status ${selected.item.stance}`}>{selected.item.stance}</span>
                   )}
                 </div>
-
-                {selected.kind === 'node' && (
-                  <section className="block">
-                    <div className="block-head"><h4>Connected entities</h4><span>{connected.length}</span></div>
-                    {connected.map(({ edge, other }) => (
-                      <button key={edge.id} className="entity" onClick={() => setPicked({ kind: 'node', item: other })}>
-                        <i style={{ background: NODE_COLORS[other.type] }} />
-                        <span className="entity-text">
-                          <strong>{other.label}</strong>
-                          <small>{edge.relationship} · {other.type}</small>
-                        </span>
-                        <img src={arrowIcon} alt="" />
-                      </button>
-                    ))}
-                  </section>
+                <h3 className="selected-title">{heading}</h3>
+                {isClaim && (
+                  <div className={`verdict ${assessment?.status ?? 'unchecked'}`}>
+                    <span className="verdict-eyebrow">VERDICT</span>
+                    <strong className="verdict-status">{assessment ? STATUS_LABEL[assessment.status] : 'Not checked'}</strong>
+                    {assessment && (
+                      <>
+                        <div className="verdict-confidence">
+                          <span className="verdict-pct">{Math.round(assessment.confidence * 100)}%</span>
+                          <span className="verdict-caption">model-assessed confidence<br />(not a probability of truth)</span>
+                        </div>
+                        <div className="verdict-bar"><i style={{ width: `${Math.round(assessment.confidence * 100)}%` }} /></div>
+                        <div className="verdict-counts">
+                          <span className="against">{assessment.contradicting_evidence.length} contradicting</span>
+                          <span className="for">{assessment.supporting_evidence.length} supporting</span>
+                        </div>
+                        <p className="verdict-why">{assessment.explanation}</p>
+                      </>
+                    )}
+                  </div>
                 )}
+                <p className="muted">{selected.item.description}</p>
+                {selected.kind === 'node' && typeof selected.item.properties.summary === 'string' && (
+                  <p className="muted">{selected.item.properties.summary}</p>
+                )}
+                {selected.kind === 'node' && typeof selected.item.properties.sources === 'number' && (
+                  <p className="meta">
+                    {selected.item.properties.sources} sources
+                    {typeof selected.item.properties.publishers === 'number' && ` · ${selected.item.properties.publishers} publishers`}
+                  </p>
+                )}
+                {selected.kind === 'node' && selected.item.type === 'source' && typeof selected.item.properties.url === 'string' && (
+                  <a href={selected.item.properties.url} target="_blank" rel="noreferrer">{selected.item.properties.url}</a>
+                )}
+              </div>
 
+              {selected.kind === 'node' && (
                 <section className="block">
-                  <button className="sources-toggle" aria-expanded={sourcesOpen} onClick={() => setSourcesOpen(!sourcesOpen)}>
-                    <img src={docIcon} alt="" />
-                    <span>{sourcesOpen ? 'Hide sources' : 'View sources'}</span>
-                    <small>{listed.length}</small>
-                  </button>
-                  {sourcesOpen && (listed.length === 0 ? (
-                    <div className="empty-card">
-                      <strong><img src={docIcon} alt="" />No sources attached</strong>
-                      <p>Check this claim to start reviewing the evidence behind it.</p>
-                    </div>
-                  ) : (
-                    <ul className="source-list">
-                      {listed.map(({ source: s, stance, quotes }) => (
-                        <li key={s.id} className="source">
-                          {stance && <span className={"status " + stance}>{stance}</span>}
-                          <a href={s.url} target="_blank" rel="noreferrer">{s.title}</a>
-                          <small>{s.publisher} · credibility {s.credibility_score ?? 'not rated'}/5</small>
-                          {quotes.map((v) => (
-                            <blockquote key={v.id} className={v.stance}>“{v.excerpt}” <small>({v.stance})</small></blockquote>
-                          ))}
-                        </li>
-                      ))}
-                    </ul>
+                  <div className="block-head"><h4>Connected entities</h4><span>{connected.length}</span></div>
+                  {connected.map(({ edge, other }) => (
+                    <button key={edge.id} className="entity" onClick={() => setPicked({ kind: 'node', item: other })}>
+                      <i style={{ background: NODE_COLORS[other.type] }} />
+                      <span className="entity-text">
+                        <strong>{other.label}</strong>
+                        <small>{edge.relationship} · {other.type}</small>
+                      </span>
+                      <img src={arrowIcon} alt="" />
+                    </button>
                   ))}
                 </section>
-              </>
-            ) : (
-              <p className="muted">Select a node or connection in the graph to see its details.</p>
-            )}
+              )}
 
-            <p className="context-note"><img src={infoSmallIcon} alt="" />Graph links describe relationships, not a factual verdict.</p>
-          </aside>
-        </div>
+              <section className="block">
+                <button className="sources-toggle" aria-expanded={sourcesOpen} onClick={() => setSourcesOpen(!sourcesOpen)}>
+                  <img src={docIcon} alt="" />
+                  <span>{sourcesOpen ? 'Hide sources' : 'View sources'}</span>
+                  <small>{listed.length}</small>
+                </button>
+                {sourcesOpen && (listed.length === 0 ? (
+                  <div className="empty-card">
+                    <strong><img src={docIcon} alt="" />No sources attached</strong>
+                    <p>Check this claim to start reviewing the evidence behind it.</p>
+                  </div>
+                ) : (
+                  <ul className="source-list">
+                    {listed.map(({ source: s, stance, quotes }) => (
+                      <li key={s.id} className="source">
+                        {stance && <span className={"status " + stance}>{stance}</span>}
+                        <a href={s.url} target="_blank" rel="noreferrer">{s.title}</a>
+                        <small>{s.publisher} · credibility {s.credibility_score ?? 'not rated'}/5</small>
+                        {quotes.map((v) => (
+                          <blockquote key={v.id} className={v.stance}>“{v.excerpt}” <small>({v.stance})</small></blockquote>
+                        ))}
+                      </li>
+                    ))}
+                  </ul>
+                ))}
+              </section>
+            </>
+          ) : (
+            <p className="muted">Select a node or connection in the graph to see its details.</p>
+          )}
+
+          <p className="context-note"><img src={infoSmallIcon} alt="" />Graph links describe relationships, not a factual verdict.</p>
+        </aside>
       </section>
     </div>
   )
