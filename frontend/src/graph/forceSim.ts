@@ -1,6 +1,5 @@
-// Force simulation ported from graph-engine/graph_engine.py (spring links, grid-bucketed
-// repulsion, per-group clustering, velocity damping, settle detection).
-// Dropped: the Markdown vault parser, folder nodes, HTTP server and DOM code.
+// Force-directed simulation: spring links, grid-bucketed repulsion, per-group clustering,
+// velocity damping and settle detection.
 
 export interface SimNode {
   id: string

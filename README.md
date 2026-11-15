@@ -102,7 +102,6 @@ backend/
 frontend/                  React + TypeScript + Vite app
 fixtures/                  sample investigation used by the frontend's mock mode and tests
 tests/                     offline test suites
-graph-engine/              reference copy of the original force-layout engine (not used at runtime)
 AGENT.md                   the original plan, the workstreams and the data contract in full
 ```
 
