@@ -1,4 +1,4 @@
-"""Orchestrates one investigation: research (Agent 1) -> backend.intelligence.analyse (Agent 2) -> response."""
+"""Orchestrates one investigation: research -> backend.intelligence.analyse -> response."""
 
 import logging
 

@@ -1,4 +1,4 @@
-"""Agent 2 entry point: sources in, graph out. See AGENT.md "Agent 1 -> Agent 2 hand-off"."""
+"""Analysis entry point: sources in, graph out."""
 
 import asyncio
 import logging

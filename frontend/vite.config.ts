@@ -3,6 +3,6 @@ import { defineConfig } from 'vite'
 
 export default defineConfig({
   plugins: [react()],
-  // Forward /api calls to the FastAPI backend (Agent 1) when VITE_USE_MOCK=false.
-  server: { fs: { allow: ['..'] }, proxy: { '/api': 'http://localhost:8000' } },
+  // Forward /api calls to the FastAPI backend.
+  server: { proxy: { '/api': 'http://localhost:8000' } },
 })

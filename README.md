@@ -100,9 +100,7 @@ backend/
   models/                  the shared data contract (Pydantic): Source, Node, Edge, Evidence, assessment
   keys.py                  API key checks
 frontend/                  React + TypeScript + Vite app
-fixtures/                  sample investigation used by the frontend's mock mode and tests
 tests/                     offline test suites
-AGENT.md                   the original plan, the workstreams and the data contract in full
 ```
 
 ---
@@ -128,15 +126,12 @@ uvicorn backend.main:app --reload --port 8000
 # 2. Frontend (a second terminal)
 cd frontend
 npm install
-# create the file frontend/.env containing the single line:  VITE_USE_MOCK=false
-# (without it the UI shows built-in sample data instead of calling the backend)
 npm run dev                       # http://localhost:5173  (it proxies /api to port 8000)
 ```
 
 Open http://localhost:5173, type a claim and press **Investigate**. A run takes about 12-20 seconds and spends a few Linkup credits.
 
-To try the interface with no keys and no backend, leave out `VITE_USE_MOCK=false`: it then shows a sample graph, and `?fake=60` in the
-URL shows a random 60-node graph for testing density and performance.
+To check how the graph copes with density and performance without the backend, open http://localhost:5173/?fake=60 for a random 60-node graph.
 
 If a key is missing or rejected, the app says which one. `GET /api/health` also lists any missing keys by name.
 
@@ -156,8 +151,32 @@ turning verification off: `pip install --use-feature=truststore -r requirements.
 | `GET` | `/api/health` | `{"ok": true, "missing_keys": []}` |
 
 The response holds `nodes`, `edges`, `evidence`, `assessments` and `sources`, plus `status`, `stage` and `error`. Entity nodes carry a
-`summary` and source and publisher counts; source-to-claim edges carry a `stance`. The full
-schema is in `backend/models/schemas.py`, and `AGENT.md` explains each field.
+`summary` and source and publisher counts; source-to-claim edges carry a `stance`. The next section
+summarises the shape; the exact schema is `backend/models/schemas.py`.
+
+---
+
+## Data contract
+
+`POST`/`GET` return one JSON object, the `InvestigationResponse` defined in `backend/models/schemas.py`:
+
+- **`nodes`**: one `claim` node (id `claim_1`), entity nodes (`person`, `company` for any organisation, `location`, `event`, `concept`),
+  and one `source` node per analysed source (its id is the source's id). The interface does not draw source nodes; it lists sources in
+  the details panel instead. Entity nodes carry a `summary`, `sources` and `publishers` counts, and `aliases` when names were merged.
+- **`edges`**: relationships between entities (short verb labels such as "invested in" or "controls"), `about` links from the claim
+  to the entities it names, and source-to-claim edges whose `stance` is `supports`, `contradicts` or `neutral`.
+  A label that starts with `alleged ` is a reported or disputed connection, never stated as fact. The label `mentioned with` is a weak
+  fallback link that keeps an otherwise unconnected entity attached to the graph.
+- **`evidence`**: the verified quotes, each with its source id, stance, excerpt, the reason it is relevant, and a strength from 1 to 5.
+- **`assessments`**: one for the claim, with the status, the confidence (0-1), the supporting and contradicting evidence ids, and an
+  explanation that ends with the confidence band.
+- **`sources`**: everything the search returned (up to 12) with the page text, publisher, type, credibility (1-5) and relevance. Only
+  the best 10 are analysed.
+- **`status`** (`running`, `complete` or `failed`), **`stage`** (`searching`, `extracting`, `classifying`, `assessing`) and **`error`**.
+
+A failed investigation carries a readable `error`, which the interface shows as it is. Keys are checked before any work starts, so a
+missing one fails at once and names itself, for example `Missing API key: TYPESAFE_API_KEY (TypeSafe, Jev rates the evidence)`. A rejected
+key says so too (`The Anthropic API key was rejected...`, `The TypeSafe (Jev) API key was rejected...`, `Linkup account is out of credits.`).
 
 ---
 
@@ -173,7 +192,6 @@ python -m tests.test_merge         # entity merging rules
 python -m tests.test_evaluation    # source ranking, stance guard, verdict and confidence
 ```
 
-`python -m tests.make_fixture` regenerates `fixtures/sample_investigation.json` through the real pipeline (this one needs the keys).
 
 ---
 

@@ -1,9 +1,6 @@
 import type { Investigation } from '../types/graph'
-import { mockInvestigation } from './mock'
 import { fakeInvestigation } from './fakeGraph'
 
-// Mock data is the default. Set VITE_USE_MOCK=false in frontend/.env to use the backend.
-const USE_MOCK = import.meta.env.VITE_USE_MOCK !== 'false'
 const POLL_MS = 1500
 const TIMEOUT_MS = 180_000
 
@@ -14,16 +11,18 @@ async function json(res: Response): Promise<Investigation> {
   return res.json()
 }
 
-/** Start an investigation, then poll until the backend reports it complete or failed. */
+/**
+ * Start an investigation, then poll until the backend reports it complete or failed.
+ * Dev tool: opening the app with ?fake=60 shows a random 60-node graph without calling the backend.
+ */
 export async function investigate(
   query: string,
   onUpdate?: (inv: Investigation) => void,
 ): Promise<Investigation> {
-  if (USE_MOCK) {
+  const fake = Number(new URLSearchParams(location.search).get('fake'))
+  if (fake > 1) {
     await sleep(600)
-    const fake = Number(new URLSearchParams(location.search).get('fake'))
-    if (fake > 1) return fakeInvestigation(fake)
-    return { ...mockInvestigation, query }
+    return fakeInvestigation(fake)
   }
   let inv = await json(await fetch('/api/investigate', {
     method: 'POST',

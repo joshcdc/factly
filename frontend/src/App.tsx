@@ -49,11 +49,11 @@ export default function App() {
   const claimNode = data?.nodes.find((n) => n.type === 'claim')
   const selected: Selected = picked ?? (claimNode ? { kind: 'node', item: claimNode } : null)
 
-  // The claim node's id equals its claim_id (AGENT.md hand-off), so this matches directly.
+  // The claim node's id equals its claim_id, so this matches directly.
   const assessment = selected?.kind === 'node'
     ? data?.assessments.find((a) => a.claim_id === selected.item.id)
     : undefined
-  // Source nodes are hidden by default (AGENT.md); their details appear in the inspector instead.
+  // Source nodes are not drawn; their details appear in the inspector instead.
   const graph = useMemo(() => {
     const nodes = data?.nodes.filter((n) => n.type !== 'source') ?? []
     const ids = new Set(nodes.map((n) => n.id))

@@ -13,8 +13,12 @@
   --warn-ink: #76551e;
   --font: Inter, system-ui, 'Segoe UI', Roboto, sans-serif;
   color-scheme: light;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
-body { background: var(--canvas); color: var(--ink); font-family: var(--font); font-size: 13px; line-height: 1.45; letter-spacing: 0; }
+body { margin: 0; background: var(--canvas); color: var(--ink); font-family: var(--font); font-size: 13px; line-height: 1.45; letter-spacing: 0; }
 button { font-family: inherit; cursor: pointer; }
 a { color: var(--ink); }
 h1, h2, h3, h4, p { margin: 0; }

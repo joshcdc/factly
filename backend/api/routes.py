@@ -1,4 +1,4 @@
-"""HTTP API (AGENT.md section 4). Investigations run in the background; the frontend polls GET."""
+"""HTTP API. Investigations run in the background; the frontend polls GET."""
 
 import uuid
 

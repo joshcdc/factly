@@ -1,6 +1,6 @@
-"""Shared data contract (AGENT.md sections 3 and 4). All three workstreams import from here.
+"""Shared data contract: the research, analysis and frontend stages all use these models.
 
-Additive fields beyond AGENT.md, so the frontend can poll: InvestigationResponse.status, .stage, .error.
+InvestigationResponse.status, .stage and .error let the frontend poll a running investigation.
 """
 
 from typing import Literal
@@ -29,7 +29,7 @@ class Edge(BaseModel):
     source: str  # node id
     target: str  # node id
     relationship: str
-    weight: float = Field(0.5, ge=0, le=1)  # display priority 0-1 (thickness, fade, detail slider); set by Agent 2
+    weight: float = Field(0.5, ge=0, le=1)  # display weight 0-1; set by the analysis stage
     stance: Stance | None = None  # set when the edge links evidence to a claim: supports / contradicts / neutral
     description: str = ""
     evidence_ids: list[str] = Field(default_factory=list)
@@ -56,7 +56,7 @@ class ClaimAssessment(BaseModel):
 
 
 class GraphResult(BaseModel):
-    """What Agent 2's extraction returns to the orchestrator."""
+    """What the analysis stage returns to the orchestrator."""
 
     nodes: list[Node] = Field(default_factory=list)
     edges: list[Edge] = Field(default_factory=list)

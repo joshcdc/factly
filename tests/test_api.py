@@ -1,4 +1,4 @@
-"""Offline API tests (Agent 1): Linkup and analyse() stubbed, no keys needed.  Run: python -m tests.test_api"""
+"""Offline API tests: Linkup and analyse() stubbed, no keys needed.  Run: python -m tests.test_api"""
 
 import os
 
@@ -47,7 +47,7 @@ def fake_analyse(query, sources, on_progress=None):
     for st in ("extracting", "classifying", "assessing"):
         on_progress(st)
     for s in sources:
-        s.credibility_score = 4  # Agent 2 sets this in place; the response must carry it
+        s.credibility_score = 4  # analyse() sets this in place; the response must carry it
     return GraphResult(nodes=[Node(id="claim_1", type="claim", label=query)])
 
 

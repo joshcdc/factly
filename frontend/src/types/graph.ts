@@ -1,4 +1,4 @@
-﻿// Mirrors the shared data contract in AGENT.md section 3.
+﻿// Mirrors the backend's data contract (backend/models/schemas.py).
 
 export type NodeType =
   | 'person' | 'organisation' | 'company' | 'location'
