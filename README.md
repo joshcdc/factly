@@ -6,7 +6,7 @@ Type a claim. factly searches the web, reads the sources, checks every quote aga
 verdict with a confidence level, plus an interactive graph of the entities involved and how they connect. Click anything
 in the graph to see who said what, and open the original sources.
 
-> Hackathon project. It is a working prototype, not a production service: see [Known limitations](#known-limitations).
+> A working prototype, not a production service: see [Known limitations](#known-limitations).
 
 ---
 
@@ -31,7 +31,7 @@ in the graph to see who said what, and open the original sources.
   ambiguous cases. A parent and its subsidiary stay separate.
 - Reported or disputed relationships are labelled `alleged …` and never stated as fact; opinions are never turned into relationships.
 - Each entity has a short summary written from what the sources said, how many sources and publishers mention it, and its connections.
-- The graph is kept readable: at most 12 entities, none left unconnected, and each node and edge carries a display `priority` / `weight`.
+- The graph is kept readable: at most 12 entities, and none is left unconnected.
 
 **Interface**
 - Interactive force-directed graph: drag nodes, pan, zoom, and a **Recentre** button that glides back to the claim.
@@ -68,6 +68,23 @@ and the verdict comes from plain, testable rules over the evidence.
 **Confidence in short:** evidence mass with diminishing returns (`1 - exp(-mass / 2.5)`), times the winning side's share of the
 evidence, times an authority factor, times a coverage factor. Official sources count 2.5x, and the score is capped at 0.95.
 A lone official source reaches about 0.63; two reach about 0.86; two ordinary news sites about 0.47.
+
+---
+
+## APIs and models
+
+| Service | Used for | Model | Code |
+|---|---|---|---|
+| **Linkup API** | Web search: three variants of the claim plus a search limited to trusted domains (regulators, wire services, major newsrooms). Fetches the full page when a search passage is under 1,500 characters. | none (search API) | `backend/research/` |
+| **Anthropic API** (Messages, structured outputs) | Reading each source: entities, relationships and up to 3 candidate quotes. Also the short summary for each entity. | **Claude Haiku 5.5** (`claude-haiku-5-5`), low effort | `backend/extraction/` |
+| **TypeSafe API** (System One) | The Jev classifier: the stance of each quote, source credibility (1-5), and whether two entity names are the same thing. | **Jev** (`jev-1.13.0`, pinned) | `backend/evaluation/jev.py` |
+
+- The language model never judges truth. It extracts; Jev classifies, and the verdict comes from rules over the evidence.
+- Jev answers are thresholded: a stance needs at least 60% probability (otherwise the quote counts as neutral), and two entities
+  merge only at 90% or more.
+- The extraction model is one constant (`MODEL` in `backend/extraction/extractor.py`), so it can be swapped for a larger Claude model.
+- The backend itself is a REST API (below), built with FastAPI and Pydantic. The frontend is React, TypeScript and Vite, and calls
+  no external services.
 
 ---
 
@@ -140,7 +157,7 @@ turning verification off: `pip install --use-feature=truststore -r requirements.
 | `GET` | `/api/health` | `{"ok": true, "missing_keys": []}` |
 
 The response holds `nodes`, `edges`, `evidence`, `assessments` and `sources`, plus `status`, `stage` and `error`. Entity nodes carry a
-`summary`, source and publisher counts and a `priority`; edges carry a `stance` (for source-to-claim links) and a `weight`. The full
+`summary` and source and publisher counts; source-to-claim edges carry a `stance`. The full
 schema is in `backend/models/schemas.py`, and `AGENT.md` explains each field. More detail on research and the API is in
 [`backend/README.md`](backend/README.md).
 
@@ -153,7 +170,7 @@ All suites run offline: no keys and no network.
 ```bash
 python -m tests.test_keys          # missing / rejected key messages
 python -m tests.test_api           # API and pipeline, with search and analysis stubbed
-python -m tests.test_intelligence  # extraction, merging, graph building, priorities, summaries
+python -m tests.test_intelligence  # extraction, merging, graph building, summaries
 python -m tests.test_merge         # entity merging rules
 python -m tests.test_evaluation    # source ranking, stance guard, verdict and confidence
 ```
@@ -173,15 +190,7 @@ python -m tests.test_evaluation    # source ranking, stance guard, verdict and c
   always appeared together in a cited source, but the relationship itself is not checked).
 - **Opinions and predictions** are not detected; they come back as *insufficient evidence* rather than "not checkable".
 - **Entity summaries are model-written** from what each source said and are not verified.
-- **The interface does not use `priority` and `weight` yet** (for example to hide minor nodes when zoomed out); the data is there.
 - **Claims about private individuals** will turn up allegations in news coverage. Do not use them for demos or commit their results.
 - Prototype settings: investigations are held in memory and lost on restart, CORS is open for local development, and there is no
   authentication or rate limiting.
 - Search costs Linkup credits on every run; a run needs all three keys and a funded Linkup account.
-
----
-
-## Built with
-
-Claude (Haiku 5.5) for extraction, [TypeSafe Jev](https://typesafe.ai) for classification, Linkup for search,
-FastAPI and Pydantic on the backend, and React, TypeScript and Vite on the frontend.
