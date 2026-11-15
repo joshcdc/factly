@@ -4,9 +4,6 @@ import NodeGlyph from './graph/shapes'
 import { investigate } from './services/api'
 import type { GraphEdge, GraphNode, Investigation } from './types/graph'
 import factlySymbol from './assets/factly-symbol.svg'
-import plusIcon from './assets/icons/plus.svg'
-import graphIcon from './assets/icons/graph.svg'
-import graphSmallIcon from './assets/icons/graph-small.svg'
 import infoSmallIcon from './assets/icons/info-small.svg'
 import closePanelIcon from './assets/icons/close-panel.svg'
 import arrowIcon from './assets/icons/arrow.svg'
@@ -103,33 +100,13 @@ export default function App() {
 
   return (
     <div className="app">
-      <aside className="sidebar">
-        <div className="brand">
-          <img className="brand-symbol" src={factlySymbol} alt="" />
-          <span className="brand-name">factly</span>
-          <span className="badge-beta">BETA</span>
-        </div>
-
-        <button className="btn-primary new-check" onClick={() => document.getElementById('claim-input')?.focus()}>
-          <img src={plusIcon} alt="" /> New fact-check
-        </button>
-
-        <nav className="nav">
-          <a className="nav-item active" aria-current="page"><img src={graphIcon} alt="" />Connections</a>
-        </nav>
-
-        {data && (
-          <section className="networks">
-            <h3 className="eyebrow">YOUR NETWORKS</h3>
-            <div className="network-item"><img src={graphSmallIcon} alt="" />{data.query}</div>
-            <p className="meta">{graph.nodes.length} nodes · {graph.edges.length} connections</p>
-          </section>
-        )}
-
-      </aside>
-
       <section className="workspace">
         <header className="workspace-head">
+          <div className="brand">
+            <img className="brand-symbol" src={factlySymbol} alt="" />
+            <span className="brand-name">factly</span>
+            <span className="badge-beta">BETA</span>
+          </div>
           <div>
             <p className="eyebrow">FOLLOW THE CONNECTIONS</p>
             <h1>See the bigger picture.</h1>

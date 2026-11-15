@@ -21,36 +21,21 @@ h1, h2, h3, h4, p { margin: 0; }
 
 .app { display: flex; height: 100vh; text-align: left; background: var(--canvas); }
 
-/* Sidebar */
-.sidebar { width: 256px; flex-shrink: 0; box-sizing: border-box; display: flex; flex-direction: column; gap: 36px; padding: 32px 20px 28px; background: var(--surface); border-right: 1px solid var(--line); overflow-y: auto; }
+/* Brand (sits beside the motto) */
 .brand { display: flex; align-items: center; gap: 8px; }
 .brand-symbol { height: 42px; width: auto; flex-shrink: 0; }
 .brand-name { font-size: 38px; font-weight: 600; letter-spacing: -1.9px; line-height: 1.1; color: var(--ink); }
 .badge-beta { padding: 4px; background: var(--tint); border-radius: 5px; font-size: 8px; font-weight: 700; color: var(--ink-muted); }
+
+/* Shared */
 .btn-primary { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 15px 16px; background: var(--ink); color: #fff; border: 0; border-radius: 10px; font-size: 15px; font-weight: 600; }
 .btn-primary:disabled { opacity: .6; cursor: wait; }
-.new-check { justify-content: flex-start; }
-.new-check img { width: 20px; height: 20px; }
-.nav { display: flex; flex-direction: column; gap: 6px; }
-.nav-item { display: flex; align-items: center; gap: 10px; padding: 14px; border-radius: 9px; color: var(--ink-muted); font-weight: 500; text-decoration: none; cursor: pointer; font-size: 15px; }
-.nav-item img { width: 22px; height: 22px; }
-.nav-item.active { background: var(--tint); color: var(--ink); font-weight: 600; }
 .eyebrow { font-size: 11px; font-weight: 700; color: var(--ink-muted); }
-.networks { display: flex; flex-direction: column; gap: 12px; }
-.network-item { display: flex; align-items: flex-start; gap: 8px; padding: 12px; background: var(--canvas); border-radius: 8px; color: var(--ink); font-size: 13px; font-weight: 500; overflow-wrap: anywhere; }
-.network-item img { width: 16px; height: 16px; flex-shrink: 0; }
-.meta { font-size: 12px; color: var(--ink-muted); }
-.sidebar-bottom { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; gap: 16px; }
-.notice { display: flex; flex-direction: column; gap: 10px; padding: 16px; background: var(--canvas); border-radius: 12px; }
-.notice img { width: 22px; height: 22px; }
-.notice strong { font-size: 14px; font-weight: 600; color: var(--ink); }
-.notice p { font-size: 13px; color: var(--ink-muted); }
-.settings { padding: 8px; font-size: 12px; }
-.settings img { width: 19px; height: 19px; }
 
 /* Workspace */
 .workspace { flex: 1; min-width: 0; display: flex; flex-direction: column; padding: 28px 32px 32px; gap: 20px; }
-.workspace-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.workspace-head { display: flex; align-items: center; justify-content: flex-start; gap: 28px; }
+.workspace-head > .brand { flex-direction: row; align-items: center; gap: 8px; }
 .workspace-head > div { display: flex; flex-direction: column; gap: 8px; }
 h1 { font-size: 40px; font-weight: 600; line-height: 1.15; letter-spacing: -1.1px; color: var(--ink); }
 .subtitle { color: var(--ink-muted); font-size: 16px; }
