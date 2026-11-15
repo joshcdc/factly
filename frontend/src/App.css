@@ -73,6 +73,9 @@ h1 { font-size: 40px; font-weight: 600; line-height: 1.15; letter-spacing: -1.1p
 .edge { cursor: pointer; }
 .edge-label { fill: var(--muted); font-size: 10px; text-anchor: middle; pointer-events: none; }
 .graph-count { position: absolute; left: 24px; top: 20px; font-size: 13px; font-weight: 500; color: var(--graph-muted); pointer-events: none; }
+.graph-recentre { position: absolute; right: 16px; top: 16px; display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: rgba(19,43,37,.92); border: 1px solid #244138; border-radius: 10px; font-size: 12px; font-weight: 600; color: var(--graph-text); }
+.graph-recentre img { width: 16px; height: 16px; }
+.graph-recentre:hover { background: #1b3b33; border-color: #35594d; }
 .graph-help { position: absolute; left: 24px; bottom: 24px; padding: 7px 10px; background: var(--graph-bg); border-radius: 7px; font-size: 13px; font-weight: 500; color: var(--graph-muted); pointer-events: none; }
 
 /* Inspector */

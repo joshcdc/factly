@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Simulation, seed, type SimNode } from './forceSim'
 import type { GraphEdge, GraphNode } from '../types/graph'
 import NodeGlyph, { CLAIM_RADIUS, NODE_RADIUS } from './shapes'
+import fitIcon from '../assets/icons/fit.svg'
 
 export const NODE_COLORS: Record<string, string> = {
   person: '#8fc5ff', organisation: '#57c7b6', company: '#57c7b6', location: '#f2bd5b',
@@ -28,6 +29,7 @@ export default function GraphView({ nodes, edges, selectedId, nodeColor, onSelec
   const gRef = useRef<SVGGElement>(null)
   const sim = useRef<Simulation<SNode> | null>(null)
   const raf = useRef(0)
+  const pan = useRef(0) // animation frame of the recentre glide
   const drag = useRef<{ node: SNode | null; panX: number; panY: number; moved: boolean } | null>(null)
   const [, setTick] = useState(0)
   const [view, setView] = useState({ x: 0, y: 0, k: 1 })
@@ -58,7 +60,7 @@ export default function GraphView({ nodes, edges, selectedId, nodeColor, onSelec
     sim.current = new Simulation(simNodes, links, w, h)
     setView({ x: 0, y: 0, k: 1 })
     run()
-    return () => cancelAnimationFrame(raf.current)
+    return () => { cancelAnimationFrame(raf.current); cancelAnimationFrame(pan.current) }
   }, [nodes, edges])
 
   // Client coords -> graph coords (accounts for pan and zoom).
@@ -77,6 +79,7 @@ export default function GraphView({ nodes, edges, selectedId, nodeColor, onSelec
     run()
   }
   const onBgDown = (e: React.PointerEvent) => {
+    cancelAnimationFrame(pan.current) // grabbing the canvas stops a recentre in progress
     svgRef.current!.setPointerCapture(e.pointerId)
     drag.current = { node: null, panX: e.clientX, panY: e.clientY, moved: false }
   }
@@ -111,6 +114,7 @@ export default function GraphView({ nodes, edges, selectedId, nodeColor, onSelec
   }
   // Zoom around the cursor; the layout is not re-run.
   const onWheel = (e: React.WheelEvent) => {
+    cancelAnimationFrame(pan.current)
     const box = svgRef.current!.getBoundingClientRect()
     const mx = e.clientX - box.left, my = e.clientY - box.top
     setView((v) => {
@@ -121,12 +125,31 @@ export default function GraphView({ nodes, edges, selectedId, nodeColor, onSelec
   }
 
 
+  // Glide the view so the claim (the main node) sits in the middle of the graph area. Zoom level is kept.
+  const recentre = () => {
+    const main = sim.current?.nodes.find((n) => n.type === 'claim') ?? sim.current?.nodes[0]
+    const svg = svgRef.current
+    if (!main || !svg) return
+    const box = svg.getBoundingClientRect()
+    const from = view
+    const to = { x: box.width / 2 - from.k * main.x, y: box.height / 2 - from.k * main.y }
+    cancelAnimationFrame(pan.current)
+    const t0 = performance.now()
+    const step = (t: number) => {
+      const p = Math.min(1, (t - t0) / 250), e = 1 - Math.pow(1 - p, 3) // ease-out
+      setView({ k: from.k, x: from.x + (to.x - from.x) * e, y: from.y + (to.y - from.y) * e })
+      if (p < 1) pan.current = requestAnimationFrame(step)
+    }
+    pan.current = requestAnimationFrame(step)
+  }
+
   const s = sim.current
   const byId = new Map(s?.nodes.map((n) => [n.id, n]))
   // The dragged node is drawn last, then the selected one, so they and their labels sit in front of everything else.
   const rank = (id: string) => (id === dragId ? 2 : id === selectedId ? 1 : 0)
   const ordered = [...(s?.nodes ?? [])].sort((p, q) => rank(p.id) - rank(q.id))
   return (
+    <>
       <svg ref={svgRef} className="graph-svg" onPointerDown={onBgDown} onPointerMove={onMove}
            onPointerUp={onUp} onPointerCancel={onUp} onWheel={onWheel}>
         <g ref={gRef} transform={`translate(${view.x} ${view.y}) scale(${view.k})`}>
@@ -158,5 +181,10 @@ export default function GraphView({ nodes, edges, selectedId, nodeColor, onSelec
           ))}
         </g>
       </svg>
+      <button className="graph-recentre" onClick={recentre} title="Centre the graph on the claim"
+              aria-label="Centre the graph on the claim">
+        <img src={fitIcon} alt="" />Recentre
+      </button>
+    </>
   )
 }
