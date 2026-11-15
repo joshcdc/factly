@@ -158,8 +158,7 @@ turning verification off: `pip install --use-feature=truststore -r requirements.
 
 The response holds `nodes`, `edges`, `evidence`, `assessments` and `sources`, plus `status`, `stage` and `error`. Entity nodes carry a
 `summary` and source and publisher counts; source-to-claim edges carry a `stance`. The full
-schema is in `backend/models/schemas.py`, and `AGENT.md` explains each field. More detail on research and the API is in
-[`backend/README.md`](backend/README.md).
+schema is in `backend/models/schemas.py`, and `AGENT.md` explains each field.
 
 ---
 
